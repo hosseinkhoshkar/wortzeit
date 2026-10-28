@@ -1,6 +1,8 @@
-/** Shared phase-one contract. Content and persisted user state are separate. */
-export const SCHEMA_VERSION = 1 as const
-export const POLICY_VERSION = 'learning-policy-v1' as const
+/** Phase two. legacy-v1.ts freezes the prior reader for a lossless migration. */
+export const SCHEMA_VERSION = 2 as const
+export const POLICY_VERSION = 'learning-policy-v2' as const
+export const NORMALIZATION_VERSION = 'answer-normalization-v2' as const
+export const TARGET_ACTIVE_MS = 1_200_000 as const
 export const REVIEW_DAYS = [1, 3, 7, 14, 30] as const
 
 export interface Source {
@@ -33,8 +35,9 @@ export interface Entry {
   occurrences: { lessonId: string; sourceRefIds: string[] }[]
   examples: Example[]
   cloze: { sentence: string; translationFa: string; acceptedAnswers: string[]; exampleId: string }
+  writing: { promptFa: string; cueFa: string; acceptedAnswers: string[]; caseSensitive: boolean }
   meaningOptionEntryIds: string[]
-  enabledExercises: ('flashcard' | 'choose-meaning' | 'cloze' | 'match')[]
+  enabledExercises: ('flashcard' | 'choose-meaning' | 'cloze' | 'match' | 'write-word' | 'choose-article')[]
   reviewStatus: 'excerpt-checked'
 }
 export interface ContentBundle {
@@ -62,15 +65,26 @@ export interface EntryProgress {
   scheduledReviewDates: string[]
   correctCount: number
   wrongCount: number
-  pendingError: null | { sessionId: string; remainingOtherAnswers: number; at: string }
+  pendingError: null | { sessionId: string; remainingOtherAnswers: number; at: string; reason: 'wrong-answer' | 'assisted' }
+  skills: { meaning: SkillProgress; writing: SkillProgress; article: SkillProgress | null }
 }
-export type ExerciseKind = 'choose-meaning' | 'cloze' | 'match'
+export interface SkillProgress {
+  correct: number
+  wrong: number
+  assisted: number
+  unassistedCorrect: number
+  lastAttemptAt: string | null
+}
+export type ExerciseKind = 'choose-meaning' | 'cloze' | 'match' | 'write-word' | 'choose-article'
 export type CycleKind = 'initial' | 'scheduled' | 'recovery'
-export type SessionTask =
+export type SessionTask = (
   | { taskId: string; kind: 'flashcard'; entryId: string; revealed: boolean }
   | { taskId: string; kind: 'choose-meaning'; entryId: string; optionIds: string[] }
   | { taskId: string; kind: 'cloze'; entryId: string; cycleKind: CycleKind }
+  | { taskId: string; kind: 'write-word'; entryId: string; cycleKind: CycleKind }
+  | { taskId: string; kind: 'choose-article'; entryId: string; options: ('der' | 'die' | 'das')[] }
   | { taskId: string; kind: 'match'; entryIds: string[]; leftOrder: string[]; rightOrder: string[]; matchedEntryIds: string[] }
+) & { assisted?: boolean }
 export interface Attempt {
   attemptId: string
   sessionId: string
@@ -80,6 +94,8 @@ export interface Attempt {
   answer: string
   correct: boolean
   independent: boolean
+  assisted: boolean
+  normalizationVersion: 'answer-normalization-v1' | typeof NORMALIZATION_VERSION
   at: string
   studyDate: string
 }
@@ -89,6 +105,16 @@ export interface Feedback {
   correct: boolean
   expectedAnswer: string
   explanationFa: string
+  assisted: boolean
+}
+export interface AssistanceEvent {
+  eventId: string
+  sessionId: string
+  taskId: string
+  entryId: string
+  kind: 'hint' | 'answer'
+  at: string
+  studyDate: string
 }
 export interface Session {
   sessionId: string
@@ -101,16 +127,22 @@ export interface Session {
   introducedEntryIds: string[]
   draft: string
   feedback: Feedback | null
+  activeMs: number
+  targetAcknowledged: boolean
+  targetAcknowledgedDate: string | null
 }
 export interface AppState {
-  schemaVersion: 1
+  schemaVersion: 2
   learningPolicyVersion: typeof POLICY_VERSION
   contentVersion: string
   revision: number
-  settings: { studyTimeZone: string; maxNewPerSession: 5 }
+  settings: { studyTimeZone: string; maxNewPerSession: 5; targetActiveMs: typeof TARGET_ACTIVE_MS }
   progress: Record<string, EntryProgress>
   attempts: Attempt[]
   session: Session | null
+  assistanceEvents: AssistanceEvent[]
+  dailyActivity: Record<string, number>
+  activityEventIds: string[]
 }
 export type LearningCommand =
   | { type: 'start-session'; sessionId: string; seed: number }
@@ -118,9 +150,12 @@ export type LearningCommand =
   | { type: 'next'; taskId: string }
   | { type: 'answer'; taskId: string; attemptId: string; answer: string; entryId?: string }
   | { type: 'draft'; taskId: string; value: string }
+  | { type: 'assist'; taskId: string; eventId: string; kind: 'hint' | 'answer'; entryId?: string }
+  | { type: 'activity'; eventId: string; sessionId: string; from: string; to: string; elapsedMs: number }
+  | { type: 'continue-after-target' }
   | { type: 'pause' }
   | { type: 'end-session' }
-export type EntryStatus = 'new' | 'learning' | 'due'
+export type EntryStatus = 'new' | 'learning' | 'due' | 'stabilized'
 export interface HomeStats {
   introduced: number
   due: number
@@ -128,6 +163,8 @@ export interface HomeStats {
   correct: number
   totalAnswers: number
   nextDueAt: string | null
+  todayActiveMs: number
+  stabilized: number
 }
 export interface SessionSummary {
   practiced: number
@@ -137,6 +174,8 @@ export interface SessionSummary {
   needsReview: number
   remaining: number
   nextDueAt: string | null
+  activeMs: number
+  assisted: number
 }
 export type OfflineStatus = 'checking' | 'ready' | 'unavailable'
 export interface WortzeitUIProps {
@@ -151,4 +190,5 @@ export interface WortzeitUIProps {
   offlineStatus: OfflineStatus
   onCommand: (command: LearningCommand) => Promise<void>
   onRetry: () => void
+  onSessionVisibilityChange: (visible: boolean) => void
 }

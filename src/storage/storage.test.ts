@@ -57,6 +57,8 @@ test('damaged cursor, duplicate IDs, mismatched counters and broken game pairs a
     },
     (state: ReturnType<typeof sampleState>) => { state.session!.feedback!.attemptId = 'missing' },
     (state: ReturnType<typeof sampleState>) => { state.session!.feedback = null },
+    (state: ReturnType<typeof sampleState>) => { state.session!.targetAcknowledged = true },
+    (state: ReturnType<typeof sampleState>) => { state.session!.targetAcknowledgedDate = '2026-10-28' },
   ]
   for (const mutate of mutators) {
     const state = sampleState()

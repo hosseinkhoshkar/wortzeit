@@ -32,8 +32,10 @@ test('actual twenty-entry bundle completes four five-word sessions with valid re
         commit({ type: 'answer', taskId: task.taskId, attemptId: `a-${attempt++}`, entryId: id, answer: id })
       } else {
         const entry = bundle.entries.find(entry => entry.entryId === task.entryId)!
-        const answer = task.kind === 'cloze' ? entry.cloze.acceptedAnswers[0] : entry.entryId
-        if (task.kind === 'cloze') {
+        const answer = task.kind === 'cloze' ? entry.cloze.acceptedAnswers[0]
+          : task.kind === 'write-word' ? entry.writing.acceptedAnswers[0]
+            : task.kind === 'choose-article' ? entry.nounData!.article : entry.entryId
+        if (task.kind === 'cloze' || task.kind === 'write-word') {
           commit({ type: 'draft', taskId: task.taskId, value: answer })
           // Simulated reload marks the loaded session paused, as loadState does.
           const restored: AppState = structuredClone(state)

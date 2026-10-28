@@ -1,5 +1,8 @@
-import { POLICY_VERSION, SCHEMA_VERSION } from '../contracts/index.ts'
-import type { AppState, ContentBundle } from '../contracts/index.ts'
+import { NORMALIZATION_VERSION, POLICY_VERSION, SCHEMA_VERSION, TARGET_ACTIVE_MS } from '../contracts/index.ts'
+import type { AppState, ContentBundle, SkillProgress } from '../contracts/index.ts'
+import type { ContentBundle as LegacyBundle } from '../contracts/legacy-v1.ts'
+import { validateLegacyState } from './legacy-v1.ts'
+import { emptySkill } from '../learning/schedule.ts'
 
 export const DATABASE_NAME = 'wortzeit-progress'
 export const STORE_NAME = 'user-state'
@@ -36,8 +39,10 @@ export function validateState(value: unknown, bundle: ContentBundle): asserts va
   if (!isRecord(value) || value.schemaVersion !== SCHEMA_VERSION
     || value.learningPolicyVersion !== POLICY_VERSION || value.contentVersion !== bundle.contentVersion
     || !integer(value.revision) || !isRecord(value.settings) || value.settings.maxNewPerSession !== 5
+    || value.settings.targetActiveMs !== TARGET_ACTIVE_MS
     || typeof value.settings.studyTimeZone !== 'string' || !isRecord(value.progress)
-    || !Array.isArray(value.attempts)) fail()
+    || !Array.isArray(value.attempts) || !Array.isArray(value.assistanceEvents)
+    || !isRecord(value.dailyActivity) || !uniqueStrings(value.activityEventIds)) fail()
   const state = value as unknown as AppState
   try { new Intl.DateTimeFormat('en', { timeZone: state.settings.studyTimeZone }).format(0) } catch { fail() }
   for (const [id, progress] of Object.entries(state.progress)) {
@@ -50,7 +55,16 @@ export function validateState(value: unknown, bundle: ContentBundle): asserts va
       || !integer(progress.correctCount) || !integer(progress.wrongCount)) fail()
     const error = progress.pendingError
     if (!(error === null || isRecord(error) && typeof error.sessionId === 'string' && error.sessionId.length > 0
-      && validDate(error.at) && integer(error.remainingOtherAnswers, 0, 3))) fail()
+      && validDate(error.at) && integer(error.remainingOtherAnswers, 0, 3)
+      && ['wrong-answer', 'assisted'].includes(error.reason))) fail()
+    if (!isRecord(progress.skills)) fail()
+    const noun = bundle.entries.find(entry => entry.entryId === id)!.partOfSpeech === 'noun'
+    if (noun ? !isRecord(progress.skills.article) : progress.skills.article !== null) fail()
+    for (const skill of [progress.skills.meaning, progress.skills.writing, ...(noun ? [progress.skills.article!] : [])]) {
+      if (!isRecord(skill) || !integer(skill.correct) || !integer(skill.wrong) || !integer(skill.assisted)
+        || !integer(skill.unassistedCorrect) || skill.assisted > skill.correct + skill.wrong
+        || skill.unassistedCorrect > skill.correct || !(skill.lastAttemptAt === null || validDate(skill.lastAttemptAt))) fail()
+    }
   }
   const attemptIds = new Set<string>()
   for (const attempt of state.attempts) {
@@ -58,9 +72,12 @@ export function validateState(value: unknown, bundle: ContentBundle): asserts va
       || attemptIds.has(attempt.attemptId) || !known.has(attempt.entryId)
       || !state.progress[attempt.entryId] || typeof attempt.sessionId !== 'string' || !attempt.sessionId
       || typeof attempt.taskId !== 'string' || !attempt.taskId || typeof attempt.answer !== 'string'
-      || !['choose-meaning', 'cloze', 'match'].includes(attempt.exercise)
+      || !['choose-meaning', 'cloze', 'match', 'write-word', 'choose-article'].includes(attempt.exercise)
       || typeof attempt.correct !== 'boolean' || typeof attempt.independent !== 'boolean'
-      || attempt.independent !== (attempt.exercise === 'cloze')
+      || typeof attempt.assisted !== 'boolean'
+      || !['answer-normalization-v1', NORMALIZATION_VERSION].includes(attempt.normalizationVersion)
+      || attempt.independent !== ((attempt.exercise === 'cloze' || attempt.exercise === 'write-word') && !attempt.assisted)
+      || attempt.exercise === 'choose-article' && state.progress[attempt.entryId].skills.article === null
       || !validDate(attempt.at) || !validStudyDate(attempt.studyDate)) fail()
     attemptIds.add(attempt.attemptId)
   }
@@ -69,6 +86,27 @@ export function validateState(value: unknown, bundle: ContentBundle): asserts va
     const attempts = state.attempts.filter(attempt => attempt.entryId === progress.entryId)
     if (progress.correctCount !== attempts.filter(attempt => attempt.correct).length
       || progress.wrongCount !== attempts.filter(attempt => !attempt.correct).length) fail()
+    for (const [name, skill] of Object.entries(progress.skills)) {
+      if (!skill) continue
+      const relevant = attempts.filter(attempt => name === 'meaning' ? ['choose-meaning', 'match'].includes(attempt.exercise)
+        : name === 'writing' ? ['cloze', 'write-word'].includes(attempt.exercise) : attempt.exercise === 'choose-article')
+      if (skill.correct !== relevant.filter(attempt => attempt.correct).length
+        || skill.wrong !== relevant.filter(attempt => !attempt.correct).length
+        || skill.assisted !== relevant.filter(attempt => attempt.assisted).length
+        || skill.unassistedCorrect !== relevant.filter(attempt => attempt.correct && !attempt.assisted).length
+        || skill.lastAttemptAt !== (relevant.at(-1)?.at ?? null)) fail()
+    }
+  }
+  const assistanceIds = new Set<string>()
+  for (const event of state.assistanceEvents) {
+    if (!isRecord(event) || typeof event.eventId !== 'string' || !event.eventId || assistanceIds.has(event.eventId)
+      || typeof event.sessionId !== 'string' || !event.sessionId || typeof event.taskId !== 'string' || !event.taskId
+      || !known.has(event.entryId) || !state.progress[event.entryId] || !['hint', 'answer'].includes(event.kind)
+      || !validDate(event.at) || !validStudyDate(event.studyDate)) fail()
+    assistanceIds.add(event.eventId)
+  }
+  for (const [date, elapsed] of Object.entries(state.dailyActivity)) {
+    if (!validStudyDate(date) || !Number.isFinite(elapsed) || elapsed < 0) fail()
   }
   if (state.session !== null) {
     const session = state.session
@@ -78,10 +116,15 @@ export function validateState(value: unknown, bundle: ContentBundle): asserts va
       || !Array.isArray(session.queue) || !integer(session.cursor, 0, session.queue.length)
       || !uniqueStrings(session.introducedEntryIds) || session.introducedEntryIds.length > 5
       || session.introducedEntryIds.some(id => !state.progress[id]) || typeof session.draft !== 'string'
+      || !Number.isFinite(session.activeMs) || session.activeMs < 0 || typeof session.targetAcknowledged !== 'boolean'
+      || (session.targetAcknowledged ? !validStudyDate(session.targetAcknowledgedDate) : session.targetAcknowledgedDate !== null)
+      || session.targetAcknowledged && (state.dailyActivity[session.targetAcknowledgedDate!] ?? 0) < state.settings.targetActiveMs
+      || session.activeMs > Object.values(state.dailyActivity).reduce((sum, elapsed) => sum + elapsed, 0) + 0.01
       || session.state !== 'ended' && session.cursor === session.queue.length) fail()
     const taskIds = new Set<string>()
     for (const task of session.queue) {
-      if (!isRecord(task) || typeof task.taskId !== 'string' || !task.taskId || taskIds.has(task.taskId)) fail()
+      if (!isRecord(task) || typeof task.taskId !== 'string' || !task.taskId || taskIds.has(task.taskId)
+        || task.assisted !== undefined && typeof task.assisted !== 'boolean') fail()
       taskIds.add(task.taskId)
       if (task.kind === 'match') {
         if (!uniqueStrings(task.entryIds) || task.entryIds.length !== 4 || task.entryIds.some(id => !known.has(id))
@@ -96,8 +139,12 @@ export function validateState(value: unknown, bundle: ContentBundle): asserts va
         } else if (task.kind === 'choose-meaning') {
           if (!uniqueStrings(task.optionIds) || task.optionIds.length !== 4
             || !task.optionIds.includes(task.entryId) || task.optionIds.some(id => !known.has(id))) fail()
-        } else if (task.kind === 'cloze') {
+        } else if (task.kind === 'cloze' || task.kind === 'write-word') {
           if (!['initial', 'scheduled', 'recovery'].includes(task.cycleKind)) fail()
+        } else if (task.kind === 'choose-article') {
+          if (bundle.entries.find(entry => entry.entryId === task.entryId)!.partOfSpeech !== 'noun'
+            || !uniqueStrings(task.options) || task.options.length !== 3
+            || task.options.some(option => !['der', 'die', 'das'].includes(option))) fail()
         } else fail()
       }
     }
@@ -105,11 +152,12 @@ export function validateState(value: unknown, bundle: ContentBundle): asserts va
     if (!(feedback === null || isRecord(feedback) && typeof feedback.attemptId === 'string'
       && attemptIds.has(feedback.attemptId) && known.has(feedback.entryId)
       && typeof feedback.correct === 'boolean' && typeof feedback.expectedAnswer === 'string'
+      && typeof feedback.assisted === 'boolean'
       && typeof feedback.explanationFa === 'string')) fail()
     if (feedback) {
       const attempt = state.attempts.find(item => item.attemptId === feedback.attemptId)!
       if (attempt.taskId !== session.queue[session.cursor]?.taskId || attempt.sessionId !== session.sessionId
-        || attempt.entryId !== feedback.entryId || attempt.correct !== feedback.correct) fail()
+        || attempt.entryId !== feedback.entryId || attempt.correct !== feedback.correct || attempt.assisted !== feedback.assisted) fail()
     }
     if (session.state !== 'ended') {
       const activeTask = session.queue[session.cursor]
@@ -126,6 +174,53 @@ export function validateState(value: unknown, bundle: ContentBundle): asserts va
       }
     }
   }
+}
+
+export function migrateState(value: unknown, bundle: ContentBundle): AppState {
+  if (isRecord(value) && value.schemaVersion === SCHEMA_VERSION) {
+    validateState(value, bundle)
+    return structuredClone(value)
+  }
+  const legacyBundle: LegacyBundle = {
+    ...bundle, contentVersion: 'lesson-01-excerpt-v1',
+    entries: bundle.entries.map(entry => ({ ...entry, enabledExercises: entry.enabledExercises.filter(kind =>
+      kind === 'flashcard' || kind === 'choose-meaning' || kind === 'cloze' || kind === 'match') })),
+  }
+  // The prior reader is deliberately strict; no unknown version/content is reset.
+  validateLegacyState(value, legacyBundle)
+  const legacy = structuredClone(value)
+  const previousWrongMatch = new Set<string>()
+  const attempts: AppState['attempts'] = legacy.attempts.map(attempt => {
+    const key = JSON.stringify([attempt.sessionId, attempt.taskId, attempt.entryId])
+    const assisted = attempt.exercise === 'match' && previousWrongMatch.has(key)
+    if (attempt.exercise === 'match' && !attempt.correct) previousWrongMatch.add(key)
+    return { ...attempt, assisted, normalizationVersion: 'answer-normalization-v1' }
+  })
+  const next: AppState = {
+    ...legacy, schemaVersion: SCHEMA_VERSION, learningPolicyVersion: POLICY_VERSION,
+    contentVersion: bundle.contentVersion, revision: legacy.revision + 1,
+    settings: { ...legacy.settings, targetActiveMs: TARGET_ACTIVE_MS },
+    attempts,
+    progress: {}, session: legacy.session ? { ...legacy.session, contentVersion: bundle.contentVersion,
+      feedback: legacy.session.feedback ? { ...legacy.session.feedback,
+        assisted: attempts.find(attempt => attempt.attemptId === legacy.session!.feedback!.attemptId)!.assisted } : null,
+      activeMs: 0, targetAcknowledged: false, targetAcknowledgedDate: null } : null,
+    assistanceEvents: [], dailyActivity: {}, activityEventIds: [],
+  }
+  for (const [id, progress] of Object.entries(legacy.progress)) {
+    const entry = bundle.entries.find(item => item.entryId === id)!
+    const skills = { meaning: emptySkill(), writing: emptySkill(), article: entry.partOfSpeech === 'noun' ? emptySkill() : null }
+    for (const attempt of next.attempts.filter(item => item.entryId === id)) {
+      const skill: SkillProgress = attempt.exercise === 'cloze' ? skills.writing : skills.meaning
+      if (attempt.correct) { skill.correct++; if (!attempt.assisted) skill.unassistedCorrect++ }
+      else skill.wrong++
+      if (attempt.assisted) skill.assisted++
+      skill.lastAttemptAt = attempt.at
+    }
+    next.progress[id] = { ...progress, pendingError: progress.pendingError ? { ...progress.pendingError, reason: 'wrong-answer' } : null, skills }
+  }
+  validateState(next, bundle)
+  return next
 }
 
 function openDatabase(): Promise<IDBDatabase> {
@@ -150,22 +245,27 @@ function openDatabase(): Promise<IDBDatabase> {
 export async function loadState(bundle: ContentBundle): Promise<AppState | null> {
   const database = await openDatabase()
   return new Promise((resolve, reject) => {
-    const transaction = database.transaction(STORE_NAME, 'readonly')
-    const request = transaction.objectStore(STORE_NAME).get(STATE_KEY)
+    const transaction = database.transaction(STORE_NAME, 'readwrite')
+    const store = transaction.objectStore(STORE_NAME)
+    const request = store.get(STATE_KEY)
+    let restored: AppState | null = null
+    let failure: unknown = null
+    request.onsuccess = () => {
+      try {
+        if (request.result === undefined) return
+        restored = migrateState(request.result, bundle)
+        if (request.result.schemaVersion === 1) store.put(restored, STATE_KEY)
+      } catch (error) { failure = error; transaction.abort() }
+    }
     transaction.oncomplete = () => {
       database.close()
-      try {
-        if (request.result === undefined) { resolve(null); return }
-        validateState(request.result, bundle)
-        const state = request.result as AppState
-        // Returning paused prevents a closed tab from silently accumulating active time.
-        if (state.session?.state === 'active') state.session.state = 'paused'
-        resolve(state)
-      } catch (error) { reject(error) }
+      // A normal v2 load is read-only in effect and does not change its revision.
+      if (restored?.session?.state === 'active') restored.session.state = 'paused'
+      resolve(restored)
     }
     transaction.onerror = transaction.onabort = () => {
       database.close()
-      reject(new StorageError('بازیابی پیشرفت ممکن نشد؛ اطلاعات قبلی حفظ شده‌اند.'))
+      reject(failure ?? new StorageError('بازیابی پیشرفت ممکن نشد؛ اطلاعات قبلی حفظ شده‌اند.'))
     }
   })
 }
@@ -183,7 +283,8 @@ export async function saveState(state: AppState, expectedRevision: number): Prom
     let conflict = false
     request.onsuccess = () => {
       const current = request.result as AppState | undefined
-      if (current ? current.revision !== expectedRevision : expectedRevision !== 0) {
+      if (current ? current.revision !== expectedRevision || current.schemaVersion !== SCHEMA_VERSION
+        || current.contentVersion !== state.contentVersion || current.learningPolicyVersion !== POLICY_VERSION : expectedRevision !== 0) {
         conflict = true
         transaction.abort()
         return

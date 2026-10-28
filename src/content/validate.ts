@@ -1,5 +1,19 @@
 import type { ContentBundle } from '../contracts/index.ts'
 
+// Alternatives have been reviewed for this fixed excerpt. An arbitrary spelling
+// variation or inflection cannot become an accepted answer by passing shape QA.
+const approvedAlternativeByCanonical: Record<string, readonly string[]> = {
+  Tschüss: ['Tschuess'],
+  heißen: ['heissen'],
+}
+
+function validAcceptedAnswers(answers: string[], canonical: string): boolean {
+  return answers.length > 0 && answers[0] === canonical
+    && new Set(answers).size === answers.length
+    && answers.every((answer, index) => answer.trim() === answer && answer === answer.normalize('NFC')
+      && answer.length > 0 && (index === 0 || (approvedAlternativeByCanonical[canonical] ?? []).includes(answer)))
+}
+
 /** Fail before showing an exercise when its data is incomplete or inconsistent. */
 export function validateContent(bundle: ContentBundle): string[] {
   const errors: string[] = []
@@ -8,7 +22,7 @@ export function validateContent(bundle: ContentBundle): string[] {
   const sourceIds = new Set(bundle.sources.map((source) => source.sourceId))
   const refIds = new Set(bundle.sourceRefs.map((ref) => ref.sourceRefId))
   const lessonId = bundle.lesson.lessonId
-  if (!bundle.contentVersion || bundle.entries.length !== 20) errors.push('Phase one requires exactly 20 entries and a content version.')
+  if (!bundle.contentVersion || bundle.entries.length !== 20) errors.push('The active excerpt requires exactly 20 entries and a content version.')
   if (new Set(ids).size !== ids.length) errors.push('Duplicate entry ID.')
   if (new Set(bundle.sources.map((source) => source.sourceId)).size !== bundle.sources.length) errors.push('Duplicate source ID.')
   if (refIds.size !== bundle.sourceRefs.length) errors.push('Duplicate source reference ID.')
@@ -27,12 +41,15 @@ export function validateContent(bundle: ContentBundle): string[] {
     if (entry.partOfSpeech === 'noun') {
       if (!entry.nounData || !['der', 'die', 'das'].includes(entry.nounData.article) || (entry.nounData.plural === null && !entry.nounData.pluralNote.trim())) errors.push(`Incomplete noun data: ${at}`)
     } else if (entry.nounData) errors.push(`Non-noun has article data: ${at}`)
+    const hasArticleExercise = entry.enabledExercises.includes('choose-article')
+    if (hasArticleExercise !== Boolean(entry.partOfSpeech === 'noun' && entry.nounData && ['der', 'die', 'das'].includes(entry.nounData.article))) errors.push(`Article exercise does not match noun eligibility: ${at}`)
     if (!entry.examples.length || new Set(entry.examples.map((example) => example.exampleId)).size !== entry.examples.length || entry.examples.some((example) => !example.exampleId || example.origin !== 'authored' || !example.de.trim() || !example.fa.trim())) errors.push(`Invalid authored example: ${at}`)
     const example = entry.examples.find((candidate) => candidate.exampleId === entry.cloze.exampleId)
-    if (!example || entry.cloze.sentence.split('___').length !== 2 || !entry.cloze.translationFa.trim() || !entry.cloze.acceptedAnswers.length || new Set(entry.cloze.acceptedAnswers).size !== entry.cloze.acceptedAnswers.length || entry.cloze.acceptedAnswers.some((answer) => !answer.trim() || entry.cloze.sentence.replace('___', answer) !== example.de)) errors.push(`Invalid cloze: ${at}`)
+    if (!example || entry.cloze.sentence.split('___').length !== 2 || !entry.cloze.translationFa.trim() || !validAcceptedAnswers(entry.cloze.acceptedAnswers, entry.lemma) || entry.cloze.sentence.replace('___', entry.cloze.acceptedAnswers[0]) !== example.de) errors.push(`Invalid cloze: ${at}`)
+    if (!entry.writing || !entry.writing.promptFa.trim() || !entry.writing.cueFa.trim() || typeof entry.writing.caseSensitive !== 'boolean' || !validAcceptedAnswers(entry.writing.acceptedAnswers, entry.lemma)) errors.push(`Invalid writing prompt or accepted answers: ${at}`)
     const optionIds = entry.meaningOptionEntryIds
     if (optionIds.length !== 4 || new Set(optionIds).size !== 4 || !optionIds.includes(at) || optionIds.some((id) => !byId.has(id)) || new Set(optionIds.map((id) => byId.get(id)?.meaningFa)).size !== 4) errors.push(`Invalid meaning options: ${at}`)
-    if (['flashcard', 'choose-meaning', 'cloze', 'match'].some((kind) => !entry.enabledExercises.includes(kind as typeof entry.enabledExercises[number]))) errors.push(`Missing phase-one exercise: ${at}`)
+    if (['flashcard', 'choose-meaning', 'cloze', 'match', 'write-word'].some((kind) => !entry.enabledExercises.includes(kind as typeof entry.enabledExercises[number]))) errors.push(`Missing excerpt exercise: ${at}`)
   }
   if (new Set(bundle.entries.map((entry) => entry.meaningFa)).size !== ids.length) errors.push('Matching requires unambiguous, distinct meanings.')
   return errors

@@ -13,8 +13,9 @@ const bundle: ContentBundle = {
     lemma: `Wort${index}`, meaningFa: `معنی ${index}`, partOfSpeech: 'other' as const,
     sourceRefIds: [], occurrences: [], examples: [],
     cloze: { sentence: 'Das ist ___.', translationFa: 'این است', acceptedAnswers: [`Wort${index}`], exampleId: `ex${index}` },
+    writing: { promptFa: `معنی ${index}`, cueFa: 'واژه', acceptedAnswers: [`Wort${index}`], caseSensitive: false },
     meaningOptionEntryIds: [0, 1, 2, 3].map(n => `word-${(index + n) % 8}`),
-    enabledExercises: ['flashcard', 'choose-meaning', 'cloze', 'match'], reviewStatus: 'excerpt-checked',
+    enabledExercises: ['flashcard', 'choose-meaning', 'cloze', 'match', 'write-word'], reviewStatus: 'excerpt-checked',
   })),
 }
 bundle.lesson.introducedEntryIds = bundle.entries.map(entry => entry.entryId)
@@ -30,6 +31,9 @@ function start(state: AppState, now = NOW): AppState {
 function next(state: AppState, now = NOW): AppState {
   return apply(state, { type: 'next', taskId: currentTask(state)!.taskId }, now)
 }
+function written(task: SessionTask): task is Extract<SessionTask, { kind: 'cloze' | 'write-word' }> {
+  return task.kind === 'cloze' || task.kind === 'write-word'
+}
 function answer(state: AppState, correct = true, now = NOW): AppState {
   const task = currentTask(state)!
   assert.notEqual(task.kind, 'flashcard')
@@ -37,9 +41,11 @@ function answer(state: AppState, correct = true, now = NOW): AppState {
   const entryId = task.kind === 'match'
     ? task.entryIds.find(id => !task.matchedEntryIds.includes(id))! : task.entryId
   return apply(state, { type: 'answer', taskId: task.taskId, attemptId: `attempt-${++sequence}`, entryId,
-    answer: correct ? task.kind === 'cloze' ? bundle.entries.find(entry => entry.entryId === entryId)!.cloze.acceptedAnswers[0] : entryId
-      : task.kind === 'cloze' ? 'wrong' : task.kind === 'match' ? task.entryIds.find(id => id !== entryId && !task.matchedEntryIds.includes(id))!
-        : task.optionIds.find(id => id !== entryId)!,
+    answer: correct ? written(task) ? bundle.entries.find(entry => entry.entryId === entryId)!.writing.acceptedAnswers[0]
+      : task.kind === 'choose-article' ? bundle.entries.find(entry => entry.entryId === entryId)!.nounData!.article : entryId
+      : written(task) ? 'wrong' : task.kind === 'match' ? task.entryIds.find(id => id !== entryId && !task.matchedEntryIds.includes(id))!
+        : task.kind === 'choose-article' ? task.options.find(option => option !== bundle.entries.find(entry => entry.entryId === entryId)!.nounData!.article)!
+          : task.optionIds.find(id => id !== entryId)!,
   }, now)
 }
 function performCurrent(state: AppState, now = NOW): AppState {
@@ -104,8 +110,8 @@ test('independent initial recall then separate-day scheduled intervals are 1,3,7
   for (const interval of [3, 7, 14, 30, 30]) {
     state = start(state, now)
     const task = currentTask(state)!
-    assert.equal(task.kind, 'cloze')
-    assert.equal(task.kind === 'cloze' && task.cycleKind, 'scheduled')
+    assert.ok(written(task))
+    assert.equal(task.cycleKind, 'scheduled')
     state = answer(state, true, now)
     assert.equal(Date.parse(state.progress['word-0'].nextDueAt!) - Date.parse(now), interval * 86_400_000)
     state = apply(state, { type: 'end-session' }, now)
@@ -139,8 +145,8 @@ test('DST fallback same-date due success does not loop or block the next new car
   state = start(state, dueAt)
   const reviewSessionId = state.session!.sessionId
   const review = currentTask(state)!
-  assert.equal(review.kind, 'cloze')
-  assert.equal(review.kind === 'cloze' && review.cycleKind, 'scheduled')
+  assert.ok(written(review))
+  assert.equal(review.cycleKind, 'scheduled')
   state = answer(state, true, dueAt)
   assert.equal(state.progress['word-0'].nextDueAt, dueAt)
   assert.equal(state.progress['word-0'].intervalIndex, 0)
@@ -171,13 +177,14 @@ test('resuming the same session on a later day reinserts due recall before unope
   assert.equal(currentTask(state)!.taskId, currentTaskId)
   assert.equal(state.session!.draft, 'Wor')
   const remaining = state.session!.queue.slice(state.session!.cursor)
-  const dueIndex = remaining.findIndex(task => task.kind === 'cloze' && task.entryId === 'word-0')
+  const dueIndex = remaining.findIndex(task => written(task) && task.entryId === 'word-0')
   const nextNewIndex = remaining.findIndex(task => task.kind === 'flashcard' && task.entryId === 'word-2')
   assert.ok(dueIndex > 0 && dueIndex < nextNewIndex)
   state = answer(state, true, later)
   state = next(state, later)
+  state = until(state, task => written(task) && task.entryId === 'word-0', later)
   const dueTask = currentTask(state)!
-  assert.equal(dueTask.kind, 'cloze')
+  assert.ok(written(dueTask))
   assert.equal(dueTask.entryId, 'word-0')
   state = answer(state, true, later)
   assert.equal(state.progress['word-0'].intervalIndex, 1)
@@ -192,7 +199,7 @@ test('due recall precedes unfinished work and new cards, without showing the ans
   state.progress['word-3'].initialRecallPending = true
   state = start(state)
   const task = currentTask(state)!
-  assert.equal(task.kind, 'cloze')
+  assert.ok(written(task))
   assert.equal(task.entryId, 'word-2')
   const ids = state.session!.queue.filter(task => task.kind !== 'match').map(task => task.entryId)
   assert.ok(ids.indexOf('word-2') < ids.indexOf('word-3'))
@@ -210,14 +217,15 @@ test('wrong recognition removes the immediate cloze and retries only after three
   let others = 0
   for (let index = 0; index < 40; index++) {
     const task = currentTask(state)!
-    if (task.kind === 'cloze' && task.entryId === 'word-0') break
+    if (written(task) && task.entryId === 'word-0') break
     if (task.kind !== 'flashcard' && task.kind !== 'match' && task.entryId !== 'word-0') others++
     state = performCurrent(state)
     if (others < 3) assert.notEqual(currentTask(state)?.kind === 'cloze' && (currentTask(state) as { entryId: string }).entryId, 'word-0')
   }
   assert.ok(others >= 3)
   const retry = currentTask(state)!
-  assert.equal(retry.kind === 'cloze' && retry.cycleKind, 'recovery')
+  assert.ok(written(retry))
+  assert.equal(retry.cycleKind, 'recovery')
   state = answer(state)
   assert.equal(state.progress['word-0'].pendingError, null)
   assert.equal(state.progress['word-0'].nextDueAt, '2026-01-02T12:00:00.000Z')
@@ -272,7 +280,7 @@ test('four-pair game checks actual identity; wrong pair is not credited and matc
   state = finish(state)
   assert.equal(state.attempts.filter(attempt => attempt.exercise === 'match' && attempt.correct).length, 4)
   assert.equal(state.progress[left].pendingError, null, 'a later error still gets independent recovery in the same session')
-  assert.equal(state.attempts.filter(attempt => attempt.entryId === left && attempt.independent && attempt.correct).length, 2)
+  assert.equal(state.attempts.filter(attempt => attempt.entryId === left && attempt.independent && attempt.correct).length, 3)
 })
 
 test('when insufficient other answers remain the error persists for the next session', () => {
@@ -286,7 +294,9 @@ test('when insufficient other answers remain the error persists for the next ses
   state = transition(state, { type: 'end-session' }, smallBundle, NOW)
   assert.equal(getEntryStatus(state, 'word-0', NOW), 'due')
   state = transition(state, { type: 'start-session', sessionId: 'next-review', seed: 1 }, smallBundle, NOW)
-  assert.equal(currentTask(state)?.kind === 'cloze' && (currentTask(state) as Extract<SessionTask, { kind: 'cloze' }>).cycleKind, 'recovery')
+  const recovery = currentTask(state)!
+  assert.ok(written(recovery))
+  assert.equal(recovery.cycleKind, 'recovery')
 })
 
 test('normalization accepts whitespace and NFC while preserving case, umlauts and ß', () => {

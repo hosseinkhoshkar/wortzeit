@@ -8,14 +8,22 @@ import type { AppState } from '../contracts/index.ts'
 const now = '2026-10-28T12:00:00.000Z'
 function clozeState() {
   let state = transition(createInitialState(bundle, 'Europe/Berlin'), { type: 'start-session', sessionId: 's', seed: 2 }, bundle, now)
-  let task = currentTask(state)!
-  state = transition(state, { type: 'reveal-card', taskId: task.taskId }, bundle, now)
-  state = transition(state, { type: 'next', taskId: task.taskId }, bundle, now)
-  task = currentTask(state)!
-  assert.equal(task.kind, 'choose-meaning')
-  state = transition(state, { type: 'answer', taskId: task.taskId, attemptId: 'meaning', answer: task.entryId }, bundle, now)
-  state = transition(state, { type: 'next', taskId: task.taskId }, bundle, now)
-  return state
+  for (let step = 0; step < 100; step++) {
+    const task = currentTask(state)!
+    if (task.kind === 'cloze' && !state.session!.feedback) return state
+    if (state.session!.feedback) state = transition(state, { type: 'next', taskId: task.taskId }, bundle, now)
+    else if (task.kind === 'flashcard') {
+      state = transition(state, { type: 'reveal-card', taskId: task.taskId }, bundle, now)
+      state = transition(state, { type: 'next', taskId: task.taskId }, bundle, now)
+    } else {
+      const entry = task.kind === 'match' ? null : bundle.entries.find(entry => entry.entryId === task.entryId)!
+      const id = task.kind === 'match' ? task.entryIds.find(id => !task.matchedEntryIds.includes(id))! : entry!.entryId
+      const answer = task.kind === 'write-word' ? entry!.writing.acceptedAnswers[0]
+        : task.kind === 'choose-article' ? entry!.nounData!.article : id
+      state = transition(state, { type: 'answer', taskId: task.taskId, attemptId: `setup-${step}`, entryId: id, answer }, bundle, now)
+    }
+  }
+  throw new Error('No cloze task found in the bounded session')
 }
 
 test('failed draft commit retains later rapid edits and retry stores the displayed final text', async () => {
@@ -60,4 +68,26 @@ test('failed answer retry uses identical attempt ID and never announces an uncom
   const revision = persisted.revision
   await writer.submit(command)
   assert.equal(persisted.revision, revision)
+})
+
+test('closing a writer rejects new work and settles queued saves before ownership can be released', async () => {
+  const initial = clozeState(), task = currentTask(initial)!
+  let unblock = () => {}, released = false
+  const gate = new Promise<void>(resolve => { unblock = resolve })
+  const drafts: string[] = []
+  const writer = new CommandWriter(initial, { bundle, now: () => now,
+    save: async state => { await gate; drafts.push(state.session!.draft) },
+    onSaved: () => {}, onBusy: () => {}, onError: () => {},
+  })
+  const first = writer.submit({ type: 'draft', taskId: task.taskId, value: 'Guten' })
+  const second = writer.submit({ type: 'draft', taskId: task.taskId, value: 'Guten Ta' })
+  const closing = writer.close().then(() => { released = true })
+  const repeatedClose = writer.close()
+  await assert.rejects(writer.submit({ type: 'draft', taskId: task.taskId, value: 'late' }), /نویسنده/)
+  await assert.rejects(writer.retry(), /نویسنده/)
+  assert.equal(released, false)
+  unblock()
+  await Promise.all([first, second, closing, repeatedClose])
+  assert.deepEqual(drafts, ['Guten', 'Guten Ta'])
+  assert.equal(released, true)
 })
