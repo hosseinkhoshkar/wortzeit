@@ -1,8 +1,9 @@
-import { NORMALIZATION_VERSION, POLICY_VERSION, SCHEMA_VERSION, TARGET_ACTIVE_MS } from '../contracts/index.ts'
-import type { AppState, ContentBundle, SkillProgress } from '../contracts/index.ts'
+import { POLICY_VERSION, SCHEMA_VERSION, TARGET_ACTIVE_MS } from '../contracts/index.ts'
+import type { AppState, ContentBundle, Session, SkillProgress } from '../contracts/index.ts'
 import type { ContentBundle as LegacyBundle } from '../contracts/legacy-v1.ts'
 import { validateLegacyState } from './legacy-v1.ts'
 import { emptySkill } from '../learning/schedule.ts'
+import { validateVersionTwoState } from './legacy-v2.ts'
 
 export const DATABASE_NAME = 'wortzeit-progress'
 export const STORE_NAME = 'user-state'
@@ -18,172 +19,90 @@ export class StorageError extends Error {
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
-function validDate(value: unknown): boolean {
-  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value) && Number.isFinite(Date.parse(value))
-}
 function integer(value: unknown, min = 0, max = Number.MAX_SAFE_INTEGER): boolean {
   return typeof value === 'number' && Number.isInteger(value) && value >= min && value <= max
 }
-function validStudyDate(value: unknown): boolean {
-  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)
-}
-function uniqueStrings(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every(item => typeof item === 'string' && item.length > 0)
-    && new Set(value).size === value.length
-}
 
-/** Reject damaged/unknown snapshots without resetting or overwriting them. */
+/** Keep the version-two evidence checks and validate each lesson session independently. */
 export function validateState(value: unknown, bundle: ContentBundle): asserts value is AppState {
   const fail = (): never => { throw new StorageError('اطلاعات ذخیره‌شده ناقص یا ناسازگار است. داده‌های قبلی حفظ شده‌اند؛ حافظهٔ سایت را پاک نکنید.') }
-  const known = new Set(bundle.entries.map(entry => entry.entryId))
+  const lessons = bundle.lessons ?? [bundle.lesson]
+  const lessonIds = new Set(lessons.map(lesson => lesson.lessonId))
   if (!isRecord(value) || value.schemaVersion !== SCHEMA_VERSION
-    || value.learningPolicyVersion !== POLICY_VERSION || value.contentVersion !== bundle.contentVersion
-    || !integer(value.revision) || !isRecord(value.settings) || value.settings.maxNewPerSession !== 5
-    || value.settings.targetActiveMs !== TARGET_ACTIVE_MS
-    || typeof value.settings.studyTimeZone !== 'string' || !isRecord(value.progress)
-    || !Array.isArray(value.attempts) || !Array.isArray(value.assistanceEvents)
-    || !isRecord(value.dailyActivity) || !uniqueStrings(value.activityEventIds)) fail()
+    || typeof value.activeLessonId !== 'string' || !lessonIds.has(value.activeLessonId)
+    || !isRecord(value.savedSessions)) fail()
   const state = value as unknown as AppState
-  try { new Intl.DateTimeFormat('en', { timeZone: state.settings.studyTimeZone }).format(0) } catch { fail() }
-  for (const [id, progress] of Object.entries(state.progress)) {
-    if (!known.has(id) || !isRecord(progress) || progress.entryId !== id
-      || !validDate(progress.introducedAt) || typeof progress.initialRecallPending !== 'boolean'
-      || !(progress.nextDueAt === null || validDate(progress.nextDueAt))
-      || !integer(progress.intervalIndex, 0, 4)
-      || !(progress.lastSuccessDate === null || validStudyDate(progress.lastSuccessDate))
-      || !uniqueStrings(progress.scheduledReviewDates) || !progress.scheduledReviewDates.every(validStudyDate)
-      || !integer(progress.correctCount) || !integer(progress.wrongCount)) fail()
-    const error = progress.pendingError
-    if (!(error === null || isRecord(error) && typeof error.sessionId === 'string' && error.sessionId.length > 0
-      && validDate(error.at) && integer(error.remainingOtherAnswers, 0, 3)
-      && ['wrong-answer', 'assisted'].includes(error.reason))) fail()
-    if (!isRecord(progress.skills)) fail()
-    const noun = bundle.entries.find(entry => entry.entryId === id)!.partOfSpeech === 'noun'
-    if (noun ? !isRecord(progress.skills.article) : progress.skills.article !== null) fail()
-    for (const skill of [progress.skills.meaning, progress.skills.writing, ...(noun ? [progress.skills.article!] : [])]) {
-      if (!isRecord(skill) || !integer(skill.correct) || !integer(skill.wrong) || !integer(skill.assisted)
-        || !integer(skill.unassistedCorrect) || skill.assisted > skill.correct + skill.wrong
-        || skill.unassistedCorrect > skill.correct || !(skill.lastAttemptAt === null || validDate(skill.lastAttemptAt))) fail()
-    }
+  const checkVersionTwo = (session: Session | null) => {
+    try { validateVersionTwoState({ ...state, schemaVersion: 2, session }, bundle) } catch { fail() }
   }
-  const attemptIds = new Set<string>()
-  for (const attempt of state.attempts) {
-    if (!isRecord(attempt) || typeof attempt.attemptId !== 'string' || !attempt.attemptId
-      || attemptIds.has(attempt.attemptId) || !known.has(attempt.entryId)
-      || !state.progress[attempt.entryId] || typeof attempt.sessionId !== 'string' || !attempt.sessionId
-      || typeof attempt.taskId !== 'string' || !attempt.taskId || typeof attempt.answer !== 'string'
-      || !['choose-meaning', 'cloze', 'match', 'write-word', 'choose-article'].includes(attempt.exercise)
-      || typeof attempt.correct !== 'boolean' || typeof attempt.independent !== 'boolean'
-      || typeof attempt.assisted !== 'boolean'
-      || !['answer-normalization-v1', NORMALIZATION_VERSION].includes(attempt.normalizationVersion)
-      || attempt.independent !== ((attempt.exercise === 'cloze' || attempt.exercise === 'write-word') && !attempt.assisted)
-      || attempt.exercise === 'choose-article' && state.progress[attempt.entryId].skills.article === null
-      || !validDate(attempt.at) || !validStudyDate(attempt.studyDate)) fail()
-    attemptIds.add(attempt.attemptId)
-  }
-  // Per-entry counters and event history must agree, not merely have plausible shapes.
-  for (const progress of Object.values(state.progress)) {
-    const attempts = state.attempts.filter(attempt => attempt.entryId === progress.entryId)
-    if (progress.correctCount !== attempts.filter(attempt => attempt.correct).length
-      || progress.wrongCount !== attempts.filter(attempt => !attempt.correct).length) fail()
-    for (const [name, skill] of Object.entries(progress.skills)) {
-      if (!skill) continue
-      const relevant = attempts.filter(attempt => name === 'meaning' ? ['choose-meaning', 'match'].includes(attempt.exercise)
-        : name === 'writing' ? ['cloze', 'write-word'].includes(attempt.exercise) : attempt.exercise === 'choose-article')
-      if (skill.correct !== relevant.filter(attempt => attempt.correct).length
-        || skill.wrong !== relevant.filter(attempt => !attempt.correct).length
-        || skill.assisted !== relevant.filter(attempt => attempt.assisted).length
-        || skill.unassistedCorrect !== relevant.filter(attempt => attempt.correct && !attempt.assisted).length
-        || skill.lastAttemptAt !== (relevant.at(-1)?.at ?? null)) fail()
-    }
-  }
-  const assistanceIds = new Set<string>()
-  for (const event of state.assistanceEvents) {
-    if (!isRecord(event) || typeof event.eventId !== 'string' || !event.eventId || assistanceIds.has(event.eventId)
-      || typeof event.sessionId !== 'string' || !event.sessionId || typeof event.taskId !== 'string' || !event.taskId
-      || !known.has(event.entryId) || !state.progress[event.entryId] || !['hint', 'answer'].includes(event.kind)
-      || !validDate(event.at) || !validStudyDate(event.studyDate)) fail()
-    assistanceIds.add(event.eventId)
-  }
-  for (const [date, elapsed] of Object.entries(state.dailyActivity)) {
-    if (!validStudyDate(date) || !Number.isFinite(elapsed) || elapsed < 0) fail()
-  }
-  if (state.session !== null) {
-    const session = state.session
-    if (!isRecord(session) || typeof session.sessionId !== 'string' || !session.sessionId
-      || session.contentVersion !== bundle.contentVersion || !['active', 'paused', 'ended'].includes(session.state)
-      || !validDate(session.startedAt) || !(session.endedAt === null || validDate(session.endedAt))
-      || !Array.isArray(session.queue) || !integer(session.cursor, 0, session.queue.length)
-      || !uniqueStrings(session.introducedEntryIds) || session.introducedEntryIds.length > 5
-      || session.introducedEntryIds.some(id => !state.progress[id]) || typeof session.draft !== 'string'
-      || !Number.isFinite(session.activeMs) || session.activeMs < 0 || typeof session.targetAcknowledged !== 'boolean'
-      || (session.targetAcknowledged ? !validStudyDate(session.targetAcknowledgedDate) : session.targetAcknowledgedDate !== null)
-      || session.targetAcknowledged && (state.dailyActivity[session.targetAcknowledgedDate!] ?? 0) < state.settings.targetActiveMs
-      || session.activeMs > Object.values(state.dailyActivity).reduce((sum, elapsed) => sum + elapsed, 0) + 0.01
-      || session.state !== 'ended' && session.cursor === session.queue.length) fail()
-    const taskIds = new Set<string>()
+  checkVersionTwo(state.session)
+  const sessionIds = new Set<string>()
+  const entryLesson = new Map(bundle.entries.map(entry => [entry.entryId, entry.introducedInLessonId]))
+  function checkSession(session: Session, lessonId: string, archived: boolean): void {
+    if (!isRecord(session) || session.lessonId !== lessonId || !lessonIds.has(lessonId)
+      || sessionIds.has(session.sessionId) || archived && session.state === 'active') fail()
+    sessionIds.add(session.sessionId)
+    checkVersionTwo(session)
+    const inLesson = (id: string) => entryLesson.get(id) === lessonId
+    if (session.introducedEntryIds.some(id => !inLesson(id))) fail()
     for (const task of session.queue) {
-      if (!isRecord(task) || typeof task.taskId !== 'string' || !task.taskId || taskIds.has(task.taskId)
-        || task.assisted !== undefined && typeof task.assisted !== 'boolean') fail()
-      taskIds.add(task.taskId)
-      if (task.kind === 'match') {
-        if (!uniqueStrings(task.entryIds) || task.entryIds.length !== 4 || task.entryIds.some(id => !known.has(id))
-          || !uniqueStrings(task.leftOrder) || !uniqueStrings(task.rightOrder)
-          || task.leftOrder.length !== 4 || task.rightOrder.length !== 4
-          || task.leftOrder.some(id => !task.entryIds.includes(id)) || task.rightOrder.some(id => !task.entryIds.includes(id))
-          || !uniqueStrings(task.matchedEntryIds) || task.matchedEntryIds.some(id => !task.entryIds.includes(id))) fail()
-      } else {
-        if (!known.has(task.entryId)) fail()
-        if (task.kind === 'flashcard') {
-          if (typeof task.revealed !== 'boolean') fail()
-        } else if (task.kind === 'choose-meaning') {
-          if (!uniqueStrings(task.optionIds) || task.optionIds.length !== 4
-            || !task.optionIds.includes(task.entryId) || task.optionIds.some(id => !known.has(id))) fail()
-        } else if (task.kind === 'cloze' || task.kind === 'write-word') {
-          if (!['initial', 'scheduled', 'recovery'].includes(task.cycleKind)) fail()
-        } else if (task.kind === 'choose-article') {
-          if (bundle.entries.find(entry => entry.entryId === task.entryId)!.partOfSpeech !== 'noun'
-            || !uniqueStrings(task.options) || task.options.length !== 3
-            || task.options.some(option => !['der', 'die', 'das'].includes(option))) fail()
-        } else fail()
-      }
+      const ids = task.kind === 'match' ? task.entryIds
+        : task.kind === 'choose-meaning' ? [task.entryId, ...task.optionIds] : [task.entryId]
+      if (ids.some(id => !inLesson(id))) fail()
     }
-    const feedback = session.feedback
-    if (!(feedback === null || isRecord(feedback) && typeof feedback.attemptId === 'string'
-      && attemptIds.has(feedback.attemptId) && known.has(feedback.entryId)
-      && typeof feedback.correct === 'boolean' && typeof feedback.expectedAnswer === 'string'
-      && typeof feedback.assisted === 'boolean'
-      && typeof feedback.explanationFa === 'string')) fail()
-    if (feedback) {
-      const attempt = state.attempts.find(item => item.attemptId === feedback.attemptId)!
-      if (attempt.taskId !== session.queue[session.cursor]?.taskId || attempt.sessionId !== session.sessionId
-        || attempt.entryId !== feedback.entryId || attempt.correct !== feedback.correct || attempt.assisted !== feedback.assisted) fail()
-    }
-    if (session.state !== 'ended') {
-      const activeTask = session.queue[session.cursor]
-      if (activeTask.kind === 'match') {
-        if (activeTask.entryIds.some(id => !state.progress[id])) fail()
-        const matched = state.attempts.filter(attempt => attempt.taskId === activeTask.taskId
-          && attempt.sessionId === session.sessionId && attempt.correct).map(attempt => attempt.entryId)
-        if (matched.length !== activeTask.matchedEntryIds.length
-          || activeTask.matchedEntryIds.some(id => !matched.includes(id))) fail()
-      } else {
-        if (!state.progress[activeTask.entryId]) fail()
-        if (activeTask.kind !== 'flashcard' && !feedback && state.attempts.some(attempt =>
-          attempt.taskId === activeTask.taskId && attempt.sessionId === session.sessionId)) fail()
-      }
-    }
+    if (state.attempts.some(attempt => attempt.sessionId === session.sessionId && !inLesson(attempt.entryId))) fail()
   }
+  if (state.session) checkSession(state.session, state.activeLessonId, false)
+  for (const [lessonId, session] of Object.entries(state.savedSessions)) {
+    if (lessonId === state.activeLessonId || !lessonIds.has(lessonId)) fail()
+    checkSession(session, lessonId, true)
+  }
+}
+
+function lessonOneBundle(bundle: ContentBundle): ContentBundle {
+  const lesson = (bundle.lessons ?? [bundle.lesson]).find(item => item.lessonId === 'a1-lesson-01')
+  if (!lesson) throw new StorageError('نسخهٔ قدیمی به درس اول نیاز دارد؛ اطلاعات قبلی حفظ شده‌اند.')
+  const entries = bundle.entries.filter(entry => entry.introducedInLessonId === lesson.lessonId)
+  return { ...bundle, lessons: undefined, lesson, entries,
+    sourceRefs: bundle.sourceRefs.filter(ref => ref.lessonId === lesson.lessonId), contentVersion: 'lesson-01-excerpt-v2' }
 }
 
 export function migrateState(value: unknown, bundle: ContentBundle): AppState {
   if (isRecord(value) && value.schemaVersion === SCHEMA_VERSION) {
-    validateState(value, bundle)
-    return structuredClone(value)
+    if (value.contentVersion === bundle.contentVersion) {
+      validateState(value, bundle)
+      return structuredClone(value)
+    }
+    if (value.contentVersion !== 'lesson-01-excerpt-v2' || bundle.contentVersion !== 'course-a1-lessons-01-04-v1') {
+      throw new StorageError('نسخهٔ محتوا شناخته‌شده نیست؛ اطلاعات قبلی حفظ شده‌اند.')
+    }
+    validateState(value, lessonOneBundle(bundle))
+    const next = structuredClone(value)
+    next.contentVersion = bundle.contentVersion
+    next.revision++
+    if (next.session) next.session.contentVersion = bundle.contentVersion
+    for (const session of Object.values(next.savedSessions)) session.contentVersion = bundle.contentVersion
+    validateState(next, bundle)
+    return next
   }
+  if (isRecord(value) && value.schemaVersion === 2) {
+    const originalBundle = lessonOneBundle(bundle)
+    try { validateVersionTwoState(value, originalBundle) } catch {
+      throw new StorageError('اطلاعات نسخهٔ قبلی ناقص یا ناسازگار است؛ اطلاعات قبلی حفظ شده‌اند.')
+    }
+    const old = structuredClone(value)
+    const next: AppState = {
+      ...old, schemaVersion: SCHEMA_VERSION, contentVersion: bundle.contentVersion, revision: old.revision + 1,
+      activeLessonId: originalBundle.lesson.lessonId, savedSessions: {},
+      session: old.session ? { ...old.session, lessonId: originalBundle.lesson.lessonId, contentVersion: bundle.contentVersion } : null,
+    }
+    validateState(next, bundle)
+    return next
+  }
+  const originalBundle = lessonOneBundle(bundle)
   const legacyBundle: LegacyBundle = {
-    ...bundle, contentVersion: 'lesson-01-excerpt-v1',
-    entries: bundle.entries.map(entry => ({ ...entry, enabledExercises: entry.enabledExercises.filter(kind =>
+    ...originalBundle, contentVersion: 'lesson-01-excerpt-v1',
+    entries: originalBundle.entries.map(entry => ({ ...entry, enabledExercises: entry.enabledExercises.filter(kind =>
       kind === 'flashcard' || kind === 'choose-meaning' || kind === 'cloze' || kind === 'match') })),
   }
   // The prior reader is deliberately strict; no unknown version/content is reset.
@@ -199,9 +118,10 @@ export function migrateState(value: unknown, bundle: ContentBundle): AppState {
   const next: AppState = {
     ...legacy, schemaVersion: SCHEMA_VERSION, learningPolicyVersion: POLICY_VERSION,
     contentVersion: bundle.contentVersion, revision: legacy.revision + 1,
+    activeLessonId: originalBundle.lesson.lessonId, savedSessions: {},
     settings: { ...legacy.settings, targetActiveMs: TARGET_ACTIVE_MS },
     attempts,
-    progress: {}, session: legacy.session ? { ...legacy.session, contentVersion: bundle.contentVersion,
+    progress: {}, session: legacy.session ? { ...legacy.session, contentVersion: bundle.contentVersion, lessonId: originalBundle.lesson.lessonId,
       feedback: legacy.session.feedback ? { ...legacy.session.feedback,
         assisted: attempts.find(attempt => attempt.attemptId === legacy.session!.feedback!.attemptId)!.assisted } : null,
       activeMs: 0, targetAcknowledged: false, targetAcknowledgedDate: null } : null,
@@ -254,12 +174,12 @@ export async function loadState(bundle: ContentBundle): Promise<AppState | null>
       try {
         if (request.result === undefined) return
         restored = migrateState(request.result, bundle)
-        if (request.result.schemaVersion === 1) store.put(restored, STATE_KEY)
+        if (restored.revision !== request.result.revision) store.put(restored, STATE_KEY)
       } catch (error) { failure = error; transaction.abort() }
     }
     transaction.oncomplete = () => {
       database.close()
-      // A normal v2 load is read-only in effect and does not change its revision.
+      // A current-version load is read-only in effect and does not change its revision.
       if (restored?.session?.state === 'active') restored.session.state = 'paused'
       resolve(restored)
     }

@@ -1,11 +1,13 @@
-/* global indexedDB, document, IDBObjectStore, navigator */
+/* global indexedDB, document, IDBObjectStore, navigator, sessionStorage, structuredClone, requestAnimationFrame */
 import assert from 'node:assert/strict'
 import { createServer } from 'node:http'
 import { readFile, mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { chromium } from 'playwright'
 import ts from 'typescript'
-import { lessonOneBundle as bundle } from '../src/content/lesson-one.ts'
+import { courseBundle as bundle } from '../src/content/catalog.ts'
+import { lessonOneBundle } from '../src/content/lesson-one.ts'
+import { validateVersionTwoState } from '../src/storage/legacy-v2.ts'
 import { createInitialState, transition } from '../src/learning/engine.ts'
 
 const results = []
@@ -70,6 +72,16 @@ async function checkpoint(name, action) {
   results.push({ name, passed: true })
   console.log(`PASS ${name}`)
 }
+async function saveScreenshot(page, name) {
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+  try {
+    await page.screenshot({ path: path.join(directory, name), fullPage: true })
+  } catch (error) {
+    if (!error.message.includes('Unable to capture screenshot')) throw error
+    diagnostics.push({ kind: 'screenshot-viewport-fallback', name })
+    await page.screenshot({ path: path.join(directory, name), fullPage: false })
+  }
+}
 async function readState(page) {
   return page.evaluate(() => new Promise((resolve, reject) => {
     const open = indexedDB.open('wortzeit-progress', 1)
@@ -106,13 +118,14 @@ async function continueFeedback(page, state) {
   const task = state.session.queue[state.session.cursor]
   return clickAndSave(page, page.getByRole('button', { name: task.kind === 'match' && task.matchedEntryIds.length < 4 ? 'ادامهٔ بازی' : 'ادامه', exact: true }))
 }
-async function playToEnd(page) {
+async function playToEnd(page, stopAtWritten = false) {
   for (let step = 0; step < 150; step++) {
     const state = await readState(page), session = state.session
     if (session.state === 'ended') return state
     const task = session.queue[session.cursor]
     exercisedKinds.add(task.kind)
     if (session.feedback) { await continueFeedback(page, state); continue }
+    if (stopAtWritten && (task.kind === 'cloze' || task.kind === 'write-word')) return state
     const entry = task.kind === 'match' ? null : bundle.entries.find(entry => entry.entryId === task.entryId)
     if (task.kind === 'flashcard') {
       if (!task.revealed) await clickAndSave(page, page.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
@@ -135,6 +148,32 @@ async function playToEnd(page) {
   throw new Error('Session did not terminate')
 }
 
+function oldVersionTwoDraft() {
+  const now = new Date().toISOString()
+  let state = transition(createInitialState(lessonOneBundle, 'Europe/Berlin'), { type: 'start-session', sessionId: 'existing-v2-session', seed: 7 }, lessonOneBundle, now)
+  for (let index = 0; index < 30; index++) {
+    const task = state.session.queue[state.session.cursor]
+    if (state.session.feedback) state = transition(state, { type: 'next', taskId: task.taskId }, lessonOneBundle, now)
+    else if (task.kind === 'flashcard') {
+      state = transition(state, { type: 'reveal-card', taskId: task.taskId }, lessonOneBundle, now)
+      state = transition(state, { type: 'next', taskId: task.taskId }, lessonOneBundle, now)
+    } else if (task.kind === 'choose-meaning') state = transition(state, { type: 'answer', taskId: task.taskId, attemptId: `existing-${index}`, answer: task.entryId }, lessonOneBundle, now)
+    else {
+      assert.ok(task.kind === 'cloze' || task.kind === 'write-word')
+      state = transition(state, { type: 'draft', taskId: task.taskId, value: 'mein alter Entwurf' }, lessonOneBundle, now)
+      state = transition(state, { type: 'pause' }, lessonOneBundle, now)
+      const old = structuredClone(state)
+      old.schemaVersion = 2
+      delete old.activeLessonId
+      delete old.savedSessions
+      delete old.session.lessonId
+      validateVersionTwoState(old, lessonOneBundle)
+      return old
+    }
+  }
+  throw new Error('Could not construct prior saved session')
+}
+
 try {
   await readFile('dist/index.html')
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve))
@@ -149,7 +188,7 @@ try {
     for (const width of [320, 360, 1280]) {
       await page.setViewportSize({ width, height: 850 })
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), true)
-      await page.screenshot({ path: path.join(directory, `home-${width}.png`), fullPage: true })
+      await saveScreenshot(page, `home-${width}.png`)
     }
     await page.setViewportSize({ width: 360, height: 800 })
   })
@@ -178,7 +217,7 @@ try {
     assert.equal(ended.attempts.filter(attempt => attempt.exercise === 'match' && attempt.correct).length, 4)
     assert.equal(new Set(ended.attempts.map(attempt => attempt.attemptId)).size, ended.attempts.length)
     await page.getByRole('heading', { name: /این بود نوبت/ }).waitFor()
-    await page.screenshot({ path: path.join(directory, 'summary-360.png'), fullPage: true })
+    await saveScreenshot(page, 'summary-360.png')
   })
   await checkpoint('offline close/reopen and resume preserve progress and draft', async () => {
     const before = await readState(page)
@@ -189,21 +228,19 @@ try {
     await page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).waitFor()
     assert.equal((await readState(page)).attempts.length, before.attempts.length)
     await clickAndSave(page, page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }))
-    await clickAndSave(page, page.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
-    await clickAndSave(page, page.getByRole('button', { name: 'برویم سراغ تمرین', exact: false }))
-    const state = await readState(page), task = state.session.queue[state.session.cursor]
-    await clickAndSave(page, page.locator('.meaning-option').nth(task.optionIds.indexOf(task.entryId)))
-    await continueFeedback(page, await readState(page))
+    const written = await playToEnd(page, true)
+    assert.equal(written.session.state, 'active')
     await page.getByLabel('پاسخ تو', { exact: true }).fill('متنِ ذخیره‌شده')
     await waitState(page, state => state.session.draft === 'متنِ ذخیره‌شده')
     await page.reload()
     await page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).click()
     await page.getByLabel('پاسخ تو', { exact: true }).waitFor()
     assert.equal(await page.getByLabel('پاسخ تو', { exact: true }).inputValue(), 'متنِ ذخیره‌شده')
-    await page.screenshot({ path: path.join(directory, 'offline-cloze-360.png'), fullPage: true })
+    await saveScreenshot(page, 'offline-cloze-360.png')
   })
   await context.setOffline(false)
   await checkpoint('second tab cannot write; lock is released after closing first tab', async () => {
+    await clickAndSave(page, page.getByRole('button', { name: 'توقف و بازگشت', exact: true }))
     const stored = await readState(page)
     const other = await context.newPage()
     await other.goto(origin)
@@ -230,6 +267,7 @@ try {
     page = other
   })
   await checkpoint('queued retry cannot write while owner is active and cancelled requests are removed', async () => {
+    await clickAndSave(page, page.getByRole('button', { name: 'توقف و بازگشت', exact: true }))
     const stored = await readState(page)
     const cancelled = await context.newPage()
     await cancelled.goto(origin)
@@ -261,9 +299,108 @@ try {
     assert.ok(exercisedKinds.has('write-word'))
     assert.ok(exercisedKinds.has('choose-article'))
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), true)
-    await page.screenshot({ path: path.join(directory, 'phase-two-summary-360.png'), fullPage: true })
+    await saveScreenshot(page, 'phase-two-summary-360.png')
   })
   await context.close()
+  await checkpoint('existing V2 progress migrates; lesson sections isolate 84 words and preserve each draft offline', async () => {
+    const isolated = await browser.newContext({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true, locale: 'fa-IR' })
+    observeContext(isolated)
+    const lessonPage = await isolated.newPage()
+    await lessonPage.goto(`${origin}/__test/setup`)
+    const old = oldVersionTwoDraft()
+    await lessonPage.evaluate(old => new Promise((resolve, reject) => {
+      const open = indexedDB.open('wortzeit-progress', 1)
+      open.onupgradeneeded = () => open.result.createObjectStore('user-state')
+      open.onerror = () => reject(open.error)
+      open.onsuccess = () => {
+        const db = open.result, tx = db.transaction('user-state', 'readwrite')
+        tx.objectStore('user-state').put(old, 'current')
+        tx.oncomplete = () => { db.close(); resolve() }
+        tx.onerror = () => reject(tx.error)
+      }
+    }), old)
+    await lessonPage.goto(origin)
+    await lessonPage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).waitFor()
+    const migrated = await readState(lessonPage)
+    assert.equal(migrated.schemaVersion, 3)
+    assert.deepEqual(migrated.progress, old.progress)
+    assert.deepEqual(migrated.attempts, old.attempts)
+    assert.equal(migrated.session.draft, old.session.draft)
+    await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
+    assert.equal(await lessonPage.locator('.lesson-card').count(), 2)
+    for (const width of [320, 360, 430, 1280]) {
+      await lessonPage.setViewportSize({ width, height: 850 })
+      assert.equal(await lessonPage.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), true)
+      await saveScreenshot(lessonPage, `lessons-${width}.png`)
+    }
+    await lessonPage.setViewportSize({ width: 360, height: 800 })
+    await clickAndSave(lessonPage, lessonPage.locator('[data-lesson-id="lesson-04"] .lesson-open-button'))
+    let selected = await readState(lessonPage)
+    assert.equal(selected.activeLessonId, 'lesson-04')
+    assert.equal(selected.savedSessions[lessonOneBundle.lesson.lessonId].draft, old.session.draft)
+    assert.ok(lessonPage.url().includes('lesson=lesson-04'))
+    await lessonPage.getByRole('button', { name: 'واژه‌ها', exact: true }).click()
+    assert.equal(await lessonPage.locator('.word-item').count(), 84)
+    await saveScreenshot(lessonPage, 'lesson-four-words-360.png')
+    await lessonPage.getByRole('button', { name: 'خانه', exact: true }).click()
+    await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }))
+    await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
+    await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'برویم سراغ تمرین', exact: false }))
+    selected = await readState(lessonPage)
+    const task = selected.session.queue[selected.session.cursor]
+    assert.ok(task.entryId.startsWith('a1-l04-'))
+    await clickAndSave(lessonPage, lessonPage.locator('.meaning-option').nth(task.optionIds.indexOf(task.entryId)))
+    await continueFeedback(lessonPage, await readState(lessonPage))
+    await lessonPage.getByLabel('پاسخ تو', { exact: true }).fill('Entwurf aus Lektion vier')
+    await waitState(lessonPage, state => state.session.draft === 'Entwurf aus Lektion vier')
+    await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'توقف و بازگشت', exact: true }))
+    await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
+    await clickAndSave(lessonPage, lessonPage.locator(`[data-lesson-id="${lessonOneBundle.lesson.lessonId}"] .lesson-open-button`))
+    selected = await readState(lessonPage)
+    assert.equal(selected.session.draft, old.session.draft)
+    assert.deepEqual(selected.progress[old.session.queue[old.session.cursor].entryId], old.progress[old.session.queue[old.session.cursor].entryId])
+    await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
+    await clickAndSave(lessonPage, lessonPage.locator('[data-lesson-id="lesson-04"] .lesson-open-button'))
+    assert.equal((await readState(lessonPage)).session.draft, 'Entwurf aus Lektion vier')
+    await lessonPage.locator('.offline-pill').filter({ hasText: 'آمادهٔ آفلاین' }).waitFor()
+    await isolated.setOffline(true)
+    await lessonPage.reload()
+    await lessonPage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).click()
+    await lessonPage.getByLabel('پاسخ تو', { exact: true }).waitFor()
+    assert.equal(await lessonPage.getByLabel('پاسخ تو', { exact: true }).inputValue(), 'Entwurf aus Lektion vier')
+    await saveScreenshot(lessonPage, 'lesson-four-offline-360.png')
+    const ended = await playToEnd(lessonPage)
+    assert.equal(ended.session.introducedEntryIds.length, 5)
+    assert.ok(ended.session.introducedEntryIds.every(id => id.startsWith('a1-l04-')))
+    await isolated.close()
+  })
+  await checkpoint('direct lesson-four link recovers after first write abort and never reuses an unlocked writer', async () => {
+    const isolated = await browser.newContext()
+    observeContext(isolated)
+    await isolated.addInitScript(() => {
+      const original = IDBObjectStore.prototype.put
+      IDBObjectStore.prototype.put = function (...args) {
+        const result = original.apply(this, args)
+        if (sessionStorage.getItem('first-selection-aborted') !== 'yes') {
+          sessionStorage.setItem('first-selection-aborted', 'yes')
+          this.transaction.abort()
+        }
+        return result
+      }
+    })
+    const failed = await isolated.newPage()
+    await failed.goto(`${origin}/?lesson=lesson-04`)
+    await failed.getByRole('button', { name: 'تلاش دوباره', exact: true }).waitFor()
+    await failed.waitForFunction(async () => !(await navigator.locks.query()).held.some(lock => lock.name === 'wortzeit-single-writer'))
+    assert.equal(await readState(failed), null)
+    await failed.getByRole('button', { name: 'تلاش دوباره', exact: true }).click()
+    await failed.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).waitFor()
+    assert.equal((await readState(failed)).activeLessonId, 'lesson-04')
+    const second = await isolated.newPage()
+    await second.goto(origin)
+    await second.getByRole('alert').filter({ hasText: 'تب دیگری' }).waitFor()
+    await isolated.close()
+  })
   await checkpoint('real IndexedDB atomic abort, optimistic concurrency and load/recovery', async () => {
     const isolated = await browser.newContext()
     observeContext(isolated)
@@ -273,17 +410,17 @@ try {
     const first = transition(initial, { type: 'start-session', sessionId: 'storage-test', seed: 7 }, bundle, new Date().toISOString())
     const verdict = await storagePage.evaluate(async ({ first }) => {
       const { saveState, loadState } = await import('/__test/src/storage/index.ts')
-      const { lessonOneBundle } = await import('/__test/src/content/lesson-one.ts')
+      const { courseBundle } = await import('/__test/src/content/catalog.ts')
       await saveState(first, 0)
-      const loaded = await loadState(lessonOneBundle)
+      const loaded = await loadState(courseBundle)
       const second = { ...first, revision: 2 }
       const writes = await Promise.allSettled([saveState(second, 1), saveState(second, 1)])
-      const before = await loadState(lessonOneBundle)
+      const before = await loadState(courseBundle)
       const original = IDBObjectStore.prototype.put
       IDBObjectStore.prototype.put = function (...args) { const result = original.apply(this, args); this.transaction.abort(); return result }
       let aborted = false
       try { await saveState({ ...second, revision: 3 }, 2) } catch { aborted = true } finally { IDBObjectStore.prototype.put = original }
-      const after = await loadState(lessonOneBundle)
+      const after = await loadState(courseBundle)
       return { paused: loaded.session.state, writes: writes.map(item => item.status), aborted, before: before.revision, after: after.revision }
     }, { first })
     assert.equal(verdict.paused, 'paused')

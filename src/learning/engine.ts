@@ -1,9 +1,21 @@
 import { NORMALIZATION_VERSION, POLICY_VERSION, SCHEMA_VERSION, TARGET_ACTIVE_MS } from '../contracts/index.ts'
 import type {
   AppState, ContentBundle, Entry, EntryProgress, EntryStatus, HomeStats,
-  LearningCommand, Session, SessionSummary, SessionTask,
+  LearningCommand, LessonDefinition, Session, SessionSummary, SessionTask,
 } from '../contracts/index.ts'
 import { applySchedule, createProgress, isDue, isStabilized } from './schedule.ts'
+
+export function getLessons(bundle: ContentBundle): LessonDefinition[] {
+  return bundle.lessons ?? [bundle.lesson]
+}
+
+export function getActiveLesson(state: AppState, bundle: ContentBundle): LessonDefinition {
+  return getLessons(bundle).find(lesson => lesson.lessonId === state.activeLessonId) ?? bundle.lesson
+}
+
+function activeEntries(state: AppState, bundle: ContentBundle): Entry[] {
+  return bundle.entries.filter(entry => entry.introducedInLessonId === state.activeLessonId)
+}
 
 export function createInitialState(bundle: ContentBundle, studyTimeZone: string): AppState {
   // Validate once, rather than silently changing an invalid time zone later.
@@ -13,6 +25,7 @@ export function createInitialState(bundle: ContentBundle, studyTimeZone: string)
     contentVersion: bundle.contentVersion, revision: 0,
     settings: { studyTimeZone, maxNewPerSession: 5, targetActiveMs: TARGET_ACTIVE_MS },
     progress: {}, attempts: [], session: null, assistanceEvents: [], dailyActivity: {}, activityEventIds: [],
+    activeLessonId: bundle.lesson.lessonId, savedSessions: {},
   }
 }
 
@@ -70,12 +83,13 @@ function makeRecall(progress: EntryProgress, session: Session, suffix: string): 
   }
 }
 
-function orderedRecall(state: AppState, now: string): EntryProgress[] {
+function orderedRecall(state: AppState, now: string, bundle: ContentBundle): EntryProgress[] {
   const sessionId = state.session!.sessionId
   const date = studyDate(now, state.settings.studyTimeZone)
   const completedIndependent = new Set(state.attempts.filter(attempt => attempt.sessionId === sessionId
     && attempt.studyDate === date && attempt.independent && attempt.correct).map(attempt => attempt.entryId))
-  return Object.values(state.progress).filter(item => needsRecall(item, sessionId, now)
+  const eligible = new Set(activeEntries(state, bundle).map(entry => entry.entryId))
+  return Object.values(state.progress).filter(item => eligible.has(item.entryId) && needsRecall(item, sessionId, now)
     // A due success on the same study date intentionally keeps its old due time.
     // It is complete for this study date; a later day/error can still require recall.
     && (item.pendingError !== null || !completedIndependent.has(item.entryId)))
@@ -109,7 +123,8 @@ function queueNewEntry(session: Session, entry: Entry, seed: number): void {
 function queueAdaptive(state: AppState, bundle: ContentBundle, seed: number): void {
   const session = state.session!
   const queuedWriting = new Set(session.queue.filter(task => task.kind === 'cloze' || task.kind === 'write-word').map(task => task.entryId))
-  const candidates = Object.values(state.progress).sort((a, b) => {
+  const eligible = new Set(activeEntries(state, bundle).map(entry => entry.entryId))
+  const candidates = Object.values(state.progress).filter(item => eligible.has(item.entryId)).sort((a, b) => {
     const weakness = (item: EntryProgress) => item.skills.writing.wrong - item.skills.writing.unassistedCorrect
       + (item.skills.article ? item.skills.article.wrong - item.skills.article.unassistedCorrect : 0)
     return weakness(b) - weakness(a) || a.entryId.localeCompare(b.entryId)
@@ -165,7 +180,7 @@ function prepareBoundary(state: AppState, now: string, bundle: ContentBundle): v
   const beforeNewCard = !task || task.kind === 'flashcard' && !state.progress[task.entryId]
   const remaining = session.queue.slice(session.cursor)
   const alreadyPlanned = new Set(remaining.flatMap(item => item.kind === 'match' ? [] : [item.entryId]))
-  const recalls = orderedRecall(state, now)
+  const recalls = orderedRecall(state, now, bundle)
     .filter(item => !alreadyPlanned.has(item.entryId) && (beforeNewCard || item.pendingError !== null))
     .map((item, index) => makeRecall(item, session, `boundary-${session.queue.length}-${index}`))
   session.queue.splice(session.cursor, 0, ...recalls)
@@ -181,23 +196,23 @@ function start(state: AppState, command: Extract<LearningCommand, { type: 'start
       && task.kind === 'flashcard' && !state.progress[task.entryId])
     const at = insertion < 0 ? session.queue.length : insertion
     const queued = new Set(session.queue.slice(session.cursor).flatMap(task => task.kind === 'match' ? [] : [task.entryId]))
-    const recalls = orderedRecall(state, now).filter(progress => !queued.has(progress.entryId))
+    const recalls = orderedRecall(state, now, bundle).filter(progress => !queued.has(progress.entryId))
     session.queue.splice(at, 0, ...recalls.map((progress, index) => makeRecall(progress, session, `resume-${session.queue.length}-${index}`)))
     return
   }
   const session: Session = {
-    sessionId: command.sessionId, contentVersion: bundle.contentVersion, state: 'active',
+    sessionId: command.sessionId, contentVersion: bundle.contentVersion, state: 'active', lessonId: state.activeLessonId,
     startedAt: now, endedAt: null, queue: [], cursor: 0,
     introducedEntryIds: [], draft: '', feedback: null, activeMs: 0, targetAcknowledged: false, targetAcknowledgedDate: null,
   }
   state.session = session
-  session.queue.push(...orderedRecall(state, now).map((progress, index) => makeRecall(progress, session, `start-${index}`)))
+  session.queue.push(...orderedRecall(state, now, bundle).map((progress, index) => makeRecall(progress, session, `start-${index}`)))
   queueAdaptive(state, bundle, command.seed)
-  const newEntries = bundle.entries.filter(entry => !state.progress[entry.entryId])
+  const newEntries = activeEntries(state, bundle).filter(entry => !state.progress[entry.entryId])
     .sort((a, b) => a.introductionOrder - b.introductionOrder).slice(0, state.settings.maxNewPerSession)
   for (const entry of newEntries) queueNewEntry(session, entry, command.seed)
   // This task appears only after their cards, never introduces an unseen word by itself.
-  const matchPool = [...newEntries.map(entry => entry.entryId), ...Object.keys(state.progress)]
+  const matchPool = [...newEntries.map(entry => entry.entryId), ...activeEntries(state, bundle).filter(entry => state.progress[entry.entryId]).map(entry => entry.entryId)]
   const matchIds = [...new Set(matchPool)].slice(0, 4)
   if (matchIds.length === 4 && session.queue.length > 0) {
     let rightOrder = shuffled(matchIds, command.seed ^ 0x5b1a)
@@ -351,8 +366,22 @@ export function transition(state: AppState, command: LearningCommand, bundle: Co
     next.session.targetAcknowledged = false
     next.session.targetAcknowledgedDate = null
   }
-  if (command.type === 'start-session') {
+  if (command.type === 'select-lesson') {
+    if (command.lessonId === state.activeLessonId || !getLessons(bundle).some(lesson => lesson.lessonId === command.lessonId)) return state
+    if (next.session) {
+      if (next.session.state === 'active') next.session.state = 'paused'
+      next.savedSessions[next.activeLessonId] = next.session
+    }
+    next.activeLessonId = command.lessonId
+    next.session = next.savedSessions[command.lessonId] ?? null
+    delete next.savedSessions[command.lessonId]
+    if (next.session?.state === 'active') next.session.state = 'paused'
+  } else if (command.type === 'start-session') {
     if (!command.sessionId || !Number.isFinite(command.seed)) return state
+    if ((!state.session || state.session.state === 'ended')
+      && (state.session?.sessionId === command.sessionId
+        || Object.values(state.savedSessions).some(session => session.sessionId === command.sessionId)
+        || state.attempts.some(attempt => attempt.sessionId === command.sessionId))) return state
     start(next, command, bundle, now)
   } else {
     const session = next.session
@@ -406,20 +435,24 @@ export function getEntryStatus(state: AppState, entryId: string, now: string): E
   return progress.pendingError || isDue(progress, now) ? 'due' : isStabilized(progress) ? 'stabilized' : 'learning'
 }
 
-function nearestDue(state: AppState): string | null {
-  return Object.values(state.progress).flatMap(progress => progress.nextDueAt ? [progress.nextDueAt] : [])
+function nearestDue(state: AppState, entryIds?: Set<string>): string | null {
+  return Object.values(state.progress).filter(progress => !entryIds || entryIds.has(progress.entryId)).flatMap(progress => progress.nextDueAt ? [progress.nextDueAt] : [])
     .sort()[0] ?? null
 }
 
 export function getHomeStats(state: AppState, bundle: ContentBundle, now: string): HomeStats {
+  const entries = activeEntries(state, bundle)
+  const ids = new Set(entries.map(entry => entry.entryId))
+  const progress = Object.values(state.progress).filter(item => ids.has(item.entryId))
+  const attempts = state.attempts.filter(attempt => ids.has(attempt.entryId))
   return {
-    introduced: bundle.entries.filter(entry => state.progress[entry.entryId]).length,
-    due: Object.values(state.progress).filter(progress => getEntryStatus(state, progress.entryId, now) === 'due').length,
-    newCount: bundle.entries.filter(entry => !state.progress[entry.entryId]).length,
-    correct: state.attempts.filter(attempt => attempt.correct).length,
-    totalAnswers: state.attempts.length, nextDueAt: nearestDue(state),
+    introduced: entries.filter(entry => state.progress[entry.entryId]).length,
+    due: progress.filter(item => getEntryStatus(state, item.entryId, now) === 'due').length,
+    newCount: entries.filter(entry => !state.progress[entry.entryId]).length,
+    correct: attempts.filter(attempt => attempt.correct).length,
+    totalAnswers: attempts.length, nextDueAt: nearestDue(state, ids),
     todayActiveMs: state.dailyActivity[studyDate(now, state.settings.studyTimeZone)] ?? 0,
-    stabilized: Object.values(state.progress).filter(progress => getEntryStatus(state, progress.entryId, now) === 'stabilized').length,
+    stabilized: progress.filter(item => getEntryStatus(state, item.entryId, now) === 'stabilized').length,
   }
 }
 
@@ -433,7 +466,7 @@ export function summarizeSession(state: AppState, now: string): SessionSummary {
     needsReview: practicedIds.filter(id => getEntryStatus(state, id, now) === 'due').length,
     remaining: session ? new Set(session.queue.slice(session.cursor).flatMap(task => task.kind === 'match'
       ? task.entryIds.filter(id => !task.matchedEntryIds.includes(id)) : [task.entryId])).size : 0,
-    nextDueAt: nearestDue(state),
+    nextDueAt: nearestDue(state, new Set(practicedIds)),
     activeMs: session?.activeMs ?? 0,
     assisted: attempts.filter(attempt => attempt.assisted).length,
   }

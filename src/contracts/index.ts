@@ -1,5 +1,5 @@
-/** Phase two. legacy-v1.ts freezes the prior reader for a lossless migration. */
-export const SCHEMA_VERSION = 2 as const
+/** Multi-lesson state. Frozen v1/v2 contracts support lossless progress upgrades. */
+export const SCHEMA_VERSION = 3 as const
 export const POLICY_VERSION = 'learning-policy-v2' as const
 export const NORMALIZATION_VERSION = 'answer-normalization-v2' as const
 export const TARGET_ACTIVE_MS = 1_200_000 as const
@@ -40,18 +40,20 @@ export interface Entry {
   enabledExercises: ('flashcard' | 'choose-meaning' | 'cloze' | 'match' | 'write-word' | 'choose-article')[]
   reviewStatus: 'excerpt-checked'
 }
+export interface LessonDefinition {
+  lessonId: string
+  titleDe: string
+  titleFa: string
+  level: 'A1'
+  coverage: 'partial'
+  introducedEntryIds: string[]
+}
 export interface ContentBundle {
   contentVersion: string
   sources: Source[]
   sourceRefs: SourceRef[]
-  lesson: {
-    lessonId: string
-    titleDe: string
-    titleFa: string
-    level: 'A1'
-    coverage: 'partial'
-    introducedEntryIds: string[]
-  }
+  lesson: LessonDefinition
+  lessons?: LessonDefinition[]
   entries: Entry[]
   provenance: { file: string; reviewStatus: 'excerpt-checked'; noteFa: string }
 }
@@ -117,6 +119,7 @@ export interface AssistanceEvent {
   studyDate: string
 }
 export interface Session {
+  lessonId: string
   sessionId: string
   contentVersion: string
   state: 'active' | 'paused' | 'ended'
@@ -132,7 +135,7 @@ export interface Session {
   targetAcknowledgedDate: string | null
 }
 export interface AppState {
-  schemaVersion: 2
+  schemaVersion: 3
   learningPolicyVersion: typeof POLICY_VERSION
   contentVersion: string
   revision: number
@@ -140,12 +143,15 @@ export interface AppState {
   progress: Record<string, EntryProgress>
   attempts: Attempt[]
   session: Session | null
+  activeLessonId: string
+  savedSessions: Record<string, Session>
   assistanceEvents: AssistanceEvent[]
   dailyActivity: Record<string, number>
   activityEventIds: string[]
 }
 export type LearningCommand =
   | { type: 'start-session'; sessionId: string; seed: number }
+  | { type: 'select-lesson'; lessonId: string }
   | { type: 'reveal-card'; taskId: string }
   | { type: 'next'; taskId: string }
   | { type: 'answer'; taskId: string; attemptId: string; answer: string; entryId?: string }
@@ -178,6 +184,13 @@ export interface SessionSummary {
   assisted: number
 }
 export type OfflineStatus = 'checking' | 'ready' | 'unavailable'
+export interface LessonSummary {
+  lesson: LessonDefinition
+  total: number
+  introduced: number
+  due: number
+  stabilized: number
+}
 export interface WortzeitUIProps {
   bundle: ContentBundle
   state: AppState
@@ -191,4 +204,7 @@ export interface WortzeitUIProps {
   onCommand: (command: LearningCommand) => Promise<void>
   onRetry: () => void
   onSessionVisibilityChange: (visible: boolean) => void
+  activeLesson?: LessonDefinition
+  lessonSummaries?: LessonSummary[]
+  activeProvenance?: ContentBundle['provenance']
 }
