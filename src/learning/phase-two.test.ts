@@ -267,6 +267,7 @@ test('three independent scheduled dates stabilize only with clean noun article e
   }
   const now = state.progress[noun.entryId].nextDueAt!
   state = command(state, { type: 'start-session', sessionId: 'stability-help', seed: 3 }, now, bundle)
+  state = reach(state, task => (task.kind === 'cloze' || task.kind === 'write-word') && task.entryId === noun.entryId, now, bundle)
   state = command(state, { type: 'assist', taskId: currentTask(state)!.taskId, eventId: 'break-chain', kind: 'answer' }, now, bundle)
   assert.equal(getEntryStatus(state, noun.entryId, now), 'due')
   assert.equal(state.progress[noun.entryId].scheduledReviewDates.length, 0)

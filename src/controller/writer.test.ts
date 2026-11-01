@@ -91,3 +91,43 @@ test('closing a writer rejects new work and settles queued saves before ownershi
   assert.deepEqual(drafts, ['Guten', 'Guten Ta'])
   assert.equal(released, true)
 })
+
+
+test('background time and draft commits do not disable UI, foreground queued behind them does', async () => {
+  const initial = clozeState(), task = currentTask(initial)!
+  const busy: boolean[] = []
+  let release = () => {}
+  const gate = new Promise<void>(resolve => { release = resolve })
+  const writer = new CommandWriter(initial, { bundle, now: () => now,
+    save: async () => { await gate }, onSaved: () => {},
+    onBusy: value => busy.push(value), onError: () => {},
+  })
+  const clock = writer.submit({ type: 'activity', eventId: 'clock', sessionId: initial.session!.sessionId,
+    from: now, to: '2026-10-28T12:00:01.000Z', elapsedMs: 1000 })
+  const draft = writer.submit({ type: 'draft', taskId: task.taskId, value: 'Hallo' })
+  assert.deepEqual(busy, [])
+  const pause = writer.submit({ type: 'pause' })
+  assert.deepEqual(busy, [true])
+  release()
+  await Promise.all([clock, draft, pause])
+  assert.deepEqual(busy, [true, false])
+})
+
+test('commands queued after a failed background save keep retry available', async () => {
+  const initial = clozeState(), task = currentTask(initial)!
+  let fail = true
+  const busy: boolean[] = []
+  let saved = initial
+  const writer = new CommandWriter(initial, { bundle, now: () => now,
+    save: async state => { if (fail) throw new Error('disk'); saved = state },
+    onSaved: () => {}, onBusy: value => busy.push(value), onError: () => {},
+  })
+  await assert.rejects(writer.submit({ type: 'draft', taskId: task.taskId, value: 'Hallo' }), /disk/)
+  await assert.rejects(writer.submit({ type: 'pause' }), /disk/)
+  assert.deepEqual(busy, [])
+  fail = false
+  await writer.retry()
+  assert.deepEqual(busy, [true, false])
+  assert.equal(saved.session!.draft, 'Hallo')
+  assert.equal(saved.session!.state, 'paused')
+})

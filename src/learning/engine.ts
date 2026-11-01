@@ -102,7 +102,7 @@ function orderedRecall(state: AppState, now: string, bundle: ContentBundle): Ent
     })
 }
 
-function queueNewEntry(session: Session, entry: Entry, seed: number): void {
+function queueNewEntryPractice(session: Session, entry: Entry, seed: number): void {
   const prefix = `${session.sessionId}:new:${entry.entryId}`
   const writtenTasks: SessionTask[] = [
     { taskId: `${prefix}:cloze`, kind: 'cloze', entryId: entry.entryId, cycleKind: 'initial' },
@@ -110,7 +110,6 @@ function queueNewEntry(session: Session, entry: Entry, seed: number): void {
   ]
   if (((seed + entry.introductionOrder) & 1) !== 0) writtenTasks.reverse()
   session.queue.push(
-    { taskId: `${prefix}:card`, kind: 'flashcard', entryId: entry.entryId, revealed: false },
     { taskId: `${prefix}:meaning`, kind: 'choose-meaning', entryId: entry.entryId,
       optionIds: shuffled(entry.meaningOptionEntryIds, seed + entry.introductionOrder) },
     ...writtenTasks,
@@ -210,7 +209,12 @@ function start(state: AppState, command: Extract<LearningCommand, { type: 'start
   queueAdaptive(state, bundle, command.seed)
   const newEntries = activeEntries(state, bundle).filter(entry => !state.progress[entry.entryId])
     .sort((a, b) => a.introductionOrder - b.introductionOrder).slice(0, state.settings.maxNewPerSession)
-  for (const entry of newEntries) queueNewEntry(session, entry, command.seed)
+  // Learn the complete small batch before any of its exercises. Cards only
+  // become introductions when reached; their IDs and persisted shape stay stable.
+  for (const entry of newEntries) session.queue.push({
+    taskId: `${session.sessionId}:new:${entry.entryId}:card`, kind: 'flashcard', entryId: entry.entryId, revealed: false,
+  })
+  for (const entry of newEntries) queueNewEntryPractice(session, entry, command.seed)
   // This task appears only after their cards, never introduces an unseen word by itself.
   const matchPool = [...newEntries.map(entry => entry.entryId), ...activeEntries(state, bundle).filter(entry => state.progress[entry.entryId]).map(entry => entry.entryId)]
   const matchIds = [...new Set(matchPool)].slice(0, 4)

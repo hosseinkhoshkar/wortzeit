@@ -1,4 +1,4 @@
-/* global indexedDB, document, IDBObjectStore, navigator, sessionStorage, structuredClone, requestAnimationFrame */
+/* global indexedDB, document, IDBObjectStore, navigator, sessionStorage, structuredClone, requestAnimationFrame, MutationObserver, window */
 import assert from 'node:assert/strict'
 import { createServer } from 'node:http'
 import { readFile, mkdir, writeFile } from 'node:fs/promises'
@@ -116,9 +116,47 @@ async function clickAndSave(page, locator, resume = false) {
 }
 async function continueFeedback(page, state) {
   const task = state.session.queue[state.session.cursor]
-  return clickAndSave(page, page.getByRole('button', { name: task.kind === 'match' && task.matchedEntryIds.length < 4 ? 'ادامهٔ بازی' : 'ادامه', exact: true }))
+  if (task.kind === 'match') return waitState(page, next => next.session.feedback?.attemptId !== state.session.feedback?.attemptId)
+  return clickAndSave(page, page.getByRole('button', { name: 'ادامه', exact: true }))
 }
-async function playToEnd(page, stopAtWritten = false) {
+async function finishCards(page) {
+  let count = 0
+  for (;;) {
+    const state = await readState(page), task = state.session.queue[state.session.cursor]
+    if (task.kind !== 'flashcard') return count
+    if (!task.revealed) await clickAndSave(page, page.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
+    if (count === 0) await saveScreenshot(page, 'flashcard-back-360.png')
+    await clickAndSave(page, page.locator('.flashcard-next'))
+    count++
+  }
+}
+async function checkWrongMatch(page, state) {
+  const task = state.session.queue[state.session.cursor]
+  const id = task.entryIds.find(id => !task.matchedEntryIds.includes(id))
+  const wrongId = task.entryIds.find(other => other !== id && !task.matchedEntryIds.includes(other))
+  const left = page.locator('.match-column').nth(0).locator('button').nth(task.leftOrder.indexOf(id))
+  const wrong = page.locator('.match-column').nth(1).locator('button').nth(task.rightOrder.indexOf(wrongId))
+  await left.click()
+  const height = await page.evaluate(() => document.documentElement.scrollHeight)
+  await clickAndSave(page, wrong)
+  assert.equal(await page.evaluate(() => document.documentElement.scrollHeight), height, 'matching feedback preserves page height')
+  assert.equal(await page.getByRole('button', { name: 'ادامهٔ بازی', exact: true }).count(), 0)
+  await page.locator('.match-tile.answer-wrong').first().waitFor()
+  const retry = await waitState(page, next => !next.session.feedback)
+  assert.equal(await page.evaluate(() => document.documentElement.scrollHeight), height, 'retry preserves page height')
+  await saveScreenshot(page, 'matching-retry-360.png')
+  assert.equal(retry.session.queue[retry.session.cursor].taskId, task.taskId)
+  assert.equal(retry.attempts.at(-1).correct, false)
+  assert.equal(await left.isEnabled(), true)
+  await left.click()
+  await clickAndSave(page, page.locator('.match-column').nth(1).locator('button').nth(task.rightOrder.indexOf(id)))
+  const corrected = await readState(page)
+  assert.equal(corrected.attempts.at(-1).correct, true)
+  assert.equal(corrected.attempts.at(-1).assisted, true)
+  assert.equal(corrected.attempts.at(-1).independent, false)
+  await waitState(page, next => !next.session.feedback)
+}
+async function playToEnd(page, stopAtWritten = false, wrongMatch = false) {
   for (let step = 0; step < 150; step++) {
     const state = await readState(page), session = state.session
     if (session.state === 'ended') return state
@@ -129,7 +167,7 @@ async function playToEnd(page, stopAtWritten = false) {
     const entry = task.kind === 'match' ? null : bundle.entries.find(entry => entry.entryId === task.entryId)
     if (task.kind === 'flashcard') {
       if (!task.revealed) await clickAndSave(page, page.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
-      await clickAndSave(page, page.getByRole('button', { name: 'برویم سراغ تمرین', exact: false }))
+      await clickAndSave(page, page.locator('.flashcard-next'))
     } else if (task.kind === 'choose-meaning') {
       await clickAndSave(page, page.locator('.meaning-option').nth(task.optionIds.indexOf(task.entryId)))
     } else if (task.kind === 'cloze' || task.kind === 'write-word') {
@@ -140,6 +178,7 @@ async function playToEnd(page, stopAtWritten = false) {
     } else if (task.kind === 'choose-article') {
       await clickAndSave(page, page.locator('.article-option').nth(task.options.indexOf(entry.nounData.article)))
     } else {
+      if (wrongMatch) { await checkWrongMatch(page, state); wrongMatch = false; continue }
       const id = task.entryIds.find(id => !task.matchedEntryIds.includes(id))
       await page.locator('.match-column').nth(0).locator('button').nth(task.leftOrder.indexOf(id)).click()
       await clickAndSave(page, page.locator('.match-column').nth(1).locator('button').nth(task.rightOrder.indexOf(id)))
@@ -178,7 +217,7 @@ try {
   await readFile('dist/index.html')
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve))
   origin = `http://127.0.0.1:${server.address().port}`
-  browser = await chromium.launch({ headless: true })
+  browser = await chromium.launch({ headless: true, ...(process.env.WORTZEIT_CHROMIUM_PATH ? { executablePath: process.env.WORTZEIT_CHROMIUM_PATH, args: ['--no-sandbox', '--disable-dev-shm-usage'] } : {}) })
   const context = await browser.newContext({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true, locale: 'fa-IR', timezoneId: 'Europe/Berlin', reducedMotion: 'reduce' })
   observeContext(context)
   let page = await context.newPage()
@@ -194,10 +233,31 @@ try {
   })
   await page.locator('.offline-pill').filter({ hasText: 'آمادهٔ آفلاین' }).waitFor({ timeout: 20_000 })
   await clickAndSave(page, page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }))
-  await checkpoint('card is not a correct answer; wrong answer is persisted before feedback', async () => {
-    await clickAndSave(page, page.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
+  await checkpoint('background activity saves do not disable or replace the card or shift scroll', async () => {
+    await page.locator('.flashcard').scrollIntoViewIfNeeded()
+    const before = await readState(page)
+    const changes = await page.evaluate(() => new Promise(resolve => {
+      const card = document.querySelector('.flashcard')
+      const startY = window.scrollY
+      const records = []
+      const observer = new MutationObserver(mutations => {
+        for (const mutation of mutations) if (mutation.type === 'attributes' && mutation.attributeName === 'disabled') records.push('disabled changed')
+      })
+      observer.observe(card, { attributes: true })
+      setTimeout(() => {
+        observer.disconnect()
+        resolve({ records, connected: card.isConnected, shift: Math.abs(window.scrollY - startY) })
+      }, 2400)
+    }))
+    assert.deepEqual(changes.records, [])
+    assert.equal(changes.connected, true)
+    assert.ok(changes.shift < 2)
+    assert.ok((await readState(page)).session.activeMs > before.session.activeMs, 'actual background saves were exercised')
+  })
+  await checkpoint('five cards precede practice and card exposure is not a correct answer', async () => {
+    const introduced = await finishCards(page)
+    assert.equal(introduced, 5)
     assert.equal((await readState(page)).attempts.length, 0)
-    await clickAndSave(page, page.getByRole('button', { name: 'برویم سراغ تمرین', exact: false }))
     const state = await readState(page), task = state.session.queue[state.session.cursor]
     const wrong = task.optionIds.findIndex(id => id !== task.entryId)
     await clickAndSave(page, page.locator('.meaning-option').nth(wrong))
@@ -211,7 +271,7 @@ try {
     assert.equal((await readState(page)).attempts.length, 1)
   })
   await checkpoint('full five-word session including retry and four correct matching pairs', async () => {
-    const ended = await playToEnd(page)
+    const ended = await playToEnd(page, false, true)
     assert.equal(ended.session.introducedEntryIds.length, 5)
     assert.equal(Object.keys(ended.progress).length, 5)
     assert.equal(ended.attempts.filter(attempt => attempt.exercise === 'match' && attempt.correct).length, 4)
@@ -344,8 +404,7 @@ try {
     await saveScreenshot(lessonPage, 'lesson-four-words-360.png')
     await lessonPage.getByRole('button', { name: 'خانه', exact: true }).click()
     await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }))
-    await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
-    await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'برویم سراغ تمرین', exact: false }))
+    assert.equal(await finishCards(lessonPage), 5)
     selected = await readState(lessonPage)
     const task = selected.session.queue[selected.session.cursor]
     assert.ok(task.entryId.startsWith('a1-l04-'))

@@ -95,6 +95,7 @@ test('card revelation and meaning recognition never create a successful recall o
   assert.equal(state.attempts.length, 0)
   assert.equal(state.progress[id].nextDueAt, null)
   state = next(state)
+  state = until(state, task => task.kind === 'choose-meaning' && task.entryId === id)
   state = answer(state)
   assert.equal(state.progress[id].nextDueAt, null)
   assert.equal(state.progress[id].initialRecallPending, true)
@@ -152,7 +153,8 @@ test('DST fallback same-date due success does not loop or block the next new car
   assert.equal(state.progress['word-0'].intervalIndex, 0)
   assert.deepEqual(state.progress['word-0'].scheduledReviewDates, [])
   state = next(state, dueAt)
-  assert.equal(currentTask(state)!.kind, 'flashcard', 'successful review must allow the new card')
+  state = until(state, task => task.kind === 'flashcard', dueAt)
+  assert.equal(currentTask(state)!.kind, 'flashcard', 'after unfinished reviews, a new card is reachable')
   state = apply(state, { type: 'pause' }, dueAt)
   state = start(structuredClone(state), dueAt)
   state = finish(state, dueAt)
@@ -162,7 +164,7 @@ test('DST fallback same-date due success does not loop or block the next new car
   assert.equal(state.progress['word-0'].intervalIndex, 0)
 })
 
-test('resuming the same session on a later day reinserts due recall before unopened cards and preserves the current draft', () => {
+test('resuming batch practice on a later day reinserts due recall and preserves the current draft', () => {
   let state = until(start(initial()), task => task.kind === 'cloze')
   state = answer(state)
   state = next(state)
@@ -178,8 +180,8 @@ test('resuming the same session on a later day reinserts due recall before unope
   assert.equal(state.session!.draft, 'Wor')
   const remaining = state.session!.queue.slice(state.session!.cursor)
   const dueIndex = remaining.findIndex(task => written(task) && task.entryId === 'word-0')
-  const nextNewIndex = remaining.findIndex(task => task.kind === 'flashcard' && task.entryId === 'word-2')
-  assert.ok(dueIndex > 0 && dueIndex < nextNewIndex)
+  assert.ok(dueIndex > 0, 'newly due recall is queued after the preserved prompt')
+  assert.ok(!remaining.some(task => task.kind === 'flashcard'), 'already introduced cards are not reopened')
   state = answer(state, true, later)
   state = next(state, later)
   state = until(state, task => written(task) && task.entryId === 'word-0', later)
@@ -190,7 +192,7 @@ test('resuming the same session on a later day reinserts due recall before unope
   assert.equal(state.progress['word-0'].intervalIndex, 1)
   assert.equal(state.progress['word-0'].nextDueAt, '2026-01-06T12:00:00.000Z')
   state = next(state, later)
-  assert.equal(currentTask(state)!.kind, 'flashcard')
+  assert.ok(!currentTask(state) || currentTask(state)!.kind !== 'flashcard')
 })
 
 test('due recall precedes unfinished work and new cards, without showing the answer card', () => {
@@ -304,4 +306,53 @@ test('normalization accepts whitespace and NFC while preserving case, umlauts an
   assert.equal(normalizeAnswer('Gru\u0308ße'), 'Grüße')
   assert.notEqual(normalizeAnswer('gruße'), normalizeAnswer('Grüße'))
   assert.notEqual(normalizeAnswer('Strasse'), normalizeAnswer('Straße'))
+})
+
+test('a fresh batch presents every new card before practice and resumes its saved card after reload', () => {
+  let state = start(initial())
+  const firstFive = state.session!.queue.slice(0, 5)
+  assert.ok(firstFive.every(task => task.kind === 'flashcard'))
+  assert.equal(new Set(firstFive.map(task => 'entryId' in task && task.entryId)).size, 5)
+  for (let index = 0; index < 5; index++) {
+    const card = currentTask(state)!
+    assert.equal(card.kind, 'flashcard')
+    assert.equal(state.session!.introducedEntryIds.length, index + 1)
+    assert.equal(state.attempts.length, 0, 'no new-word exercises before the whole card batch')
+    state = apply(state, { type: 'reveal-card', taskId: card.taskId })
+    if (index === 2) {
+      state = apply(state, { type: 'pause' })
+      const saved = structuredClone(state.session!)
+      state = start(JSON.parse(JSON.stringify(state)))
+      assert.equal(state.session!.sessionId, saved.sessionId)
+      assert.equal(state.session!.cursor, saved.cursor)
+      assert.deepEqual(state.session!.queue, saved.queue)
+      const resumedCard = currentTask(state)!
+      assert.equal(resumedCard.kind === 'flashcard' && resumedCard.revealed, true)
+    }
+    state = next(state)
+  }
+  assert.equal(currentTask(state)!.kind, 'choose-meaning')
+  assert.equal(state.session!.introducedEntryIds.length, 5)
+  assert.ok(!state.session!.queue.slice(state.session!.cursor).some(task => task.kind === 'flashcard'))
+  state = finish(state)
+  assert.deepEqual(new Set(state.attempts.map(attempt => attempt.entryId)), new Set(firstFive.map(task => 'entryId' in task && task.entryId)))
+})
+
+test('an existing interleaved session retains its queue, revealed card and cursor on resume', () => {
+  let state = start(initial())
+  // Simulate a schema-3 session created before batched cards were introduced.
+  const tasks = state.session!.queue
+  const cards = tasks.filter(task => task.kind === 'flashcard')
+  state.session!.queue = cards.flatMap(card => [card, ...tasks.filter(task => task.kind !== 'flashcard' && task.kind !== 'match' && task.entryId === card.entryId)])
+  state.session!.queue.push(...tasks.filter(task => task.kind === 'match'))
+  state = apply(state, { type: 'reveal-card', taskId: currentTask(state)!.taskId })
+  state = apply(state, { type: 'pause' })
+  const saved = structuredClone(state.session!)
+  state = start(JSON.parse(JSON.stringify(state)))
+  assert.deepEqual(state.session!.queue, saved.queue)
+  assert.equal(state.session!.cursor, saved.cursor)
+  state = next(state)
+  assert.equal(currentTask(state)!.kind, 'choose-meaning')
+  state = finish(state)
+  assert.equal(state.session!.introducedEntryIds.length, 5)
 })

@@ -25,18 +25,11 @@ function Icon({ name, className = '' }: { name: IconName; className?: string }) 
 }
 
 function GardenIllustration() {
-  return <svg className="garden-illustration" viewBox="0 0 360 310" fill="none" aria-hidden="true">
-    <path d="M34 262c-26-60 0-169 73-194 71-26 129 14 164 75 31 55 24 102-7 129" fill="#ECE5D6" />
-    <path d="M28 276h302" stroke="#222F29" strokeWidth="2" strokeLinecap="round" />
-    <path d="M179 261c-6-49 8-106 24-148" stroke="#274735" strokeWidth="4" strokeLinecap="round" />
-    <path d="M187 197c-48 5-61-24-57-45 31 0 55 12 57 45Z" fill="#95B982" stroke="#274735" strokeWidth="2" />
-    <path d="M190 174c43 2 65-19 60-43-28-1-52 17-60 43Z" fill="#2D6549" stroke="#274735" strokeWidth="2" />
-    <path d="M200 138c-26-12-36-37-25-59 27 11 36 33 25 59Z" fill="#B5CC8F" stroke="#274735" strokeWidth="2" />
-    <path d="m150 227 62 1-9 49h-44Z" fill="#F3A17B" stroke="#222F29" strokeWidth="2" /><path d="M146 226h70v12h-70z" fill="#E7784C" stroke="#222F29" strokeWidth="2" />
-    <g transform="rotate(-12 92 138)"><rect x="32" y="79" width="112" height="124" rx="12" fill="#FFFBF0" stroke="#222F29" strokeWidth="2" /><rect x="45" y="92" width="86" height="8" rx="4" fill="#DCE9CE" /><text x="88" y="139" textAnchor="middle" fontFamily="Georgia,serif" fontSize="29" fill="#243B2D" lang="de" direction="ltr">Hallo!</text><path d="M67 161h43M75 172h28" stroke="#A1B493" strokeWidth="3" strokeLinecap="round" /></g>
-    <g transform="rotate(14 272 167)"><rect x="224" y="112" width="91" height="111" rx="12" fill="#F4C75F" stroke="#222F29" strokeWidth="2" /><circle cx="269" cy="150" r="17" fill="#FFFBF0" stroke="#222F29" strokeWidth="2" /><path d="m262 150 5 5 9-10" stroke="#274735" strokeWidth="2" strokeLinecap="round" /><path d="M245 186h47M254 197h29" stroke="#917326" strokeWidth="3" strokeLinecap="round" /></g>
-    <path d="m268 52 4 10 10 4-10 4-4 10-4-10-10-4 10-4Z" fill="#E7784C" /><circle cx="70" cy="232" r="6" fill="#E7784C" /><path d="m123 42 3 8 8 3-8 3-3 8-3-8-8-3 8-3Z" fill="#2D6549" />
-    <path d="M302 254c-7-15-6-30 3-39 9 13 9 27-3 39Z" fill="#B5CC8F" stroke="#274735" strokeWidth="2" /><path d="M302 276v-28" stroke="#274735" strokeWidth="2" />
+  return <svg className="garden-illustration" viewBox="0 0 340 300" fill="none" aria-hidden="true">
+    <circle cx="174" cy="151" r="115" fill="#E6DDFB" />
+    <g transform="rotate(-14 138 150)"><rect x="52" y="55" width="155" height="196" rx="26" fill="#B8E8D6" stroke="#41335F" strokeWidth="2" /><path d="M82 91h63M82 105h42" stroke="#398370" strokeWidth="5" strokeLinecap="round" /></g>
+    <g transform="rotate(10 211 156)"><rect x="124" y="67" width="158" height="197" rx="26" fill="#FFF9ED" stroke="#41335F" strokeWidth="2" /><text x="203" y="132" textAnchor="middle" fontFamily="Georgia,serif" fontSize="32" fill="#594385" lang="de" direction="ltr">Hallo!</text><circle cx="185" cy="171" r="4" fill="#594385" /><circle cx="220" cy="171" r="4" fill="#594385" /><path d="M188 188q14 15 28 0" stroke="#594385" strokeWidth="3" strokeLinecap="round" /><ellipse cx="174" cy="185" rx="9" ry="5" fill="#FFB6A9" /><ellipse cx="231" cy="185" rx="9" ry="5" fill="#FFB6A9" /></g>
+    <path d="m275 26 7 17 18 7-18 7-7 18-7-18-17-7 17-7Z" fill="#F5B95E" /><path d="m43 202 5 12 13 5-13 5-5 13-5-13-12-5 12-5Z" fill="#B29CDD" /><circle cx="84" cy="35" r="8" fill="#F2A296" /><path d="m279 246 9 9 18-20" stroke="#398370" strokeWidth="7" strokeLinecap="round" />
   </svg>
 }
 
@@ -104,7 +97,32 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
   const [showBack, setShowBack] = useState(task.kind === 'flashcard' && task.revealed)
   const sending = useRef(false)
   const disabled = busy || !!error
-  const entry = task.kind === 'match' ? null : bundle.entries.find(item => item.entryId === task.entryId)!
+  const commandRef = useRef(onCommand)
+  useEffect(() => { commandRef.current = onCommand }, [onCommand])
+  const matchAttemptId = task.kind === 'match' ? feedback?.attemptId : undefined
+  const matchCorrect = feedback?.correct
+  useEffect(() => {
+    if (!matchAttemptId || error || session.state !== 'active') return
+    let timer: ReturnType<typeof setTimeout> | undefined
+    let dispatched = false
+    const schedule = () => {
+      clearTimeout(timer)
+      if (document.visibilityState !== 'visible' || dispatched) return
+      timer = setTimeout(() => {
+        dispatched = true
+        setSelectedLeft(null)
+        void commandRef.current({ type: 'next', taskId: task.taskId }).catch(() => {})
+      }, matchCorrect ? 380 : 700)
+    }
+    schedule()
+    document.addEventListener('visibilitychange', schedule)
+    return () => { clearTimeout(timer); document.removeEventListener('visibilitychange', schedule) }
+  }, [matchAttemptId, matchCorrect, error, session.state, task.taskId])
+  const matchAttempt = feedback && state.attempts.find(item => item.attemptId === feedback.attemptId)
+  const cards = session.queue.filter(item => item.kind === 'flashcard')
+  const cardIndex = cards.findIndex(item => item.taskId === task.taskId)
+  const nextIsCard = session.queue[session.cursor + 1]?.kind === 'flashcard'
+  const entry = task.kind === 'match'  ? null : bundle.entries.find(item => item.entryId === task.entryId)!
   async function send(command: LearningCommand) {
     if (sending.current || disabled) return
     sending.current = true
@@ -126,7 +144,7 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
   const writtenTask = task.kind === 'write-word' || task.kind === 'cloze'
   return <div className="task-content">
     {task.kind === 'flashcard' && entry && <>
-      <div className="task-heading"><span className="eyebrow"><Icon name="book" /> یک واژهٔ تازه</span><h1>اول آشنا شو، بعد تمرین کن.</h1><p>کارت را بچرخان و معنی و مثال را ببین.</p></div>
+      <div className="task-heading"><span className="eyebrow"><Icon name="book" /> کارت {number(cardIndex + 1)} از {number(cards.length)}</span><h1>یک دوست تازه برای حافظه‌ات.</h1><p>کارت را بچرخان و معنی و مثال را ببین.</p></div>
       <button type="button" className={`flashcard ${showBack ? 'is-flipped' : ''}`} aria-label={showBack ? 'نمایش روی کارت' : 'چرخاندن کارت و نمایش معنی'} aria-pressed={showBack} disabled={disabled} onClick={async () => {
         if (!task.revealed) {
           try { await onCommand({ type: 'reveal-card', taskId: task.taskId }); setShowBack(true) } catch { /* Remain on the saved side. */ }
@@ -137,8 +155,8 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
           <span className="card-face card-back" aria-hidden={!showBack}><span className="tiny-label">معنی فارسی</span><strong className="card-meaning">{entry.meaningFa}</strong><span className="card-example-label">مثال تألیفی</span><span className="card-example-de" lang="de" dir="ltr">{entry.examples[0]?.de}</span><span className="card-example-fa">{entry.examples[0]?.fa}</span><span className="flip-hint"><Icon name="flip" /> برگشت به واژه</span></span>
         </span>
       </button>
-      <p className="gentle-note">دیدن کارت، پاسخ درست محسوب نمی‌شود.</p>
-      {task.revealed && <><Sources entry={entry} bundle={bundle} /><button type="button" className="primary-button wide" onClick={next} disabled={disabled}>برویم سراغ تمرین <Icon name="arrow" /></button></>}
+      <p className="gentle-note">اول کارت‌ها را ببین؛ بعد با همین واژه‌ها تمرین می‌کنیم.</p>
+      {task.revealed && <><Sources entry={entry} bundle={bundle} /><button type="button" className="primary-button wide flashcard-next" onClick={next} disabled={disabled}>{nextIsCard ? 'واژهٔ بعدی' : 'برویم سراغ تمرین'} <Icon name="arrow" /></button></>}
     </>}
     {task.kind === 'choose-meaning' && entry && <>
       <div className="task-heading"><span className="eyebrow"><Icon name="spark" /> انتخاب معنی</span><h1>معنی درست کدام است؟</h1><p>یکی از چهار گزینه را انتخاب کن.</p></div>
@@ -162,7 +180,7 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
           setDraft(value)
           void onCommand({ type: 'draft', taskId: task.taskId, value }).catch(() => {})
         }} />
-        <p className="input-help">{entry.writing.caseSensitive ? 'حروف بزرگ و کوچک در این پاسخ مهم‌اند.' : 'در این پاسخ، تفاوت حروف بزرگ و کوچک پذیرفته می‌شود؛ صورت معیار را پس از ثبت می‌بینی.'} حروف آلمانی مثل ä و ß را رعایت کن؛ صورت جایگزین فقط اگر برای همین تمرین ثبت شده باشد پذیرفته می‌شود.</p>
+        <details className="input-help"><summary>راهنمای نوشتن</summary><p>{entry.writing.caseSensitive ? 'حروف بزرگ و کوچک در این پاسخ مهم‌اند.' : 'در این پاسخ، تفاوت حروف بزرگ و کوچک پذیرفته می‌شود؛ صورت معیار را پس از ثبت می‌بینی.'} حروف آلمانی مثل ä و ß را رعایت کن؛ صورت جایگزین فقط اگر برای همین تمرین ثبت شده باشد پذیرفته می‌شود.</p></details>
         {!feedback && <button className="primary-button wide" type="submit" disabled={disabled || !draft.trim()}>بررسی پاسخ <Icon name="check" /></button>}
       </form>
     </>}
@@ -184,24 +202,24 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
         <div className="match-column"><span className="tiny-label" lang="de">Deutsch</span>{task.leftOrder.map(id => {
           const word = bundle.entries.find(item => item.entryId === id)!
           const matched = task.matchedEntryIds.includes(id)
-          return <button className={`match-tile word-tile ${selectedLeft === id ? 'is-selected' : ''} ${matched ? 'is-matched' : ''}`} type="button" key={id} disabled={disabled || !!feedback || matched} aria-pressed={selectedLeft === id} onClick={() => setSelectedLeft(id)}><GermanWord entry={word} />{matched && <><Icon name="check" /><span className="sr-only">وصل شد</span></>}</button>
+          return <button className={`match-tile word-tile ${selectedLeft === id ? 'is-selected' : ''} ${matched ? 'is-matched' : ''} ${feedback && !feedback.correct && feedback.entryId === id ? 'answer-wrong' : ''}`} type="button" key={id} disabled={disabled || !!feedback || matched} aria-pressed={selectedLeft === id} onClick={() => setSelectedLeft(id)}><GermanWord entry={word} />{matched && <><Icon name="check" /><span className="sr-only">وصل شد</span></>}</button>
         })}</div>
         <div className="match-column" dir="rtl"><span className="tiny-label">فارسی</span>{task.rightOrder.map(id => {
           const word = bundle.entries.find(item => item.entryId === id)!
           const matched = task.matchedEntryIds.includes(id)
-          return <button className={`match-tile ${matched ? 'is-matched' : ''}`} type="button" key={id} disabled={disabled || !!feedback || matched || !selectedLeft} onClick={() => selectedLeft && answer(id, selectedLeft)}>{word.meaningFa}{matched && <><Icon name="check" /><span className="sr-only">وصل شد</span></>}</button>
+          return <button className={`match-tile ${matched ? 'is-matched' : ''} ${feedback && !feedback.correct && matchAttempt?.answer === id ? 'answer-wrong' : ''}`} type="button" key={id} disabled={disabled || !!feedback || matched || !selectedLeft} onClick={() => selectedLeft && answer(id, selectedLeft)}>{word.meaningFa}{matched && <><Icon name="check" /><span className="sr-only">وصل شد</span></>}</button>
         })}</div>
-      </div><p className="gentle-note">هر جفت جدا ثبت می‌شود؛ بازی به‌تنهایی پلهٔ مرور را بالا نمی‌برد.</p>
+      </div><p className="match-message" role="status" aria-live="polite">{feedback ? feedback.correct ? task.matchedEntryIds.length === 4 ? 'همه را پیدا کردی! ✦' : 'آفرین! جفت بعدی را پیدا کن.' : 'این دو جفت نیستند؛ دوباره امتحان کن.' : 'با هر جفت، یک قدم جلوتر ✦'}</p>
     </>}
-    {task.kind !== 'flashcard' && !feedback && <section className="assistance-panel" aria-label="کمک در تمرین"><div className="assistance-actions"><button className="text-button" type="button" disabled={disabled || assistance?.kind === 'hint'} onClick={() => void send({ type: 'assist', taskId: task.taskId, eventId: crypto.randomUUID(), kind: 'hint' })}><Icon name="info" /> دیدن مثال راهنما</button><button className="text-button" type="button" disabled={disabled || assistance?.kind === 'answer'} onClick={() => void send({ type: 'assist', taskId: task.taskId, eventId: crypto.randomUUID(), kind: 'answer' })}>نمایش پاسخ</button></div><p className="assistance-note">با دیدن راهنما یا پاسخ، این تلاش با کمک ثبت می‌شود.</p>{task.assisted && <div className="assistance-content" role="status"><strong>این تلاش مستقل محسوب نمی‌شود.</strong>{helpedEntry && assistance?.kind === 'hint' && <ExampleBlock entry={helpedEntry} />}{helpedEntry && assistance?.kind === 'answer' && <p>پاسخ: {task.kind === 'choose-article' || task.kind === 'match' ? <><GermanWord entry={helpedEntry} /><span> — {helpedEntry.meaningFa}</span></> : <bdi lang={writtenTask ? 'de' : 'fa'} dir={writtenTask ? 'ltr' : 'rtl'}>{canonicalAnswer}</bdi>}</p>}</div>}</section>}
-    {feedback && <div className={`feedback ${feedback.correct ? 'feedback-correct' : 'feedback-wrong'} ${feedback.assisted ? 'feedback-assisted' : ''}`} role="status" aria-live="polite">
+    {task.kind !== 'flashcard' && (!feedback || task.kind === 'match') && <section className="assistance-panel" aria-label="کمک در تمرین"><div className="assistance-actions"><button className="text-button" type="button" disabled={disabled || !!feedback || assistance?.kind === 'hint'} onClick={() => void send({ type: 'assist', taskId: task.taskId, eventId: crypto.randomUUID(), kind: 'hint' })}><Icon name="info" /> دیدن مثال راهنما</button><button className="text-button" type="button" disabled={disabled || !!feedback || assistance?.kind === 'answer'} onClick={() => void send({ type: 'assist', taskId: task.taskId, eventId: crypto.randomUUID(), kind: 'answer' })}>نمایش پاسخ</button></div><p className="assistance-note">با دیدن راهنما یا پاسخ، این تلاش با کمک ثبت می‌شود.</p>{task.assisted && <div className="assistance-content" role="status"><strong>این تلاش مستقل محسوب نمی‌شود.</strong>{helpedEntry && assistance?.kind === 'hint' && <ExampleBlock entry={helpedEntry} />}{helpedEntry && assistance?.kind === 'answer' && <p>پاسخ: {task.kind === 'choose-article' || task.kind === 'match' ? <><GermanWord entry={helpedEntry} /><span> — {helpedEntry.meaningFa}</span></> : <bdi lang={writtenTask ? 'de' : 'fa'} dir={writtenTask ? 'ltr' : 'rtl'}>{canonicalAnswer}</bdi>}</p>}</div>}</section>}
+    {feedback && task.kind !== 'match' && <div className={`feedback ${feedback.correct ? 'feedback-correct' : 'feedback-wrong'} ${feedback.assisted ? 'feedback-assisted' : ''}`} role="status" aria-live="polite">
       <div className="feedback-title"><span className="feedback-symbol"><Icon name={feedback.correct ? 'check' : 'close'} /></span><strong>{feedback.correct ? feedback.assisted ? 'درست بود؛ این تلاش با کمک ثبت شد.' : 'درست بود، آفرین!' : 'این بار درست نبود؛ با هم مرور کنیم.'}</strong></div>
       {(writtenTask || !feedback.correct) && <p className="correct-answer">{writtenTask ? 'صورت معیار:' : 'پاسخ درست:'} <bdi lang={writtenTask || task.kind === 'choose-article' ? 'de' : 'fa'} dir={writtenTask || task.kind === 'choose-article' ? 'ltr' : 'rtl'}>{feedback.expectedAnswer}</bdi></p>}
       {task.kind === 'choose-article' && feedbackEntry && <p className="article-answer"><GermanWord entry={feedbackEntry} /><span>{feedbackEntry.meaningFa}</span></p>}
       {feedback.assisted && <p className="assisted-feedback-note">این پاسخ، یادآوری مستقل یا پلهٔ تازهٔ مرور محسوب نمی‌شود.</p>}
       <p>{feedback.explanationFa}</p>
       {!feedback.correct && feedbackEntry && <ExampleBlock entry={feedbackEntry} />}
-      <button className="primary-button wide" type="button" onClick={next} disabled={disabled}>{task.kind === 'match' && task.matchedEntryIds.length < 4 ? 'ادامهٔ بازی' : 'ادامه'}<Icon name="arrow" /></button>
+      <button className="primary-button wide" type="button" onClick={next} disabled={disabled}>ادامه<Icon name="arrow" /></button>
     </div>}
   </div>
 }
@@ -224,6 +242,7 @@ export function WortzeitUI(props: WortzeitUIProps) {
   const task = session && session.state !== 'ended' ? session.queue[session.cursor] : null
   const effectivePage = page === 'session' && session?.state === 'ended' ? 'summary'
     : page === 'session' && session?.state === 'paused' ? 'home' : page
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [effectivePage])
   const sessionIsVisible = effectivePage === 'session' && session?.state === 'active'
   useEffect(() => {
     onSessionVisibilityChange(sessionIsVisible)
@@ -279,19 +298,18 @@ export function WortzeitUI(props: WortzeitUIProps) {
       {effectivePage === 'lessons' && <section className="lessons-page"><div className="page-intro"><div><span className="eyebrow">بخش جداگانهٔ هر درس</span><h1>درس خودت را انتخاب کن<span className="orange-dot">.</span></h1><p>واژه‌ها، تمرین‌ها و ادامهٔ هر درس در بخش خودش می‌ماند. هدف روزانه برای مطالعهٔ همهٔ درس‌ها مشترک است.</p></div></div><LessonCards summaries={summaries} activeLessonId={activeLesson.lessonId} disabled={disabled} onChoose={chooseLesson} /><p className="lessons-note">هر درس آماده را می‌توانی مستقیم باز کنی؛ مرورهای هر درس در همان بخش در دسترس‌اند.</p></section>}
       {error && <div className="storage-error" role="alert"><Icon name="info" /><div><strong>ذخیره کامل نشد</strong><p>{error}</p></div><button type="button" className="text-button" onClick={onRetry} disabled={busy}>تلاش دوباره</button></div>}
       {effectivePage === 'home' && <>
-        <div className="page-intro"><div><span className="eyebrow">هر روز، چند واژه نزدیک‌تر</span><h1>سلام، به وقتِ یادگیری خوش آمدی<span className="orange-dot">.</span></h1></div><span className="level-pill" lang="de" dir="ltr">{activeLesson.level} · Lektion {String(lessonNumber(activeLesson)).padStart(2, '0')}</span></div>
-        <div className="home-grid"><section className="hero-panel"><div className="hero-copy"><span className="eyebrow lesson-eyebrow"><span className="mini-line" /> {lessonLabel(activeLesson)} · {activeLesson.titleFa}</span><h2 lang="de" dir="ltr">{activeLesson.titleDe}</h2><p>آلمانی را واژه‌به‌واژه بساز.<br />کمی آشنایی، کمی تمرین، یک قدم رو به جلو.</p><button type="button" className="primary-button hero-button" disabled={disabled} onClick={() => void start()}>ادامهٔ یادگیری<Icon name="arrow" /></button><span className="hero-caption">{session && session.state !== 'ended' ? 'جلسهٔ ناتمام تو از همان‌جا ادامه پیدا می‌کند.' : 'شروع یادگیری · حداکثر ۵ واژهٔ جدید در هر جلسه'}</span></div><GardenIllustration /></section>
+        <div className="page-intro"><div><span className="eyebrow">هر روز، چند واژه نزدیک‌تر</span><h1>وقتِ یک قدم کوچکه<span className="orange-dot">.</span></h1></div><span className="level-pill" lang="de" dir="ltr">{activeLesson.level} · Lektion {String(lessonNumber(activeLesson)).padStart(2, '0')}</span></div>
+        <div className="home-grid"><section className="hero-panel"><div className="hero-copy"><span className="eyebrow lesson-eyebrow"><span className="mini-line" /> {lessonLabel(activeLesson)} · {activeLesson.titleFa}</span><h2 lang="de" dir="ltr">{activeLesson.titleDe}</h2><p>اول چند فلش‌کارت، بعد کمی بازی.<br />واژه‌های تازه را با ریتم خودت یاد بگیر.</p><button type="button" className="primary-button hero-button" disabled={disabled} onClick={() => void start()}>ادامهٔ یادگیری<Icon name="arrow" /></button><span className="hero-caption">{session && session.state !== 'ended' ? 'جلسهٔ ناتمام تو از همان‌جا ادامه پیدا می‌کند.' : 'شروع یادگیری · حداکثر ۵ واژهٔ جدید در هر جلسه'}</span></div><GardenIllustration /></section>
           <aside className="today-panel"><span className="eyebrow"><Icon name="clock" /> نوبت مرور</span><div className="review-number">{number(stats.due)}<span>واژه</span></div><h2>{stats.due ? 'منتظر یک دیدار دوباره‌اند' : 'مرور عقب‌افتاده‌ای نداری'}</h2><p>{stats.due ? 'مرورهای موعدرسیده پیش از واژه‌های تازه می‌آیند.' : 'پس از تمرین، وقت مرور بعدی اینجا مشخص می‌شود.'}</p><div className="next-review"><Icon name="clock" /><span>مرور بعدی<strong>{dateLabel(stats.nextDueAt, now)}</strong></span></div></aside></div>
         <section className="progress-panel"><div><span className="eyebrow">ردِ قدم‌های تو</span><h2>پیشرفت در {lessonLabel(activeLesson)}</h2><p>واژه‌های همین درس و پیشرفت واقعی تو.</p></div><div className="progress-overview"><div className="progress-count"><strong>{number(stats.introduced)}</strong><span>از {number(total)} واژه معرفی شده</span></div><div className="word-progress" role="progressbar" aria-label="واژه‌های معرفی‌شده در بسته" aria-valuemin={0} aria-valuemax={total} aria-valuenow={stats.introduced}><span style={{ width: `${total ? stats.introduced / total * 100 : 0}%` }} /></div><span className="progress-note">معرفی شدن با تسلط یکی نیست؛ مرورهای روزهای بعد مهم‌اند.</span></div><div className="answer-stat"><span className="stat-icon"><Icon name="check" /></span><strong>{number(stats.correct)} <small>از {number(stats.totalAnswers)}</small></strong><span>پاسخ درست</span></div></section>
-        <section className="activity-strip" aria-label="زمان مطالعه و تثبیت"><div><Icon name="clock" /><span>مطالعهٔ فعال امروز<strong><bdi dir="ltr">{durationLabel(stats.todayActiveMs)}</bdi><small> دقیقه:ثانیه</small></strong></span></div><p>هدف روزانه حدود {number(state.settings.targetActiveMs / 60_000)} دقیقه است. زمان توقف و غیبت شمرده نمی‌شود.</p><div className="stabilized-stat"><Icon name="leaf" /><span><strong>{number(stats.stabilized)} واژه</strong><small>تثبیت‌شده با مرور در روزهای جدا</small></span></div></section>
-        <section className="home-lessons-section" aria-label="دسترسی به درس‌ها"><div className="section-title"><h2>درس‌های تو</h2><button type="button" className="text-button" onClick={() => void navigate('lessons')}>دیدن بخش درس‌ها<Icon name="arrow" /></button></div><LessonCards summaries={summaries} activeLessonId={activeLesson.lessonId} disabled={disabled} onChoose={chooseLesson} /></section>
-        <section className="journey-section"><div className="section-title"><h2>یک جلسهٔ کوچک، چند جور تمرین</h2><span>با ریتم خودت پیش برو</span></div><div className="journey-cards">{[{ n: '۰۱', icon: 'flip' as IconName, title: 'آشنا شو', copy: 'واژه، معنی و یک مثال کوتاه', color: 'sage' }, { n: '۰۲', icon: 'spark' as IconName, title: 'به خاطر بیاور', copy: 'معنی را پیدا کن و جمله را بساز', color: 'peach' }, { n: '۰۳', icon: 'link' as IconName, title: 'جفت‌ها را پیدا کن', copy: 'چهار واژه، چهار معنی، یک بازی', color: 'yellow' }].map(item => <article className={`journey-card ${item.color}`} key={item.n}><span className="journey-number">{item.n}</span><span className="journey-icon"><Icon name={item.icon} /></span><h3>{item.title}</h3><p>{item.copy}</p></article>)}</div></section>
+        <div className="daily-glance"><span><Icon name="clock" /> امروز <bdi dir="ltr">{durationLabel(stats.todayActiveMs)}</bdi> مطالعه</span><span><Icon name="spark" /> {number(stats.stabilized)} واژهٔ تثبیت‌شده</span></div>
+        <section className="home-lessons-section" aria-label="دسترسی به درس‌ها"><button type="button" className="lesson-shortcut" onClick={() => void navigate('lessons')}><span><Icon name="book" /> درس‌های من</span><span>{number(summaries.length)} درس آماده <Icon name="arrow" /></span></button></section>
         <div className="home-footnote"><Icon name="leaf" /><p>پیشرفتت در همین مرورگر می‌ماند؛ هر وقت برگشتی، از همین‌جا ادامه بده.</p><button type="button" className="text-button" onClick={() => setPage('about')}>دربارهٔ محتوا و ذخیره</button></div>
       </>}
       {effectivePage === 'session' && <section className="session-page">
         <div className="session-toolbar"><button type="button" className="text-button" onClick={() => void pause()} disabled={disabled}><Icon name="pause" /> توقف و بازگشت</button><span>{lessonLabel(activeLesson)} <span className="toolbar-dot">·</span> {number(summary.practiced)} واژه تمرین شده</span><button type="button" className="text-button finish-button" onClick={() => void finish()} disabled={disabled}>پایان جلسه</button></div>
         <div className="session-progress"><span style={{ width: `${session?.queue.length ? Math.min(100, session.cursor / session.queue.length * 100) : 0}%` }} /></div>
-        <div className="session-activity"><span><Icon name="clock" /> زمان فعال این جلسه <bdi dir="ltr">{durationLabel(summary.activeMs)}</bdi></span><span>مطالعهٔ امروز <bdi dir="ltr">{durationLabel(stats.todayActiveMs)}</bdi></span></div>
+        <div className="session-activity"><span><Icon name="clock" /> زمان فعال این جلسه <bdi dir="ltr">{durationLabel(summary.activeMs)}</bdi></span><span className="session-phase">{task?.kind === 'flashcard' ? '۱ · آشنایی با واژه‌ها' : task?.kind === 'match' ? '۳ · بازی جفت‌ها' : '۲ · یادآوری و تمرین'}</span></div>
         {targetReached && <section className="target-banner" role="status"><Icon name="leaf" /><div><h2>به هدف حدود {number(state.settings.targetActiveMs / 60_000)} دقیقهٔ امروز رسیدی.</h2><p>می‌توانی جلسه را تمام کنی یا با همان صف، به تمرین ادامه بدهی.</p><div className="target-actions"><button className="primary-button" type="button" disabled={disabled} onClick={() => void finish()}>پایان و دیدن خلاصه</button><button className="secondary-button" type="button" disabled={disabled} onClick={() => void onCommand({ type: 'continue-after-target' }).catch(() => {})}>ادامهٔ تمرین</button></div></div></section>}
         {task ? <TaskPanel key={task.taskId} task={task} props={props} /> : <div className="empty-state"><Icon name="check" /><h1>تمرین‌های این نوبت تمام شد.</h1><p>خلاصهٔ واقعی جلسه و وقت مرور بعدی را ببین.</p><button className="primary-button" type="button" onClick={() => void finish()} disabled={disabled}>دیدن خلاصه <Icon name="arrow" /></button></div>}
       </section>}

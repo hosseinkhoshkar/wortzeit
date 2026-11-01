@@ -16,6 +16,13 @@ export class CommandWriter {
   private running: Promise<void> | null = null
   private failure: unknown = null
   private closed = false
+  private busy = false
+
+  private updateBusy(): void {
+    // Background clock/draft commits must not dim or disable the whole interface.
+    const busy = this.queue.some(command => command.type !== 'activity' && command.type !== 'draft')
+    if (busy !== this.busy) { this.busy = busy; this.options.onBusy(busy) }
+  }
 
   private options: WriterOptions
   constructor(initial: AppState, options: WriterOptions) { this.state = initial; this.options = options }
@@ -24,6 +31,7 @@ export class CommandWriter {
     if (this.closed) return Promise.reject(new Error('این جلسه دیگر نویسندهٔ فعال نیست.'))
     this.queue.push(command)
     if (this.failure) return Promise.reject(this.failure)
+    this.updateBusy()
     return this.flush()
   }
 
@@ -41,7 +49,7 @@ export class CommandWriter {
 
   private flush(): Promise<void> {
     if (this.running) return this.running
-    this.options.onBusy(true)
+    this.updateBusy()
     this.running = (async () => {
       while (this.queue.length) {
         const before = this.state
@@ -52,6 +60,7 @@ export class CommandWriter {
           this.options.onSaved(after)
         }
         this.queue.shift()
+        this.updateBusy()
       }
     })().then(() => { this.options.onError(null) }, error => {
       this.failure = error
@@ -59,7 +68,7 @@ export class CommandWriter {
       throw error
     }).finally(() => {
       this.running = null
-      this.options.onBusy(false)
+      if (this.busy) { this.busy = false; this.options.onBusy(false) }
     })
     return this.running
   }

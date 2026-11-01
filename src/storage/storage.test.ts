@@ -8,9 +8,11 @@ const NOW = '2026-10-28T12:00:00.000Z'
 function sampleState() {
   let state = createInitialState(lessonOneBundle, 'Europe/Berlin')
   state = transition(state, { type: 'start-session', sessionId: 'storage-test', seed: 3 }, lessonOneBundle, NOW)
-  const card = currentTask(state)!
-  state = transition(state, { type: 'reveal-card', taskId: card.taskId }, lessonOneBundle, NOW)
-  state = transition(state, { type: 'next', taskId: card.taskId }, lessonOneBundle, NOW)
+  while (currentTask(state)?.kind === 'flashcard') {
+    const card = currentTask(state)!
+    state = transition(state, { type: 'reveal-card', taskId: card.taskId }, lessonOneBundle, NOW)
+    state = transition(state, { type: 'next', taskId: card.taskId }, lessonOneBundle, NOW)
+  }
   const task = currentTask(state)!
   if (task.kind !== 'choose-meaning') throw new Error('meaning expected')
   return transition(state, { type: 'answer', taskId: task.taskId, attemptId: 'stored-attempt', answer: task.entryId }, lessonOneBundle, NOW)
