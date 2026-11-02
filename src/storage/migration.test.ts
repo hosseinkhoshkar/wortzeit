@@ -34,7 +34,7 @@ function legacySample(mode: 'paused' | 'ended' | 'feedback' | 'draft' | 'match' 
   const session = state.session!
   const currentId = session.queue[session.cursor]?.taskId
   // Keep a faithful phase-one queue: it had no write-word/article questions.
-  const queue = session.queue.filter(task => task.kind !== 'write-word' && task.kind !== 'choose-article')
+  const queue = session.queue.filter(task => task.kind !== 'write-word' && task.kind !== 'choose-article' && task.kind !== 'reverse-card')
   const attempts = state.attempts.filter(attempt => attempt.exercise !== 'write-word' && attempt.exercise !== 'choose-article')
     .map(({ assisted, normalizationVersion, ...attempt }): LegacyAttempt => {
       void assisted; void normalizationVersion
@@ -69,7 +69,7 @@ test('migration preserves paused/ended/current feedback/match/draft records and 
     const migrated = migrateState(old, lessonOneBundle)
     validateState(migrated, lessonOneBundle)
     assert.deepEqual(old, before, 'pure migration does not mutate its input')
-    assert.equal(migrated.schemaVersion, 3)
+    assert.equal(migrated.schemaVersion, 4)
     assert.equal(migrated.revision, old.revision + 1)
     assert.equal(migrated.session!.cursor, old.session!.cursor)
     assert.deepEqual(migrated.session!.queue, old.session!.queue)
@@ -143,7 +143,7 @@ test('load migrates in one transaction, second load is idempotent and post-migra
   const model = indexedDBModel(legacySample('draft'))
   globalThis.indexedDB = model.factory
   const loaded = (await loadState(lessonOneBundle))!
-  assert.equal(loaded.schemaVersion, 3)
+  assert.equal(loaded.schemaVersion, 4)
   assert.equal(loaded.revision, 26)
   assert.deepEqual(model.keys(), ['current'], 'migration creates no backup key or feature')
   const again = (await loadState(lessonOneBundle))!
@@ -200,7 +200,7 @@ test('failed migration transaction preserves original v1 snapshot; invalid data 
   model.failNextPut()
   await assert.rejects(loadState(lessonOneBundle))
   assert.deepEqual(model.read(), old)
-  assert.equal((await loadState(lessonOneBundle))!.schemaVersion, 3, 'a later retry can migrate the preserved snapshot')
+  assert.equal((await loadState(lessonOneBundle))!.schemaVersion, 4, 'a later retry can migrate the preserved snapshot')
   const damaged = { ...old, contentVersion: 'unknown' }
   const corruptModel = indexedDBModel(damaged)
   globalThis.indexedDB = corruptModel.factory

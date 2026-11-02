@@ -40,7 +40,7 @@ function draftState(bundle = course): AppState {
 function versionTwoSnapshot(state = draftState(lessonOneBundle)): VersionTwoState {
   const { activeLessonId, savedSessions, session, ...base } = state
   void activeLessonId; void savedSessions
-  const oldSession = session ? (() => { const { lessonId, ...rest } = session; void lessonId; return rest })() : null
+  const oldSession = session ? (() => { const { lessonId, ...rest } = session; void lessonId; return { ...rest, queue: rest.queue.filter(task => task.kind !== 'reverse-card') } })() : null
   const old: VersionTwoState = { ...base, schemaVersion: 2, session: oldSession }
   validateVersionTwoState(old, lessonOneBundle)
   return old
@@ -128,7 +128,7 @@ test('V2 upgrade into course preserves every learned field and pending session w
   const old = versionTwoSnapshot()
   const original = structuredClone(old)
   const next = migrateState(old, course)
-  assert.equal(next.schemaVersion, 3)
+  assert.equal(next.schemaVersion, 4)
   assert.equal(next.activeLessonId, FIRST)
   assert.equal(next.revision, old.revision + 1)
   assert.equal(next.contentVersion, course.contentVersion)
@@ -147,7 +147,9 @@ test('V2 upgrade into course preserves every learned field and pending session w
 })
 
 test('V3 single-lesson snapshot upgrades its content version without resetting the original lesson', () => {
-  const old = draftState(lessonOneBundle)
+  const { reverseProgress, reverseReviews, ...base } = draftState(lessonOneBundle)
+  void reverseProgress; void reverseReviews
+  const old = { ...base, schemaVersion: 3 }
   const next = migrateState(old, course)
   assert.equal(next.revision, old.revision + 1)
   assert.deepEqual(next.progress, old.progress)
@@ -190,8 +192,8 @@ test('V2 migration is atomic, failure preserves original and reloading V3 does n
   await assert.rejects(loadState(course))
   assert.deepEqual(model.read(), old)
   const first = (await loadState(course))!
-  assert.equal(first.schemaVersion, 3)
-  assert.equal((model.read() as AppState).schemaVersion, 3)
+  assert.equal(first.schemaVersion, 4)
+  assert.equal((model.read() as AppState).schemaVersion, 4)
   assert.deepEqual(model.keys(), ['current'])
   assert.deepEqual(await loadState(course), first)
 })

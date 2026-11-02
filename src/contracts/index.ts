@@ -1,5 +1,5 @@
 /** Multi-lesson state. Frozen v1/v2 contracts support lossless progress upgrades. */
-export const SCHEMA_VERSION = 3 as const
+export const SCHEMA_VERSION = 4 as const
 export const POLICY_VERSION = 'learning-policy-v2' as const
 export const NORMALIZATION_VERSION = 'answer-normalization-v2' as const
 export const TARGET_ACTIVE_MS = 1_200_000 as const
@@ -81,6 +81,7 @@ export type ExerciseKind = 'choose-meaning' | 'cloze' | 'match' | 'write-word' |
 export type CycleKind = 'initial' | 'scheduled' | 'recovery'
 export type SessionTask = (
   | { taskId: string; kind: 'flashcard'; entryId: string; revealed: boolean }
+  | { taskId: string; kind: 'reverse-card'; entryId: string; revealed: boolean }
   | { taskId: string; kind: 'choose-meaning'; entryId: string; optionIds: string[] }
   | { taskId: string; kind: 'cloze'; entryId: string; cycleKind: CycleKind }
   | { taskId: string; kind: 'write-word'; entryId: string; cycleKind: CycleKind }
@@ -134,13 +135,34 @@ export interface Session {
   targetAcknowledged: boolean
   targetAcknowledgedDate: string | null
 }
+export interface ReverseProgress {
+  entryId: string
+  completedAt: string
+  lastReviewedAt: string | null
+  nextDueAt: string
+  successStreak: number
+  correctCount: number
+  incorrectCount: number
+  intervalDays: number
+}
+export interface ReverseReview {
+  reviewId: string
+  sessionId: string
+  taskId: string
+  entryId: string
+  correct: boolean
+  at: string
+  studyDate: string
+}
 export interface AppState {
-  schemaVersion: 3
+  schemaVersion: 4
   learningPolicyVersion: typeof POLICY_VERSION
   contentVersion: string
   revision: number
   settings: { studyTimeZone: string; maxNewPerSession: 5; targetActiveMs: typeof TARGET_ACTIVE_MS }
   progress: Record<string, EntryProgress>
+  reverseProgress: Record<string, ReverseProgress>
+  reverseReviews: ReverseReview[]
   attempts: Attempt[]
   session: Session | null
   activeLessonId: string
@@ -153,6 +175,7 @@ export type LearningCommand =
   | { type: 'start-session'; sessionId: string; seed: number }
   | { type: 'select-lesson'; lessonId: string }
   | { type: 'reveal-card'; taskId: string }
+  | { type: 'rate-reverse'; taskId: string; reviewId: string; correct: boolean }
   | { type: 'next'; taskId: string }
   | { type: 'answer'; taskId: string; attemptId: string; answer: string; entryId?: string }
   | { type: 'draft'; taskId: string; value: string }

@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import type { ContentBundle, Entry, EntryProgress, LearningCommand, LessonDefinition, LessonSummary, SessionTask, WortzeitUIProps } from '../contracts/index.ts'
+import type { ContentBundle, Entry, EntryProgress, LearningCommand, LessonDefinition, LessonSummary, ReverseProgress, ReverseReview, SessionTask, WortzeitUIProps } from '../contracts/index.ts'
 import '../App.css'
 
 type Page = 'home' | 'lessons' | 'words' | 'about' | 'session' | 'summary'
@@ -65,13 +65,38 @@ function dateLabel(value: string | null, now: string) {
 function GermanWord({ entry }: { entry: Entry }) {
   return <span lang="de" dir="ltr" className="german-word">{entry.nounData && <span className="article">{entry.nounData.article} </span>}{entry.lemma}</span>
 }
+function DetailSheet({ title, label, children, disabled = false, beforeOpen }: {
+  title: string; label?: string; children: ReactNode; disabled?: boolean; beforeOpen?: () => Promise<void>
+}) {
+  const dialog = useRef<HTMLDialogElement>(null)
+  const titleId = useId()
+  const [opening, setOpening] = useState(false)
+  return <><button type="button" className="text-button details-trigger" disabled={disabled || opening} onClick={async () => {
+    if (opening) return
+    setOpening(true)
+    try { await beforeOpen?.(); dialog.current?.showModal() } catch { /* Application keeps the retryable command. */ } finally { setOpening(false) }
+  }}><Icon name="info" />{label ?? title}</button><dialog ref={dialog} className="detail-sheet" aria-labelledby={titleId} onClick={event => { if (event.target === event.currentTarget) dialog.current?.close() }}><div className="detail-sheet-header"><h2 id={titleId}>{title}</h2><button type="button" className="sheet-close" aria-label="بستن جزئیات" onClick={() => dialog.current?.close()}><Icon name="close" /></button></div><div className="detail-sheet-body">{children}</div></dialog></>
+}
+function TargetPrompt({ active, minutes, disabled, onFinish, onContinue }: {
+  active: boolean; minutes: number; disabled: boolean; onFinish: () => Promise<void>; onContinue: () => Promise<void>
+}) {
+  const dialog = useRef<HTMLDialogElement>(null)
+  const titleId = useId()
+  useEffect(() => {
+    const element = dialog.current
+    if (active) { if (!element?.open) element?.showModal() }
+    else element?.close()
+    return () => { element?.close() }
+  }, [active])
+  return <dialog ref={dialog} className="target-banner target-dialog" aria-labelledby={titleId} onCancel={event => event.preventDefault()}><div><h2 id={titleId}>به هدف حدود {number(minutes)} دقیقهٔ امروز رسیدی.</h2><p>می‌توانی جلسه را تمام کنی یا با همان صف، به تمرین ادامه بدهی.</p><div className="target-actions"><button className="primary-button" type="button" disabled={disabled} onClick={() => void onFinish()}>پایان و دیدن خلاصه</button><button className="secondary-button" type="button" autoFocus disabled={disabled} onClick={() => void onContinue().catch(() => {})}>ادامهٔ تمرین</button></div></div></dialog>
+}
 function Sources({ entry, bundle }: { entry: Entry; bundle: ContentBundle }) {
-  return <details className="entry-sources"><summary>ارجاع این واژه</summary><ul>{entry.sourceRefIds.map(id => {
+  return <DetailSheet title="ارجاع این واژه"><div className="entry-sources"><ul>{entry.sourceRefIds.map(id => {
     const ref = bundle.sourceRefs.find(item => item.sourceRefId === id)
     if (!ref) return null
     const source = bundle.sources.find(item => item.sourceId === ref.sourceId)
     return <li key={id}>{source?.title} · {ref.locator}</li>
-  })}</ul><p>تطبیق با گزیدهٔ موجود؛ اصل کتاب به‌طور جامع بررسی نشده است.</p></details>
+  })}</ul><p>تطبیق با گزیدهٔ موجود؛ اصل کتاب به‌طور جامع بررسی نشده است.</p></div></DetailSheet>
 }
 function ExampleBlock({ entry }: { entry: Entry }) {
   return <div className="example-block"><span className="tiny-label">مثال تألیفی</span><p lang="de" dir="ltr">{entry.examples[0]?.de}</p><p>{entry.examples[0]?.fa}</p></div>
@@ -86,6 +111,17 @@ function SkillDetails({ entry, progress }: { entry: Entry; progress?: EntryProgr
     const value = progress?.skills[skill.key]
     return <div className="skill-row" key={skill.key}><dt>{skill.label}</dt><dd>{skill.key === 'article' && !entry.nounData ? <span className="skill-not-applicable">برای این مدخل کاربرد ندارد</span> : <><span>درست <strong>{number(value?.correct ?? 0)}</strong></span><span>غلط <strong>{number(value?.wrong ?? 0)}</strong></span><span>با کمک <strong>{number(value?.assisted ?? 0)}</strong></span><span>بدون کمک <strong>{number(value?.unassistedCorrect ?? 0)}</strong></span></>}</dd></div>
   })}</dl></section>
+}
+
+function ReverseSkillDetails({ progress, now }: { progress?: ReverseProgress; now: string }) {
+  return <section className="reverse-skill-details" aria-label="پیشرفت مستقل یادآوری فارسی به آلمانی"><h3>یادآوری فارسی به آلمانی</h3>{progress ? <><p>ارزیابی شخصی؛ جدا از شناخت معنی و نوشتن.</p><dl><div><dt>درست گفتم</dt><dd>{number(progress.correctCount)}</dd></div><div><dt>اشتباه گفتم</dt><dd>{number(progress.incorrectCount)}</dd></div><div><dt>مرور بعدی</dt><dd>{dateLabel(progress.nextDueAt, now)}</dd></div></dl></> : <p>پس از تکمیل تمرین اولیه و رسیدن به ۱۵ واژه، مرور معکوس فعال می‌شود.</p>}</section>
+}
+
+function ReverseReviewSummary({ reviews }: { reviews: ReverseReview[] }) {
+  if (!reviews.length) return null
+  const words = new Set(reviews.map(review => review.entryId)).size
+  const correct = reviews.filter(review => review.correct).length
+  return <section className="summary-reverse" aria-label="نتیجهٔ ارزیابی شخصی فارسی به آلمانی"><span className="summary-direction-label"><Icon name="flip" /> مرور معکوس · ارزیابی شخصی</span><div><span><strong>{number(words)}</strong> واژه</span><span><strong>{number(correct)}</strong> درست گفتم</span><span><strong>{number(reviews.length - correct)}</strong> اشتباه گفتم</span></div></section>
 }
 
 function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps }) {
@@ -121,7 +157,8 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
   const matchAttempt = feedback && state.attempts.find(item => item.attemptId === feedback.attemptId)
   const cards = session.queue.filter(item => item.kind === 'flashcard')
   const cardIndex = cards.findIndex(item => item.taskId === task.taskId)
-  const nextIsCard = session.queue[session.cursor + 1]?.kind === 'flashcard'
+  const nextTask = session.queue[session.cursor + 1]
+  const nextIsCard = nextTask?.kind === 'flashcard' || nextTask?.kind === 'reverse-card'
   const entry = task.kind === 'match'  ? null : bundle.entries.find(item => item.entryId === task.entryId)!
   async function send(command: LearningCommand) {
     if (sending.current || disabled) return
@@ -142,7 +179,7 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
     : task.kind === 'cloze' ? helpedEntry.cloze.acceptedAnswers[0]
       : task.kind === 'choose-article' ? helpedEntry.nounData?.article ?? '' : helpedEntry.meaningFa : ''
   const writtenTask = task.kind === 'write-word' || task.kind === 'cloze'
-  return <div className="task-content">
+  return <div className={`task-content task-${task.kind} ${feedback ? 'has-feedback' : ''}`}>
     {task.kind === 'flashcard' && entry && <>
       <div className="task-heading"><span className="eyebrow"><Icon name="book" /> کارت {number(cardIndex + 1)} از {number(cards.length)}</span><h1>یک دوست تازه برای حافظه‌ات.</h1><p>کارت را بچرخان و معنی و مثال را ببین.</p></div>
       <button type="button" className={`flashcard ${showBack ? 'is-flipped' : ''}`} aria-label={showBack ? 'نمایش روی کارت' : 'چرخاندن کارت و نمایش معنی'} aria-pressed={showBack} disabled={disabled} onClick={async () => {
@@ -155,10 +192,21 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
           <span className="card-face card-back" aria-hidden={!showBack}><span className="tiny-label">معنی فارسی</span><strong className="card-meaning">{entry.meaningFa}</strong><span className="card-example-label">مثال تألیفی</span><span className="card-example-de" lang="de" dir="ltr">{entry.examples[0]?.de}</span><span className="card-example-fa">{entry.examples[0]?.fa}</span><span className="flip-hint"><Icon name="flip" /> برگشت به واژه</span></span>
         </span>
       </button>
-      <p className="gentle-note">اول کارت‌ها را ببین؛ بعد با همین واژه‌ها تمرین می‌کنیم.</p>
-      {task.revealed && <><Sources entry={entry} bundle={bundle} /><button type="button" className="primary-button wide flashcard-next" onClick={next} disabled={disabled}>{nextIsCard ? 'واژهٔ بعدی' : 'برویم سراغ تمرین'} <Icon name="arrow" /></button></>}
+      <div className="card-detail-row">{task.revealed ? <Sources entry={entry} bundle={bundle} /> : <span>برای دیدن معنی، کارت را لمس کن.</span>}</div>
+      <button type="button" className="primary-button wide flashcard-next" onClick={next} disabled={disabled || !task.revealed}>{nextIsCard ? 'کارت بعدی' : 'برویم سراغ تمرین'} <Icon name="arrow" /></button>
     </>}
-    {task.kind === 'choose-meaning' && entry && <>
+    {task.kind === 'reverse-card' && entry && <>
+      <div className="task-heading reverse-heading"><span className="eyebrow"><Icon name="flip" /> مرور · فارسی به آلمانی</span><h1>{task.revealed ? 'چطور به خاطر آوردی؟' : 'به آلمانی بگو.'}</h1><p>{task.revealed ? 'جوابت را خودت ارزیابی کن.' : 'بلند بگو، بعد پاسخ را ببین.'}</p></div>
+      <div className={`reverse-card ${task.revealed ? 'is-revealed' : ''}`}>
+        <span className="tiny-label">{lessonLabel((bundle.lessons ?? [bundle.lesson]).find(lesson => lesson.lessonId === entry.introducedInLessonId) ?? bundle.lesson)}</span>
+        <strong className="reverse-meaning">{entry.meaningFa}</strong>
+        {!task.revealed && <p className="reverse-cue">{entry.writing.cueFa}</p>}
+        {task.revealed && <div className="reverse-answer" role="status"><GermanWord entry={entry} /><p className="speaking-note">واژه را یک بار بلند بگو.</p></div>}
+      </div>
+      {task.revealed ? <><div className="card-detail-row"><DetailSheet title="مثال و ارجاع"><ExampleBlock entry={entry} /><p>این جمله را بلند بخوان.</p><Sources entry={entry} bundle={bundle} /></DetailSheet></div><div className="reverse-rating" aria-label="ارزیابی یادآوری آلمانی"><button type="button" className="secondary-button reverse-incorrect" disabled={disabled} onClick={() => void send({ type: 'rate-reverse', taskId: task.taskId, reviewId: crypto.randomUUID(), correct: false })}><Icon name="close" />اشتباه گفتم</button><button type="button" className="primary-button reverse-correct" disabled={disabled} onClick={() => void send({ type: 'rate-reverse', taskId: task.taskId, reviewId: crypto.randomUUID(), correct: true })}><Icon name="check" />درست گفتم</button></div></>
+        : <><div className="card-detail-row"><span>یادآوری کن؛ نمایش پاسخ امتیاز نیست.</span></div><button type="button" className="primary-button wide reverse-reveal" disabled={disabled} onClick={() => void send({ type: 'reveal-card', taskId: task.taskId })}>نمایش پاسخ<Icon name="flip" /></button></>}
+    </>}
+    {task.kind === 'choose-meaning' && entry && !feedback && <>
       <div className="task-heading"><span className="eyebrow"><Icon name="spark" /> انتخاب معنی</span><h1>معنی درست کدام است؟</h1><p>یکی از چهار گزینه را انتخاب کن.</p></div>
       <div className="question-word"><GermanWord entry={entry} /></div>
       <div className="meaning-options">{task.optionIds.map((id, index) => {
@@ -169,22 +217,22 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
         return <button key={id} type="button" className={`meaning-option ${selected ? 'selected' : ''} ${correctOption ? 'answer-correct' : ''} ${selected && !feedback?.correct ? 'answer-wrong' : ''}`} disabled={disabled || !!feedback} onClick={() => answer(id)}><span className="option-number">{number(index + 1)}</span><span>{option.meaningFa}</span>{correctOption && <Icon name="check" />}{selected && !feedback?.correct && <Icon name="close" />}</button>
       })}</div>
     </>}
-    {(task.kind === 'cloze' || task.kind === 'write-word') && entry && <>
+    {(task.kind === 'cloze' || task.kind === 'write-word') && entry && !feedback && <>
       <div className="task-heading"><span className="eyebrow"><Icon name="book" /> {task.cycleKind === 'scheduled' ? 'مرور موعدرسیده' : task.cycleKind === 'recovery' ? 'یک فرصت دیگر' : task.kind === 'write-word' ? 'نوشتن واژه' : 'جای خالی'}</span><h1>{task.kind === 'write-word' ? 'واژه را به آلمانی بنویس.' : 'جمله را کامل کن.'}</h1><p>{task.kind === 'write-word' ? 'از روی معنی و سرنخ فارسی، واژه را به خاطر بیاور.' : 'واژهٔ مناسب را به آلمانی بنویس.'}</p></div>
       {task.kind === 'cloze' ? <div className="cloze-question"><span className="tiny-label">جملهٔ تألیفی</span><p lang="de" dir="ltr">{entry.cloze.sentence.split('___').map((part, i) => <span key={i}>{i > 0 && <span className="blank-mark" aria-label="جای خالی">…</span>}{part}</span>)}</p><p className="cloze-translation">{entry.cloze.translationFa}</p></div>
         : <div className="writing-question"><span className="tiny-label">معنی هدف</span><p className="writing-prompt">{entry.writing.promptFa}</p><p className="writing-cue">{entry.writing.cueFa}</p></div>}
-      <form onSubmit={event => { event.preventDefault(); if (draft.trim() && !feedback) answer(draft) }} className="answer-form">
+      <form onSubmit={event => { event.preventDefault(); if (draft.trim() && !feedback) { event.currentTarget.querySelector('input')?.blur(); answer(draft) } }} className="answer-form">
         <label htmlFor="german-answer">پاسخ تو</label>
         <input id="german-answer" lang="de" dir="ltr" autoComplete="off" autoCapitalize="off" spellCheck={false} placeholder="Deine Antwort …" value={draft} disabled={!!feedback || !!error} onChange={event => {
           const value = event.target.value
           setDraft(value)
           void onCommand({ type: 'draft', taskId: task.taskId, value }).catch(() => {})
         }} />
-        <details className="input-help"><summary>راهنمای نوشتن</summary><p>{entry.writing.caseSensitive ? 'حروف بزرگ و کوچک در این پاسخ مهم‌اند.' : 'در این پاسخ، تفاوت حروف بزرگ و کوچک پذیرفته می‌شود؛ صورت معیار را پس از ثبت می‌بینی.'} حروف آلمانی مثل ä و ß را رعایت کن؛ صورت جایگزین فقط اگر برای همین تمرین ثبت شده باشد پذیرفته می‌شود.</p></details>
+        <DetailSheet title="راهنمای نوشتن"><p>{entry.writing.caseSensitive ? 'حروف بزرگ و کوچک در این پاسخ مهم‌اند.' : 'در این پاسخ، تفاوت حروف بزرگ و کوچک پذیرفته می‌شود؛ صورت معیار را پس از ثبت می‌بینی.'} حروف آلمانی مثل ä و ß را رعایت کن؛ صورت جایگزین فقط اگر برای همین تمرین ثبت شده باشد پذیرفته می‌شود.</p></DetailSheet>
         {!feedback && <button className="primary-button wide" type="submit" disabled={disabled || !draft.trim()}>بررسی پاسخ <Icon name="check" /></button>}
       </form>
     </>}
-    {task.kind === 'choose-article' && entry?.nounData && <>
+    {task.kind === 'choose-article' && entry?.nounData && !feedback && <>
       <div className="task-heading"><span className="eyebrow"><Icon name="book" /> آرتیکل اسم</span><h1>این اسم با کدام آرتیکل می‌آید؟</h1><p>آرتیکل را همراه خود واژه به خاطر بسپار.</p></div>
       <div className="question-word article-question-word"><span className="article-question-mark" aria-hidden="true">?</span><span className="german-word" lang="de" dir="ltr">{entry.lemma}</span></div>
       <p className="article-meaning">{entry.meaningFa}</p>
@@ -211,15 +259,18 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
         })}</div>
       </div><p className="match-message" role="status" aria-live="polite">{feedback ? feedback.correct ? task.matchedEntryIds.length === 4 ? 'همه را پیدا کردی! ✦' : 'آفرین! جفت بعدی را پیدا کن.' : 'این دو جفت نیستند؛ دوباره امتحان کن.' : 'با هر جفت، یک قدم جلوتر ✦'}</p>
     </>}
-    {task.kind !== 'flashcard' && (!feedback || task.kind === 'match') && <section className="assistance-panel" aria-label="کمک در تمرین"><div className="assistance-actions"><button className="text-button" type="button" disabled={disabled || !!feedback || assistance?.kind === 'hint'} onClick={() => void send({ type: 'assist', taskId: task.taskId, eventId: crypto.randomUUID(), kind: 'hint' })}><Icon name="info" /> دیدن مثال راهنما</button><button className="text-button" type="button" disabled={disabled || !!feedback || assistance?.kind === 'answer'} onClick={() => void send({ type: 'assist', taskId: task.taskId, eventId: crypto.randomUUID(), kind: 'answer' })}>نمایش پاسخ</button></div><p className="assistance-note">با دیدن راهنما یا پاسخ، این تلاش با کمک ثبت می‌شود.</p>{task.assisted && <div className="assistance-content" role="status"><strong>این تلاش مستقل محسوب نمی‌شود.</strong>{helpedEntry && assistance?.kind === 'hint' && <ExampleBlock entry={helpedEntry} />}{helpedEntry && assistance?.kind === 'answer' && <p>پاسخ: {task.kind === 'choose-article' || task.kind === 'match' ? <><GermanWord entry={helpedEntry} /><span> — {helpedEntry.meaningFa}</span></> : <bdi lang={writtenTask ? 'de' : 'fa'} dir={writtenTask ? 'ltr' : 'rtl'}>{canonicalAnswer}</bdi>}</p>}</div>}</section>}
-    {feedback && task.kind !== 'match' && <div className={`feedback ${feedback.correct ? 'feedback-correct' : 'feedback-wrong'} ${feedback.assisted ? 'feedback-assisted' : ''}`} role="status" aria-live="polite">
+    {task.kind !== 'flashcard' && task.kind !== 'reverse-card' && (!feedback || task.kind === 'match') && <section className="assistance-panel" aria-label="کمک در تمرین"><div className="assistance-actions">
+      <DetailSheet title="مثال راهنما" label="دیدن مثال راهنما" disabled={disabled || !!feedback} beforeOpen={() => send({ type: 'assist', taskId: task.taskId, eventId: crypto.randomUUID(), kind: 'hint' })}><p>با دیدن راهنما این تلاش با کمک ثبت می‌شود.</p>{task.assisted && helpedEntry && <ExampleBlock entry={helpedEntry} />}</DetailSheet>
+      <DetailSheet title="پاسخ تمرین" label="نمایش پاسخ" disabled={disabled || !!feedback} beforeOpen={() => send({ type: 'assist', taskId: task.taskId, eventId: crypto.randomUUID(), kind: 'answer' })}><p>این تلاش مستقل محسوب نمی‌شود.</p>{task.assisted && helpedEntry && <p>پاسخ: {task.kind === 'choose-article' || task.kind === 'match' ? <><GermanWord entry={helpedEntry} /><span> — {helpedEntry.meaningFa}</span></> : <bdi lang={writtenTask ? 'de' : 'fa'} dir={writtenTask ? 'ltr' : 'rtl'}>{canonicalAnswer}</bdi>}</p>}</DetailSheet>
+    </div></section>}
+    {feedback && task.kind !== 'match' && task.kind !== 'reverse-card' && <div className={`feedback ${feedback.correct ? 'feedback-correct' : 'feedback-wrong'} ${feedback.assisted ? 'feedback-assisted' : ''}`} role="status" aria-live="polite">
       <div className="feedback-title"><span className="feedback-symbol"><Icon name={feedback.correct ? 'check' : 'close'} /></span><strong>{feedback.correct ? feedback.assisted ? 'درست بود؛ این تلاش با کمک ثبت شد.' : 'درست بود، آفرین!' : 'این بار درست نبود؛ با هم مرور کنیم.'}</strong></div>
       {(writtenTask || !feedback.correct) && <p className="correct-answer">{writtenTask ? 'صورت معیار:' : 'پاسخ درست:'} <bdi lang={writtenTask || task.kind === 'choose-article' ? 'de' : 'fa'} dir={writtenTask || task.kind === 'choose-article' ? 'ltr' : 'rtl'}>{feedback.expectedAnswer}</bdi></p>}
       {task.kind === 'choose-article' && feedbackEntry && <p className="article-answer"><GermanWord entry={feedbackEntry} /><span>{feedbackEntry.meaningFa}</span></p>}
       {feedback.assisted && <p className="assisted-feedback-note">این پاسخ، یادآوری مستقل یا پلهٔ تازهٔ مرور محسوب نمی‌شود.</p>}
-      <p>{feedback.explanationFa}</p>
-      {!feedback.correct && feedbackEntry && <ExampleBlock entry={feedbackEntry} />}
-      <button className="primary-button wide" type="button" onClick={next} disabled={disabled}>ادامه<Icon name="arrow" /></button>
+      {feedbackEntry && <div className="feedback-word"><GermanWord entry={feedbackEntry} /><p>{feedbackEntry.meaningFa}</p></div>}
+      <DetailSheet title="مثال و توضیح پاسخ"><p>{feedback.explanationFa}</p>{feedbackEntry && <ExampleBlock entry={feedbackEntry} />}</DetailSheet>
+      <button className="primary-button wide feedback-next" type="button" onClick={next} disabled={disabled}>ادامه<Icon name="arrow" /></button>
     </div>}
   </div>
 }
@@ -228,7 +279,7 @@ function LessonWordList({ entries, props }: { entries: Entry[]; props: WortzeitU
   const { bundle, state, statuses, now } = props
   return <div className="word-list">{entries.map(entry => <details className="word-item" key={entry.entryId}>
           <summary><span className="word-item-main"><GermanWord entry={entry} /><span>{entry.meaningFa}</span></span><span className={`word-status status-${statuses[entry.entryId]}`}><i />{statusLabels[statuses[entry.entryId]]}</span><span className="details-chevron" aria-hidden="true">⌄</span></summary>
-          <div className="word-item-details"><ExampleBlock entry={entry} /><SkillDetails entry={entry} progress={state.progress[entry.entryId]} /><Sources entry={entry} bundle={bundle} />{state.progress[entry.entryId]?.nextDueAt && <p className="word-due">مرور بعدی: {dateLabel(state.progress[entry.entryId].nextDueAt, now)}</p>}</div>
+          <div className="word-item-details"><ExampleBlock entry={entry} /><SkillDetails entry={entry} progress={state.progress[entry.entryId]} /><ReverseSkillDetails progress={state.reverseProgress?.[entry.entryId]} now={now} /><Sources entry={entry} bundle={bundle} />{state.progress[entry.entryId]?.nextDueAt && <p className="word-due">مرور بعدی: {dateLabel(state.progress[entry.entryId].nextDueAt, now)}</p>}</div>
         </details>)}</div>
 }
 
@@ -243,6 +294,20 @@ export function WortzeitUI(props: WortzeitUIProps) {
   const effectivePage = page === 'session' && session?.state === 'ended' ? 'summary'
     : page === 'session' && session?.state === 'paused' ? 'home' : page
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [effectivePage])
+  useEffect(() => {
+    const viewport = window.visualViewport
+    const resize = () => {
+      const height = viewport?.height ?? window.innerHeight
+      document.documentElement.style.setProperty('--app-height', `${height}px`)
+      document.documentElement.style.setProperty('--app-top', `${viewport?.offsetTop ?? 0}px`)
+      document.documentElement.classList.toggle('keyboard-open', height < window.innerHeight * .75)
+    }
+    resize()
+    viewport?.addEventListener('resize', resize)
+    viewport?.addEventListener('scroll', resize)
+    window.addEventListener('resize', resize)
+    return () => { viewport?.removeEventListener('resize', resize); viewport?.removeEventListener('scroll', resize); window.removeEventListener('resize', resize) }
+  }, [])
   const sessionIsVisible = effectivePage === 'session' && session?.state === 'active'
   useEffect(() => {
     onSessionVisibilityChange(sessionIsVisible)
@@ -276,7 +341,7 @@ export function WortzeitUI(props: WortzeitUIProps) {
   async function navigate(destination: Page) {
     try {
       // The word list exposes the pending answer even when the session is paused.
-      if (destination === 'words' && task && task.kind !== 'flashcard' && (!session?.feedback || task.kind === 'match')) {
+      if (destination === 'words' && task && task.kind !== 'flashcard' && task.kind !== 'reverse-card' && (!session?.feedback || task.kind === 'match')) {
         if (task.kind === 'match') {
           const exposed = new Set(state.assistanceEvents.filter(event => event.taskId === task.taskId).map(event => event.entryId))
           for (const entryId of task.entryIds.filter(id => !task.matchedEntryIds.includes(id) && !exposed.has(id))) {
@@ -290,36 +355,42 @@ export function WortzeitUI(props: WortzeitUIProps) {
     } catch { /* Keep the answer concealed until its assistance event is stored. */ }
   }
   const navigation: { page: Page; label: string; icon: IconName }[] = [{ page: 'home', label: 'خانه', icon: 'home' }, { page: 'lessons', label: 'درس‌ها', icon: 'book' }, { page: 'words', label: 'واژه‌ها', icon: 'spark' }, { page: 'about', label: 'دربارهٔ درس', icon: 'info' }]
+  const learnedCount = Object.keys(state.reverseProgress ?? {}).length
+  const reverseDueCount = Object.values(state.reverseProgress ?? {}).filter(item => Date.parse(item.nextDueAt) <= Date.parse(now)).length
+  const reverseSessionReviews = (state.reverseReviews ?? []).filter(review => review.sessionId === session?.sessionId)
+  const hasOriginalSessionWork = summary.totalAnswers > 0 || summary.introduced > 0
+  const summaryNextDueAt = [summary.nextDueAt, ...reverseSessionReviews.map(review => state.reverseProgress[review.entryId]?.nextDueAt)].filter((value): value is string => !!value).sort()[0] ?? null
   const selectedWords = activeEntries.filter(entry => (filter === 'all' || statuses[entry.entryId] === filter) && `${entry.lemma} ${entry.meaningFa}`.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
-  return <div className="wortzeit-app" dir="rtl" lang="fa">
+  return <div className={`wortzeit-app page-${effectivePage}`} dir="rtl" lang="fa">
     <header className="app-header"><button type="button" className="brand" aria-label="Wortzeit، خانه" onClick={() => setPage('home')}><span className="brand-mark"><Icon name="leaf" /></span><span><strong lang="de" dir="ltr">Wortzeit<span className="brand-dot">.</span></strong><small>وقتِ واژه‌هاست</small></span></button><nav className="desktop-nav" aria-label="ناوبری اصلی">{navigation.map(item => <button type="button" key={item.page} className={effectivePage === item.page ? 'active' : ''} onClick={() => void navigate(item.page)}>{item.label}</button>)}</nav><div className={`offline-pill ${offlineStatus === 'ready' ? 'offline-ready' : ''}`} role="status"><span className="status-dot" />{offlineStatus === 'ready' ? 'آمادهٔ آفلاین' : offlineStatus === 'checking' ? 'آماده‌سازی آفلاین…' : 'آفلاین آماده نیست'}</div></header>
     <main className="app-main">
       <div className="active-lesson-strip"><span><Icon name="book" /><strong>{lessonLabel(activeLesson)}</strong><span>{activeLesson.titleFa}</span></span><button type="button" className="text-button" onClick={() => void navigate('lessons')} disabled={disabled}>تغییر درس<Icon name="arrow" /></button></div>
       {effectivePage === 'lessons' && <section className="lessons-page"><div className="page-intro"><div><span className="eyebrow">بخش جداگانهٔ هر درس</span><h1>درس خودت را انتخاب کن<span className="orange-dot">.</span></h1><p>واژه‌ها، تمرین‌ها و ادامهٔ هر درس در بخش خودش می‌ماند. هدف روزانه برای مطالعهٔ همهٔ درس‌ها مشترک است.</p></div></div><LessonCards summaries={summaries} activeLessonId={activeLesson.lessonId} disabled={disabled} onChoose={chooseLesson} /><p className="lessons-note">هر درس آماده را می‌توانی مستقیم باز کنی؛ مرورهای هر درس در همان بخش در دسترس‌اند.</p></section>}
       {error && <div className="storage-error" role="alert"><Icon name="info" /><div><strong>ذخیره کامل نشد</strong><p>{error}</p></div><button type="button" className="text-button" onClick={onRetry} disabled={busy}>تلاش دوباره</button></div>}
-      {effectivePage === 'home' && <>
+      {effectivePage === 'home' && <section className="home-page">
         <div className="page-intro"><div><span className="eyebrow">هر روز، چند واژه نزدیک‌تر</span><h1>وقتِ یک قدم کوچکه<span className="orange-dot">.</span></h1></div><span className="level-pill" lang="de" dir="ltr">{activeLesson.level} · Lektion {String(lessonNumber(activeLesson)).padStart(2, '0')}</span></div>
         <div className="home-grid"><section className="hero-panel"><div className="hero-copy"><span className="eyebrow lesson-eyebrow"><span className="mini-line" /> {lessonLabel(activeLesson)} · {activeLesson.titleFa}</span><h2 lang="de" dir="ltr">{activeLesson.titleDe}</h2><p>اول چند فلش‌کارت، بعد کمی بازی.<br />واژه‌های تازه را با ریتم خودت یاد بگیر.</p><button type="button" className="primary-button hero-button" disabled={disabled} onClick={() => void start()}>ادامهٔ یادگیری<Icon name="arrow" /></button><span className="hero-caption">{session && session.state !== 'ended' ? 'جلسهٔ ناتمام تو از همان‌جا ادامه پیدا می‌کند.' : 'شروع یادگیری · حداکثر ۵ واژهٔ جدید در هر جلسه'}</span></div><GardenIllustration /></section>
           <aside className="today-panel"><span className="eyebrow"><Icon name="clock" /> نوبت مرور</span><div className="review-number">{number(stats.due)}<span>واژه</span></div><h2>{stats.due ? 'منتظر یک دیدار دوباره‌اند' : 'مرور عقب‌افتاده‌ای نداری'}</h2><p>{stats.due ? 'مرورهای موعدرسیده پیش از واژه‌های تازه می‌آیند.' : 'پس از تمرین، وقت مرور بعدی اینجا مشخص می‌شود.'}</p><div className="next-review"><Icon name="clock" /><span>مرور بعدی<strong>{dateLabel(stats.nextDueAt, now)}</strong></span></div></aside></div>
         <section className="progress-panel"><div><span className="eyebrow">ردِ قدم‌های تو</span><h2>پیشرفت در {lessonLabel(activeLesson)}</h2><p>واژه‌های همین درس و پیشرفت واقعی تو.</p></div><div className="progress-overview"><div className="progress-count"><strong>{number(stats.introduced)}</strong><span>از {number(total)} واژه معرفی شده</span></div><div className="word-progress" role="progressbar" aria-label="واژه‌های معرفی‌شده در بسته" aria-valuemin={0} aria-valuemax={total} aria-valuenow={stats.introduced}><span style={{ width: `${total ? stats.introduced / total * 100 : 0}%` }} /></div><span className="progress-note">معرفی شدن با تسلط یکی نیست؛ مرورهای روزهای بعد مهم‌اند.</span></div><div className="answer-stat"><span className="stat-icon"><Icon name="check" /></span><strong>{number(stats.correct)} <small>از {number(stats.totalAnswers)}</small></strong><span>پاسخ درست</span></div></section>
-        <div className="daily-glance"><span><Icon name="clock" /> امروز <bdi dir="ltr">{durationLabel(stats.todayActiveMs)}</bdi> مطالعه</span><span><Icon name="spark" /> {number(stats.stabilized)} واژهٔ تثبیت‌شده</span></div>
+        <div className="daily-glance"><span><Icon name="clock" /> امروز <bdi dir="ltr">{durationLabel(stats.todayActiveMs)}</bdi> مطالعه</span><span><Icon name="flip" />{learnedCount < 15 ? `مرور معکوس · ${number(learnedCount)} از ۱۵ واژه` : `مرور معکوس · ${number(reverseDueCount)} آماده`}</span></div>
         <section className="home-lessons-section" aria-label="دسترسی به درس‌ها"><button type="button" className="lesson-shortcut" onClick={() => void navigate('lessons')}><span><Icon name="book" /> درس‌های من</span><span>{number(summaries.length)} درس آماده <Icon name="arrow" /></span></button></section>
         <div className="home-footnote"><Icon name="leaf" /><p>پیشرفتت در همین مرورگر می‌ماند؛ هر وقت برگشتی، از همین‌جا ادامه بده.</p><button type="button" className="text-button" onClick={() => setPage('about')}>دربارهٔ محتوا و ذخیره</button></div>
-      </>}
+      </section>}
       {effectivePage === 'session' && <section className="session-page">
         <div className="session-toolbar"><button type="button" className="text-button" onClick={() => void pause()} disabled={disabled}><Icon name="pause" /> توقف و بازگشت</button><span>{lessonLabel(activeLesson)} <span className="toolbar-dot">·</span> {number(summary.practiced)} واژه تمرین شده</span><button type="button" className="text-button finish-button" onClick={() => void finish()} disabled={disabled}>پایان جلسه</button></div>
         <div className="session-progress"><span style={{ width: `${session?.queue.length ? Math.min(100, session.cursor / session.queue.length * 100) : 0}%` }} /></div>
-        <div className="session-activity"><span><Icon name="clock" /> زمان فعال این جلسه <bdi dir="ltr">{durationLabel(summary.activeMs)}</bdi></span><span className="session-phase">{task?.kind === 'flashcard' ? '۱ · آشنایی با واژه‌ها' : task?.kind === 'match' ? '۳ · بازی جفت‌ها' : '۲ · یادآوری و تمرین'}</span></div>
-        {targetReached && <section className="target-banner" role="status"><Icon name="leaf" /><div><h2>به هدف حدود {number(state.settings.targetActiveMs / 60_000)} دقیقهٔ امروز رسیدی.</h2><p>می‌توانی جلسه را تمام کنی یا با همان صف، به تمرین ادامه بدهی.</p><div className="target-actions"><button className="primary-button" type="button" disabled={disabled} onClick={() => void finish()}>پایان و دیدن خلاصه</button><button className="secondary-button" type="button" disabled={disabled} onClick={() => void onCommand({ type: 'continue-after-target' }).catch(() => {})}>ادامهٔ تمرین</button></div></div></section>}
+        <div className="session-activity"><span><Icon name="clock" /> زمان فعال این جلسه <bdi dir="ltr">{durationLabel(summary.activeMs)}</bdi></span><span className="session-phase">{task?.kind === 'reverse-card' ? 'مرور · فارسی به آلمانی' : task?.kind === 'flashcard' ? '۱ · آشنایی با واژه‌ها' : task?.kind === 'match' ? '۳ · بازی جفت‌ها' : '۲ · یادآوری و تمرین'}</span></div>
+        <TargetPrompt active={targetReached} minutes={state.settings.targetActiveMs / 60_000} disabled={disabled} onFinish={finish} onContinue={() => onCommand({ type: 'continue-after-target' })} />
         {task ? <TaskPanel key={task.taskId} task={task} props={props} /> : <div className="empty-state"><Icon name="check" /><h1>تمرین‌های این نوبت تمام شد.</h1><p>خلاصهٔ واقعی جلسه و وقت مرور بعدی را ببین.</p><button className="primary-button" type="button" onClick={() => void finish()} disabled={disabled}>دیدن خلاصه <Icon name="arrow" /></button></div>}
       </section>}
-      {effectivePage === 'summary' && <section className="summary-page">
+      {effectivePage === 'summary' && <section className={`summary-page ${reverseSessionReviews.length ? 'with-reverse-summary' : ''}`}>
         <div className="summary-art"><Icon name="leaf" /><span className="summary-spark">✦</span></div><span className="eyebrow">یک قدم دیگر برداشتی</span><h1>این بود نوبتِ امروزت<span className="orange-dot">.</span></h1><p>{lessonLabel(activeLesson)} · {activeLesson.titleFa}؛ هر برخورد با یک واژه، فرصتی برای یادگیری است.</p>
-        <div className="summary-stats"><div><strong>{number(summary.practiced)}</strong><span>واژهٔ تمرین‌شده</span></div><div><strong>{number(summary.correct)}<small> / {number(summary.totalAnswers)}</small></strong><span>پاسخ درست</span></div><div><strong>{number(summary.needsReview)}</strong><span>نیازمند مرور</span></div><div><strong>{number(summary.introduced)}</strong><span>واژهٔ معرفی‌شده</span></div></div>
-        <div className="summary-activity"><span>زمان فعال جلسه <strong dir="ltr">{durationLabel(summary.activeMs)}</strong></span><span>پاسخ با کمک <strong>{number(summary.assisted)}</strong></span></div>
-        <div className="summary-next"><Icon name="clock" /><div><strong>وقت دیدار دوباره</strong><p>{dateLabel(summary.nextDueAt, now)}</p></div></div>
+        {hasOriginalSessionWork && <section className="summary-original" aria-label="نتیجهٔ تمرین‌های اصلی"><span className="summary-direction-label">تمرین‌های اصلی · شناخت معنی و نوشتن</span><div className="summary-stats"><div><strong>{number(summary.practiced)}</strong><span>واژهٔ تمرین‌شده</span></div><div><strong>{number(summary.correct)}<small> / {number(summary.totalAnswers)}</small></strong><span>پاسخ درست</span></div><div><strong>{number(summary.needsReview)}</strong><span>نیازمند مرور</span></div><div><strong>{number(summary.introduced)}</strong><span>واژهٔ معرفی‌شده</span></div></div></section>}
+        <ReverseReviewSummary reviews={reverseSessionReviews} />
+        <div className="summary-activity"><span>زمان فعال جلسه <strong dir="ltr">{durationLabel(summary.activeMs)}</strong></span>{hasOriginalSessionWork && <span>پاسخ تمرین با کمک <strong>{number(summary.assisted)}</strong></span>}</div>
+        <div className="summary-next"><Icon name="clock" /><div><strong>وقت دیدار دوباره</strong><p>{dateLabel(summaryNextDueAt, now)}</p></div></div>
         {summary.remaining > 0 && <p className="summary-unfinished">{number(summary.remaining)} واژه با تمرین ناتمام برای ادامه باقی مانده؛ انجام‌شده حساب نشده‌اند.</p>}
-        <p className="summary-note">پاسخ‌های درست ممکن است با کمک باشند؛ تعداد پاسخ درست به‌تنهایی تسلط را نشان نمی‌دهد. فاصلهٔ مرور با یادآوری مستقل در روزهای جدا بیشتر می‌شود. این گزیده، پایان همهٔ واژگان اصل این درس نیست.</p><div className="summary-actions"><button className="primary-button" type="button" disabled={disabled} onClick={() => void start()}>ادامهٔ یادگیری<Icon name="arrow" /></button><button className="secondary-button" type="button" onClick={() => setPage('home')}>بازگشت به خانه</button></div>
+        <DetailSheet title="دربارهٔ نتیجهٔ جلسه"><p>پاسخ‌های درست ممکن است با کمک باشند؛ تعداد پاسخ درست به‌تنهایی تسلط را نشان نمی‌دهد. فاصلهٔ مرور با یادآوری مستقل در روزهای جدا بیشتر می‌شود. این گزیده، پایان همهٔ واژگان اصل این درس نیست.</p><p>مرور معکوس، ارزیابی شخصیِ فارسی به آلمانی است و امتیازش جدا از تمرین نوشتن ذخیره می‌شود.</p></DetailSheet><div className="summary-actions"><button className="primary-button" type="button" disabled={disabled} onClick={() => void start()}>ادامهٔ یادگیری<Icon name="arrow" /></button><button className="secondary-button" type="button" onClick={() => setPage('home')}>بازگشت به خانه</button></div>
       </section>}
       {effectivePage === 'words' && <section className="words-page">
         <div className="page-intro"><div><span className="eyebrow">واژه‌نامهٔ کوچک تو</span><h1>واژه‌های {lessonLabel(activeLesson)}<span className="orange-dot">.</span></h1><p>{number(total)} مدخل از گزیدهٔ موجود؛ وضعیت‌ها براساس پیشرفت واقعی تو هستند.</p></div><span className="level-pill" lang="de" dir="ltr">A1</span></div>
@@ -329,8 +400,7 @@ export function WortzeitUI(props: WortzeitUIProps) {
         <LessonWordList entries={selectedWords} props={props} />
         {!selectedWords.length && <div className="empty-state"><Icon name="book" /><h2>واژه‌ای با این جست‌وجو پیدا نشد.</h2><button className="text-button" type="button" onClick={() => { setSearch(''); setFilter('all') }}>نمایش همهٔ واژه‌ها</button></div>}
       </section>}
-      {effectivePage === 'about' && <section className="about-page"><span className="eyebrow">شفاف، ساده، روی همین دستگاه</span><h1>پشتِ این واژه‌ها<span className="orange-dot">.</span></h1><article className="about-card"><span className="about-icon"><Icon name="book" /></span><div><h2>یک گزیدهٔ کوچک برای شروع</h2><p>این بسته شامل {number(total)} مدخل از {lessonLabel(activeLesson)} <bdi lang="de" dir="ltr">{activeLesson.titleDe}</bdi> است. معنی، آرتیکل و ارجاعات با فایل گزیده تطبیق داده شده‌اند.</p><p>{activeProvenance.noteFa}</p><p>جمله‌ها و ترجمهٔ آن‌ها تألیفی‌اند و نقل‌قول از کتاب نیستند. ارجاع هر واژه در کارت و فهرست واژه‌ها در دسترس است.</p><span className="source-file" dir="ltr">{activeProvenance.file}</span></div></article><article className="about-card"><span className="about-icon peach"><Icon name="clock" /></span><div><h2>یادگیری با فاصله</h2><p>نخستین یادآوری موفق، مرور را برای یک روز بعد برنامه‌ریزی می‌کند. با مرورهای موفقِ موعدرسیده در روزهای جدا، فاصله‌ها به ۳، ۷، ۱۴ و ۳۰ روز می‌رسند.</p><p>چند جواب درست در یک روز، چند پله را جلو نمی‌برد. کارت و بازی جای یادآوری مستقل را نمی‌گیرند. پاسخ غلط پس از چند سؤال دیگر دوباره تمرین می‌شود؛ اگر تمرین کافی نماند، برای جلسهٔ بعد محفوظ است.</p></div></article><article className="about-card"><span className="about-icon yellow"><Icon name="leaf" /></span><div><h2>پیشرفتت روی همین مرورگر</h2><p>پاسخ‌ها، موعد مرور و محل ادامهٔ جلسه در حافظهٔ محلی مرورگر این دستگاه ذخیره می‌شوند. حساب کاربری و همگام‌سازی ابری وجود ندارد.</p><p>تازه‌سازی و بستن عادی برنامه پیشرفت را حفظ می‌کنند. پاک‌کردن دادهٔ سایت یا حذف داده‌ها توسط مرورگر می‌تواند پیشرفت را پاک کند؛ پشتیبان خودکار وجود ندارد.</p><p>{offlineStatus === 'ready' ? 'پوسته و بستهٔ این نسخه بررسی شده‌اند و برای مطالعهٔ آفلاین آماده‌اند.' : 'آمادگی آفلاین هنوز تأیید نشده است؛ پس از آماده‌شدن، نشان بالای صفحه تغییر می‌کند.'}</p></div></article></section>}
-      {effectivePage === 'about' && <section className="about-page"><article className="about-card"><span className="about-icon"><Icon name="spark" /></span><div><h2>معنی، نوشتن و آرتیکل جدا سنجیده می‌شوند</h2><p>شناخت معنی و اتصال جفت‌ها یک مهارت‌اند؛ جای خالی و نوشتن واژه مهارت نوشتن را تمرین می‌دهند. آرتیکل فقط برای اسم مناسب مطرح می‌شود. شمار پاسخ درست، غلط، پاسخ با کمک و پاسخ درستِ بدون کمک را در جزئیات هر واژه می‌بینی.</p><p>تثبیت در این برنامه یک وضعیت عملیاتی است: دست‌کم سه مرور مستقلِ موعدرسیده در روزهای جدا، بدون خطا یا کمک میانی؛ برای اسم، دست‌کم یک پاسخ آرتیکلِ بدون کمک هم لازم است. بازی یا چند جواب درست در یک روز این وضعیت را نمی‌سازد.</p><p>هدف روزانه حدود {number(state.settings.targetActiveMs / 60_000)} دقیقه مطالعهٔ فعال است. فقط زمان حضور در جلسهٔ فعال شمرده می‌شود؛ صفحهٔ پنهان، توقف، واژه‌نامه و زمان بسته‌بودن برنامه به آن اضافه نمی‌شوند. رسیدن به هدف، پیشنهاد پایان است و ادامه‌دادن مجاز می‌ماند.</p></div></article></section>}
+      {effectivePage === 'about' && <section className="about-page"><span className="eyebrow">شفاف، ساده، روی همین دستگاه</span><h1>پشتِ این واژه‌ها<span className="orange-dot">.</span></h1><article className="about-card"><span className="about-icon"><Icon name="book" /></span><div><h2>یک گزیدهٔ کوچک برای شروع</h2><p>این بسته شامل {number(total)} مدخل از {lessonLabel(activeLesson)} <bdi lang="de" dir="ltr">{activeLesson.titleDe}</bdi> است. معنی، آرتیکل و ارجاعات با فایل گزیده تطبیق داده شده‌اند.</p><p>{activeProvenance.noteFa}</p><p>جمله‌ها و ترجمهٔ آن‌ها تألیفی‌اند و نقل‌قول از کتاب نیستند. ارجاع هر واژه در کارت و فهرست واژه‌ها در دسترس است.</p><span className="source-file" dir="ltr">{activeProvenance.file}</span></div></article><article className="about-card"><span className="about-icon peach"><Icon name="clock" /></span><div><h2>یادگیری با فاصله</h2><p>نخستین یادآوری موفق، مرور را برای یک روز بعد برنامه‌ریزی می‌کند. با مرورهای موفقِ موعدرسیده در روزهای جدا، فاصله‌ها به ۳، ۷، ۱۴ و ۳۰ روز می‌رسند.</p><p>چند جواب درست در یک روز، چند پله را جلو نمی‌برد. کارت و بازی جای یادآوری مستقل را نمی‌گیرند. پاسخ غلط پس از چند سؤال دیگر دوباره تمرین می‌شود؛ اگر تمرین کافی نماند، برای جلسهٔ بعد محفوظ است.</p></div></article><article className="about-card"><span className="about-icon yellow"><Icon name="leaf" /></span><div><h2>پیشرفتت روی همین مرورگر</h2><p>پاسخ‌ها، موعد مرور و محل ادامهٔ جلسه در حافظهٔ محلی مرورگر این دستگاه ذخیره می‌شوند. حساب کاربری و همگام‌سازی ابری وجود ندارد.</p><p>تازه‌سازی و بستن عادی برنامه پیشرفت را حفظ می‌کنند. پاک‌کردن دادهٔ سایت یا حذف داده‌ها توسط مرورگر می‌تواند پیشرفت را پاک کند؛ پشتیبان خودکار وجود ندارد.</p><p>{offlineStatus === 'ready' ? 'پوسته و بستهٔ این نسخه بررسی شده‌اند و برای مطالعهٔ آفلاین آماده‌اند.' : 'آمادگی آفلاین هنوز تأیید نشده است؛ پس از آماده‌شدن، نشان بالای صفحه تغییر می‌کند.'}</p></div></article><article className="about-card"><span className="about-icon"><Icon name="spark" /></span><div><h2>معنی، نوشتن و آرتیکل جدا سنجیده می‌شوند</h2><p>شناخت معنی و اتصال جفت‌ها یک مهارت‌اند؛ جای خالی و نوشتن واژه مهارت نوشتن را تمرین می‌دهند. آرتیکل فقط برای اسم مناسب مطرح می‌شود. شمار پاسخ درست، غلط، پاسخ با کمک و پاسخ درستِ بدون کمک را در جزئیات هر واژه می‌بینی.</p><p>تثبیت در این برنامه یک وضعیت عملیاتی است: دست‌کم سه مرور مستقلِ موعدرسیده در روزهای جدا، بدون خطا یا کمک میانی؛ برای اسم، دست‌کم یک پاسخ آرتیکلِ بدون کمک هم لازم است. بازی یا چند جواب درست در یک روز این وضعیت را نمی‌سازد.</p><p>هدف روزانه حدود {number(state.settings.targetActiveMs / 60_000)} دقیقه مطالعهٔ فعال است. فقط زمان حضور در جلسهٔ فعال شمرده می‌شود؛ صفحهٔ پنهان، توقف، واژه‌نامه و زمان بسته‌بودن برنامه به آن اضافه نمی‌شوند. رسیدن به هدف، پیشنهاد پایان است و ادامه‌دادن مجاز می‌ماند.</p></div></article></section>}
     </main>
     <footer className="app-footer"><span lang="de" dir="ltr">Kleine Schritte. Neue Wörter.</span><span>واژه‌های کوچک، قدم‌های ماندگار.</span></footer>
     {effectivePage !== 'session' && <nav className="mobile-nav" aria-label="ناوبری اصلی موبایل">{navigation.map(item => <button type="button" key={item.page} className={effectivePage === item.page ? 'active' : ''} aria-current={effectivePage === item.page ? 'page' : undefined} onClick={() => void navigate(item.page)}><Icon name={item.icon} /><span>{item.label}</span></button>)}</nav>}

@@ -51,25 +51,34 @@ export class CommandWriter {
     if (this.running) return this.running
     this.updateBusy()
     this.running = (async () => {
-      while (this.queue.length) {
-        const before = this.state
-        const after = transition(before, this.queue[0], this.options.bundle, this.options.now())
-        if (after !== before) {
-          await this.options.save(after, before.revision)
-          this.state = after
-          this.options.onSaved(after)
-        }
-        this.queue.shift()
-        this.updateBusy()
+      // Install running before a no-op command can drain synchronously. Cleanup
+      // belongs to this same async continuation, not a later .finally microtask
+      // where new submissions could attach to an already finished drain.
+      await Promise.resolve()
+      try {
+        do {
+          while (this.queue.length) {
+            const before = this.state
+            const after = transition(before, this.queue[0], this.options.bundle, this.options.now())
+            if (after !== before) {
+              await this.options.save(after, before.revision)
+              this.state = after
+              this.options.onSaved(after)
+            }
+            this.queue.shift()
+            this.updateBusy()
+          }
+          this.options.onError(null)
+        } while (this.queue.length)
+      } catch (error) {
+        this.failure = error
+        this.options.onError(error)
+        throw error
+      } finally {
+        this.running = null
+        if (this.busy) { this.busy = false; this.options.onBusy(false) }
       }
-    })().then(() => { this.options.onError(null) }, error => {
-      this.failure = error
-      this.options.onError(error)
-      throw error
-    }).finally(() => {
-      this.running = null
-      if (this.busy) { this.busy = false; this.options.onBusy(false) }
-    })
+    })()
     return this.running
   }
 }

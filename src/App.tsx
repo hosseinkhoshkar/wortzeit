@@ -133,7 +133,7 @@ export default function App() {
   }, [])
 
   const onCommand = (command: LearningCommand): Promise<void> => {
-    if (command.type === 'next') activity.current?.flush()
+    if (command.type === 'next' || command.type === 'rate-reverse') activity.current?.flush()
     if (command.type === 'pause' || command.type === 'end-session' || command.type === 'select-lesson') activity.current?.stop()
     return writer.current?.submit(command) ?? Promise.resolve()
   }
