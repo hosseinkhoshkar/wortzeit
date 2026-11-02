@@ -131,3 +131,34 @@ test('commands queued after a failed background save keep retry available', asyn
   assert.equal(saved.session!.draft, 'Hallo')
   assert.equal(saved.session!.state, 'paused')
 })
+
+
+test('pause queued behind a synchronous no-op activity is committed before submit resolves', async () => {
+  const initial = clozeState()
+  let persisted = initial
+  const writer = new CommandWriter(initial, { bundle, now: () => now,
+    save: async state => { persisted = structuredClone(state) },
+    onSaved: () => {}, onBusy: () => {}, onError: () => {},
+  })
+  const noOp = writer.submit({ type: 'activity', eventId: 'invalid-tick', sessionId: initial.session!.sessionId,
+    from: now, to: now, elapsedMs: 0 })
+  const pause = writer.submit({ type: 'pause' })
+  await pause
+  assert.equal(persisted.session!.state, 'paused')
+  assert.equal(persisted.revision, initial.revision + 1)
+  await noOp
+})
+
+test('a reentrant command added as a drain reports success is not stranded', async () => {
+  const initial = clozeState()
+  let persisted = initial, queued = false
+  const writer = new CommandWriter(initial, { bundle, now: () => now,
+    save: async state => { persisted = structuredClone(state) },
+    onSaved: () => {}, onBusy: () => {}, onError: error => {
+      if (error === null && !queued) { queued = true; void writer.submit({ type: 'pause' }) }
+    },
+  })
+  await writer.submit({ type: 'activity', eventId: 'ignored', sessionId: initial.session!.sessionId,
+    from: now, to: now, elapsedMs: 0 })
+  assert.equal(persisted.session!.state, 'paused')
+})

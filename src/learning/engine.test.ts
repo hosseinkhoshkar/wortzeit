@@ -37,7 +37,7 @@ function written(task: SessionTask): task is Extract<SessionTask, { kind: 'cloze
 function answer(state: AppState, correct = true, now = NOW): AppState {
   const task = currentTask(state)!
   assert.notEqual(task.kind, 'flashcard')
-  if (task.kind === 'flashcard') throw new Error('unreachable')
+  if (task.kind === 'flashcard' || task.kind === 'reverse-card') throw new Error('unreachable')
   const entryId = task.kind === 'match'
     ? task.entryIds.find(id => !task.matchedEntryIds.includes(id))! : task.entryId
   return apply(state, { type: 'answer', taskId: task.taskId, attemptId: `attempt-${++sequence}`, entryId,

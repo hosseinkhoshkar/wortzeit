@@ -4,6 +4,7 @@ import type {
   LearningCommand, LessonDefinition, Session, SessionSummary, SessionTask,
 } from '../contracts/index.ts'
 import { applySchedule, createProgress, isDue, isStabilized } from './schedule.ts'
+import { initializeReverseProgress, mixReverseCards, reverseStudyDate, scheduleReverseReview, selectReverseEntries, REVERSE_ACTIVATION_COUNT } from './reverse.ts'
 
 export function getLessons(bundle: ContentBundle): LessonDefinition[] {
   return bundle.lessons ?? [bundle.lesson]
@@ -24,7 +25,7 @@ export function createInitialState(bundle: ContentBundle, studyTimeZone: string)
     schemaVersion: SCHEMA_VERSION, learningPolicyVersion: POLICY_VERSION,
     contentVersion: bundle.contentVersion, revision: 0,
     settings: { studyTimeZone, maxNewPerSession: 5, targetActiveMs: TARGET_ACTIVE_MS },
-    progress: {}, attempts: [], session: null, assistanceEvents: [], dailyActivity: {}, activityEventIds: [],
+    progress: {}, reverseProgress: {}, reverseReviews: [], attempts: [], session: null, assistanceEvents: [], dailyActivity: {}, activityEventIds: [],
     activeLessonId: bundle.lesson.lessonId, savedSessions: {},
   }
 }
@@ -211,9 +212,11 @@ function start(state: AppState, command: Extract<LearningCommand, { type: 'start
     .sort((a, b) => a.introductionOrder - b.introductionOrder).slice(0, state.settings.maxNewPerSession)
   // Learn the complete small batch before any of its exercises. Cards only
   // become introductions when reached; their IDs and persisted shape stay stable.
-  for (const entry of newEntries) session.queue.push({
+  const newCards: SessionTask[] = newEntries.map(entry => ({
     taskId: `${session.sessionId}:new:${entry.entryId}:card`, kind: 'flashcard', entryId: entry.entryId, revealed: false,
-  })
+  }))
+  const reverseIds = selectReverseEntries(state, bundle, newEntries.map(entry => entry.entryId), now, command.seed)
+  session.queue.push(...mixReverseCards(newCards, reverseIds, session.sessionId, command.seed))
   for (const entry of newEntries) queueNewEntryPractice(session, entry, command.seed)
   // This task appears only after their cards, never introduces an unseen word by itself.
   const matchPool = [...newEntries.map(entry => entry.entryId), ...activeEntries(state, bundle).filter(entry => state.progress[entry.entryId]).map(entry => entry.entryId)]
@@ -236,7 +239,7 @@ function markWrong(state: AppState, entryId: string, now: string): void {
   applySchedule(progress, { kind: 'wrong-answer', sessionId: session.sessionId, now })
   // A preplanned immediate cloze cannot bypass the delayed recovery rule.
   session.queue = session.queue.filter((task, index) => index <= session.cursor
-    || task.kind === 'match' || task.entryId !== entryId)
+    || task.kind === 'match' || task.kind === 'reverse-card' || task.entryId !== entryId)
 }
 
 function acceptWritten(answers: string[], actual: string, caseSensitive: boolean): boolean {
@@ -247,7 +250,7 @@ function acceptWritten(answers: string[], actual: string, caseSensitive: boolean
 function assist(state: AppState, command: Extract<LearningCommand, { type: 'assist' }>, now: string): boolean {
   const session = state.session!
   const task = session.queue[session.cursor]
-  if (!task || task.taskId !== command.taskId || task.kind === 'flashcard' || session.feedback && task.kind !== 'match'
+  if (!task || task.taskId !== command.taskId || (task.kind === 'flashcard' || task.kind === 'reverse-card') || session.feedback && task.kind !== 'match'
     || !command.eventId || !['hint', 'answer'].includes(command.kind)) return false
   const entryId = task.kind === 'match'
     ? command.entryId ?? task.leftOrder.find(id => !task.matchedEntryIds.includes(id)) : task.entryId
@@ -260,7 +263,7 @@ function assist(state: AppState, command: Extract<LearningCommand, { type: 'assi
   applySchedule(state.progress[entryId], { kind: 'assisted', sessionId: session.sessionId, now })
   // Keep the helped prompt available but remove any immediate unassisted follow-up.
   session.queue = session.queue.filter((item, index) => index <= session.cursor
-    || item.kind === 'match' || item.entryId !== entryId)
+    || item.kind === 'match' || item.kind === 'reverse-card' || item.entryId !== entryId)
   return true
 }
 
@@ -297,7 +300,7 @@ function activity(state: AppState, command: Extract<LearningCommand, { type: 'ac
 function answer(state: AppState, command: Extract<LearningCommand, { type: 'answer' }>, bundle: ContentBundle, now: string): boolean {
   const session = state.session!
   const task = session.queue[session.cursor]
-  if (!task || task.kind === 'flashcard' || task.taskId !== command.taskId || session.feedback) return false
+  if (!task || (task.kind === 'flashcard' || task.kind === 'reverse-card') || task.taskId !== command.taskId || session.feedback) return false
   const entries = entryMap(bundle)
   let entryId: string
   if (task.kind === 'match') {
@@ -364,6 +367,7 @@ export function transition(state: AppState, command: LearningCommand, bundle: Co
   if (command.type === 'answer' && state.attempts.some(item => item.attemptId === command.attemptId)) return state
   if (command.type === 'assist' && state.assistanceEvents.some(item => item.eventId === command.eventId)) return state
   if (command.type === 'activity' && state.activityEventIds.includes(command.eventId)) return state
+  if (command.type === 'rate-reverse' && state.reverseReviews.some(review => review.reviewId === command.reviewId)) return state
   const next = structuredClone(state)
   const date = studyDate(now, next.settings.studyTimeZone)
   if (next.session && next.session.targetAcknowledgedDate !== null && next.session.targetAcknowledgedDate !== date) {
@@ -385,7 +389,8 @@ export function transition(state: AppState, command: LearningCommand, bundle: Co
     if ((!state.session || state.session.state === 'ended')
       && (state.session?.sessionId === command.sessionId
         || Object.values(state.savedSessions).some(session => session.sessionId === command.sessionId)
-        || state.attempts.some(attempt => attempt.sessionId === command.sessionId))) return state
+        || state.attempts.some(attempt => attempt.sessionId === command.sessionId)
+        || state.reverseReviews.some(review => review.sessionId === command.sessionId))) return state
     start(next, command, bundle, now)
   } else {
     const session = next.session
@@ -408,8 +413,21 @@ export function transition(state: AppState, command: LearningCommand, bundle: Co
       const task = session.queue[session.cursor]
       if (!task || task.taskId !== command.taskId) return state
       if (command.type === 'reveal-card') {
-        if (task.kind !== 'flashcard' || task.revealed) return state
+        if ((task.kind !== 'flashcard' && task.kind !== 'reverse-card') || task.revealed) return state
         task.revealed = true
+      } else if (command.type === 'rate-reverse') {
+        const progress = task.kind === 'reverse-card' ? next.reverseProgress[task.entryId] : null
+        if (task.kind !== 'reverse-card' || !task.revealed || !progress || !command.reviewId
+          || Object.keys(next.reverseProgress).length < REVERSE_ACTIVATION_COUNT
+          || typeof command.correct !== 'boolean' || session.feedback
+          || Date.parse(progress.nextDueAt) > Date.parse(now)
+          || next.reverseReviews.some(review => review.sessionId === session.sessionId && review.entryId === task.entryId)) return state
+        next.reverseReviews.push({ reviewId: command.reviewId, sessionId: session.sessionId, taskId: task.taskId,
+          entryId: task.entryId, correct: command.correct, at: now, studyDate: reverseStudyDate(now, next.settings.studyTimeZone) })
+        scheduleReverseReview(progress, command.correct, now, next.settings.studyTimeZone)
+        session.cursor++
+        session.draft = ''
+        prepareBoundary(next, now, bundle)
       } else if (command.type === 'draft') {
         if (task.kind !== 'cloze' && task.kind !== 'write-word' || session.feedback || session.draft === command.value) return state
         session.draft = command.value
@@ -417,8 +435,9 @@ export function transition(state: AppState, command: LearningCommand, bundle: Co
         if (!assist(next, command, now)) return state
       } else if (command.type === 'answer') {
         if (!command.attemptId || !answer(next, command, bundle, now)) return state
+        initializeReverseProgress(next, bundle)
       } else if (command.type === 'next') {
-        if (task.kind === 'flashcard' ? !task.revealed : !session.feedback) return state
+        if (task.kind === 'reverse-card' || (task.kind === 'flashcard' ? !task.revealed : !session.feedback)) return state
         const stayOnMatch = task.kind === 'match' && task.matchedEntryIds.length < 4
         session.feedback = null
         session.draft = ''

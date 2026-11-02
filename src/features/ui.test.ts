@@ -14,7 +14,7 @@ import { createInitialState } from '../learning/engine.ts'
 // with React SSR. These are static content/accessibility checks, not browser proof.
 const require = createRequire(import.meta.url)
 const source = readFileSync(new URL('./WortzeitUI.tsx', import.meta.url), 'utf8')
-const javascript = ts.transpileModule(`${source}\nexport { TaskPanel, SkillDetails, LessonCards, LessonWordList, lessonEntries }`, {
+const javascript = ts.transpileModule(`${source}\nexport { TaskPanel, SkillDetails, LessonCards, LessonWordList, lessonEntries, ReverseReviewSummary, TargetPrompt }`, {
   compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2023 },
 }).outputText.replace(/import ['"]\.\.\/App\.css['"];?/u, '')
   .replace(/from (['"])(react(?:\/jsx-runtime)?)\1/gu,
@@ -151,4 +151,68 @@ test('fourth lesson vocabulary renders only that lesson and keeps unrelated entr
   assert.ok(main[0][1].includes('Kurs') && main[0][1].includes('دورهٔ آزمایشی چهارم'))
   assert.ok(!main[0][1].includes('Hallo') && !main[0][1].includes('Familienname'))
   assert.match(html, /lang="de" dir="ltr"/u)
+})
+
+
+test('reverse card conceals every German answer and example until persisted reveal', () => {
+  const task: SessionTask = { taskId: 'reverse', kind: 'reverse-card', entryId: noun.entryId, revealed: false }
+  const html = renderTask(task)
+  assert.ok(html.includes(noun.meaningFa))
+  assert.ok(html.includes(noun.writing.cueFa))
+  assert.ok(!html.includes(noun.lemma))
+  assert.ok(!html.includes(noun.examples[0].de))
+  assert.ok(!html.includes('reverse-rating'))
+  assert.match(html, /reverse-reveal/u)
+  assert.match(html, /نمایش پاسخ/u)
+})
+
+test('revealed reverse card restores German article and self-assessment without ordinary next', () => {
+  const task: SessionTask = { taskId: 'reverse', kind: 'reverse-card', entryId: noun.entryId, revealed: true }
+  const html = renderTask(task)
+  assert.ok(html.includes(noun.lemma))
+  assert.match(html, /class="article"/u)
+  assert.match(html, /درست گفتم/u)
+  assert.match(html, /اشتباه گفتم/u)
+  assert.match(html, /مثال و ارجاع/u)
+  assert.ok(!html.includes('reverse-reveal'))
+  assert.ok(!html.includes('feedback-next'))
+})
+
+test('unrevealed normal card reserves its next action but prevents skipping introduction', () => {
+  const task: SessionTask = { taskId: 'card', kind: 'flashcard', entryId: noun.entryId, revealed: false }
+  const html = renderTask(task)
+  assert.match(html, /class="primary-button wide flashcard-next" disabled=""/u)
+})
+
+test('feedback replaces choice controls and reserves a clear next action', () => {
+  const task: SessionTask = { taskId: 'meaning', kind: 'choose-meaning', entryId: noun.entryId, optionIds: noun.meaningOptionEntryIds }
+  const props = propsFor(task)
+  props.state.session!.feedback = { attemptId: 'a', entryId: noun.entryId, correct: true, expectedAnswer: noun.meaningFa, explanationFa: 'ثبت شد', assisted: false }
+  const html = renderTask(task, props)
+  assert.ok(!html.includes('meaning-options'))
+  assert.match(html, /feedback-next/u)
+  assert.match(html, /مثال و توضیح پاسخ/u)
+})
+
+
+test('reverse review summary reports self-assessed recall separately from original attempts', () => {
+  const reviews = [
+    { reviewId: 'r1', sessionId: 's', taskId: 't1', entryId: noun.entryId, correct: true, at: now, studyDate: '2026-10-28' },
+    { reviewId: 'r2', sessionId: 's', taskId: 't2', entryId: verb.entryId, correct: false, at: now, studyDate: '2026-10-28' },
+  ]
+  const html = renderToStaticMarkup(createElement(view.ReverseReviewSummary, { reviews }))
+  assert.match(html, /ارزیابی شخصی فارسی به آلمانی/u)
+  assert.match(html, /<strong>۲<\/strong> واژه/u)
+  assert.match(html, /<strong>۱<\/strong> درست گفتم/u)
+  assert.match(html, /<strong>۱<\/strong> اشتباه گفتم/u)
+  assert.ok(!html.includes('تسلط') && !html.includes('تثبیت‌شده'))
+})
+
+
+test('daily target prompt uses a labelled native dialog and explicit continuation controls', () => {
+  const html = renderToStaticMarkup(createElement(view.TargetPrompt, { active: true, minutes: 20, disabled: false, onFinish: async () => {}, onContinue: async () => {} }))
+  assert.match(html, /<dialog[^>]+class="target-banner target-dialog"[^>]+aria-labelledby=/u)
+  assert.ok(!html.includes('role="status"'))
+  assert.match(html, /پایان و دیدن خلاصه/u)
+  assert.match(html, /ادامهٔ تمرین/u)
 })

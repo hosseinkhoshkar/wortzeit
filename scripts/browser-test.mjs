@@ -1,4 +1,4 @@
-/* global indexedDB, document, IDBObjectStore, navigator, sessionStorage, structuredClone, requestAnimationFrame, MutationObserver, window */
+/* global indexedDB, document, IDBObjectStore, navigator, sessionStorage, structuredClone, requestAnimationFrame, MutationObserver, window, Event */
 import assert from 'node:assert/strict'
 import { createServer } from 'node:http'
 import { readFile, mkdir, writeFile } from 'node:fs/promises'
@@ -15,6 +15,8 @@ const diagnostics = []
 const pageErrors = []
 const observedPages = new Map()
 const exercisedKinds = new Set()
+const layoutCheckedKinds = new Set()
+const mobileSizes = [{ width: 320, height: 568 }, { width: 360, height: 800 }, { width: 390, height: 844 }]
 function observeContext(context) {
   context.on('page', page => {
     const id = observedPages.size + 1
@@ -44,7 +46,7 @@ async function capture(page, phase) {
 }
 const directory = path.resolve('test-results')
 await mkdir(directory, { recursive: true })
-const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' }
+const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json', '.woff2': 'font/woff2' }
 const server = createServer(async (request, response) => {
   try {
     const pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname)
@@ -68,6 +70,8 @@ const server = createServer(async (request, response) => {
 let browser
 let origin
 async function checkpoint(name, action) {
+  const filter = process.env.WORTZEIT_BROWSER_CHECKPOINT
+  if (filter && !new RegExp(filter).test(name)) return
   await action()
   results.push({ name, passed: true })
   console.log(`PASS ${name}`)
@@ -105,7 +109,7 @@ async function waitState(page, predicate) {
 }
 function learningSnapshot(state) {
   if (!state) return null
-  return JSON.stringify({ progress: state.progress, attempts: state.attempts, assistanceEvents: state.assistanceEvents,
+  return JSON.stringify({ progress: state.progress, attempts: state.attempts, reverseProgress: state.reverseProgress, reverseReviews: state.reverseReviews, assistanceEvents: state.assistanceEvents,
     session: state.session ? { ...state.session, activeMs: 0 } : null })
 }
 async function clickAndSave(page, locator, resume = false) {
@@ -114,6 +118,121 @@ async function clickAndSave(page, locator, resume = false) {
   return waitState(page, state => state.revision > (before?.revision ?? 0)
     && (resume || learningSnapshot(state) !== learningSnapshot(before)))
 }
+async function assertViewport(page, label, controlSelector) {
+  for (const viewport of mobileSizes) {
+    await page.setViewportSize(viewport)
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+    const bounds = await page.evaluate(() => ({
+      width: document.documentElement.scrollWidth,
+      height: document.documentElement.scrollHeight,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      scrollY: window.scrollY,
+    }))
+    assert.ok(bounds.width <= bounds.viewportWidth, `${label}: horizontal document overflow at ${viewport.width}`)
+    assert.ok(bounds.height <= bounds.viewportHeight + 1, `${label}: document scroll at ${viewport.width}x${viewport.height} (${bounds.height})`)
+    assert.equal(bounds.scrollY, 0, `${label}: document must stay at scroll zero`)
+    if (viewport.width === 320 && ['home', 'reverse revealed answer', 'summary', 'summary-reverse'].includes(label)) {
+      await saveScreenshot(page, `${label.replaceAll(' ', '-')}-320x568.png`)
+    }
+    if (controlSelector) {
+      const controls = page.locator(`${controlSelector}, .page-session button, .page-home button`)
+      assert.ok(await controls.count(), `${label}: expected main controls`)
+      for (let index = 0; index < await controls.count(); index++) {
+        const control = controls.nth(index)
+        if (!await control.isVisible()) continue
+        const box = await control.boundingBox()
+        assert.ok(box && box.y >= -1 && box.x >= -1 && box.y + box.height <= bounds.viewportHeight + 1
+          && box.x + box.width <= bounds.viewportWidth + 1, `${label}: main control outside viewport at ${viewport.width}x${viewport.height}`)
+        assert.ok(box.height >= 43, `${label}: touch control is shorter than 44px`)
+        const reachable = await control.evaluate(element => {
+          const modal = document.querySelector('dialog[open]')
+          if (modal && !modal.contains(element)) return true // Native modal intentionally makes the underlying page inert.
+          const box = element.getBoundingClientRect()
+          return [box.top + 3, box.top + box.height / 2, box.bottom - 3].every(y => {
+            const hit = document.elementFromPoint(box.left + box.width / 2, y)
+            return hit === element || element.contains(hit)
+          })
+        })
+        assert.ok(reachable, `${label}: main control is clipped by an ancestor or covered at ${viewport.width}x${viewport.height}`)
+      }
+    }
+  }
+  await page.setViewportSize({ width: 360, height: 800 })
+}
+
+async function checkKeyboardViewport(page) {
+  if (layoutCheckedKinds.has('keyboard')) return
+  layoutCheckedKinds.add('keyboard')
+  await page.setViewportSize({ width: 360, height: 800 })
+  await page.evaluate(() => {
+    Object.defineProperty(window.visualViewport, 'height', { configurable: true, get: () => 400 })
+    window.visualViewport.dispatchEvent(new Event('resize'))
+  })
+  await page.waitForFunction(() => document.documentElement.classList.contains('keyboard-open'))
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+  for (const selector of ['#german-answer', '.answer-form button[type="submit"]', '.answer-form .details-trigger']) {
+    const control = page.locator(selector)
+    assert.equal(await control.isVisible(), true, `keyboard: ${selector} remains visible`)
+    const box = await control.boundingBox()
+    assert.ok(box && box.y >= 0 && box.y + box.height <= 401 && box.height >= 43, `keyboard: ${selector} is reachable within visual viewport`)
+  }
+  const cueVisible = await page.evaluate(() => [...document.querySelectorAll('.writing-prompt,.writing-cue,.cloze-translation')].some(element => {
+    const box = element.getBoundingClientRect()
+    return box.height > 0 && box.y >= 0 && box.bottom <= 401 && window.getComputedStyle(element).display !== 'none'
+  }))
+  assert.equal(cueVisible, true, 'keyboard keeps the meaning or recall cue visible')
+  await saveScreenshot(page, 'keyboard-visual-viewport-360.png')
+  await page.locator('.answer-form .details-trigger').click()
+  const dialog = page.locator('.detail-sheet[open]')
+  await dialog.waitFor()
+  const closeBox = await dialog.locator('.sheet-close').boundingBox()
+  assert.ok(closeBox && closeBox.y >= 0 && closeBox.y + closeBox.height <= 401, 'keyboard guide remains closable within visual viewport')
+  await dialog.locator('.sheet-close').click()
+  await page.evaluate(() => {
+    delete window.visualViewport.height
+    window.visualViewport.dispatchEvent(new Event('resize'))
+  })
+  await page.waitForFunction(() => !document.documentElement.classList.contains('keyboard-open'))
+}
+
+async function installClock(context, now) {
+  await context.addInitScript(now => {
+    const RealDate = Date
+    window.Date = class extends RealDate {
+      constructor(...args) { super(...(args.length ? args : [now])) }
+      static now() { return RealDate.parse(now) }
+    }
+  }, now)
+}
+
+async function writeState(page, state) {
+  await page.evaluate(state => new Promise((resolve, reject) => {
+    const open = indexedDB.open('wortzeit-progress', 1)
+    open.onupgradeneeded = () => open.result.createObjectStore('user-state')
+    open.onerror = () => reject(open.error)
+    open.onsuccess = () => {
+      const db = open.result, transaction = db.transaction('user-state', 'readwrite')
+      transaction.objectStore('user-state').put(state, 'current')
+      transaction.oncomplete = () => { db.close(); resolve() }
+      transaction.onerror = () => { db.close(); reject(transaction.error) }
+    }
+  }), state)
+}
+
+async function checkTaskLayout(page, task, feedback) {
+  const key = feedback ? `feedback-${task.kind}` : task.kind
+  if (layoutCheckedKinds.has(key) || task.kind === 'match' && feedback) return
+  layoutCheckedKinds.add(key)
+  const selector = feedback ? '.feedback .primary-button'
+    : task.kind === 'flashcard' ? '.flashcard, .flashcard-next'
+      : task.kind === 'match' ? '.match-tile'
+        : task.kind === 'cloze' || task.kind === 'write-word' ? '.answer-form input, .answer-form button[type="submit"]'
+          : task.kind === 'reverse-card' ? '.reverse-reveal, .reverse-correct, .reverse-incorrect'
+            : '.meaning-option'
+  await assertViewport(page, key, selector)
+}
+
 async function continueFeedback(page, state) {
   const task = state.session.queue[state.session.cursor]
   if (task.kind === 'match') return waitState(page, next => next.session.feedback?.attemptId !== state.session.feedback?.attemptId)
@@ -125,7 +244,10 @@ async function finishCards(page) {
     const state = await readState(page), task = state.session.queue[state.session.cursor]
     if (task.kind !== 'flashcard') return count
     if (!task.revealed) await clickAndSave(page, page.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
-    if (count === 0) await saveScreenshot(page, 'flashcard-back-360.png')
+    if (count === 0) {
+      await assertViewport(page, 'flashcard back', '.flashcard, .flashcard-next')
+      await saveScreenshot(page, 'flashcard-back-360.png')
+    }
     await clickAndSave(page, page.locator('.flashcard-next'))
     count++
   }
@@ -159,21 +281,30 @@ async function checkWrongMatch(page, state) {
 async function playToEnd(page, stopAtWritten = false, wrongMatch = false) {
   for (let step = 0; step < 150; step++) {
     const state = await readState(page), session = state.session
-    if (session.state === 'ended') return state
+    if (session.state === 'ended') {
+      const key = state.reverseReviews.some(review => review.sessionId === session.sessionId) ? 'summary-reverse' : 'summary'
+      if (!layoutCheckedKinds.has(key)) { layoutCheckedKinds.add(key); await assertViewport(page, key, '.summary-actions button') }
+      return state
+    }
     const task = session.queue[session.cursor]
     exercisedKinds.add(task.kind)
+    await checkTaskLayout(page, task, session.feedback)
     if (session.feedback) { await continueFeedback(page, state); continue }
     if (stopAtWritten && (task.kind === 'cloze' || task.kind === 'write-word')) return state
     const entry = task.kind === 'match' ? null : bundle.entries.find(entry => entry.entryId === task.entryId)
     if (task.kind === 'flashcard') {
       if (!task.revealed) await clickAndSave(page, page.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
       await clickAndSave(page, page.locator('.flashcard-next'))
+    } else if (task.kind === 'reverse-card') {
+      if (!task.revealed) await clickAndSave(page, page.locator('.reverse-reveal'))
+      await clickAndSave(page, page.locator('.reverse-correct'))
     } else if (task.kind === 'choose-meaning') {
       await clickAndSave(page, page.locator('.meaning-option').nth(task.optionIds.indexOf(task.entryId)))
     } else if (task.kind === 'cloze' || task.kind === 'write-word') {
       const answer = task.kind === 'write-word' ? entry.writing.acceptedAnswers[0] : entry.cloze.acceptedAnswers[0]
       await page.getByLabel('پاسخ تو', { exact: true }).fill(answer)
       await waitState(page, state => state.session.draft === answer)
+      await checkKeyboardViewport(page)
       await clickAndSave(page, page.getByRole('button', { name: 'بررسی پاسخ', exact: false }))
     } else if (task.kind === 'choose-article') {
       await clickAndSave(page, page.locator('.article-option').nth(task.options.indexOf(entry.nounData.article)))
@@ -185,6 +316,48 @@ async function playToEnd(page, stopAtWritten = false, wrongMatch = false) {
     }
   }
   throw new Error('Session did not terminate')
+}
+
+function completedReverseFixture() {
+  const learnedAt = '2026-10-28T12:00:00.000Z'
+  let state = createInitialState(bundle, 'Europe/Berlin')
+  let attempt = 0
+  const commit = command => { state = transition(state, command, bundle, learnedAt) }
+  for (let batch = 0; batch < 3; batch++) {
+    commit({ type: 'start-session', sessionId: `reverse-fixture-${batch}`, seed: 43 + batch })
+    for (let step = 0; state.session.state !== 'ended'; step++) {
+      assert.ok(step < 150, 'fixture session terminates')
+      const task = state.session.queue[state.session.cursor]
+      if (state.session.feedback) { commit({ type: 'next', taskId: task.taskId }); continue }
+      if (task.kind === 'flashcard') {
+        commit({ type: 'reveal-card', taskId: task.taskId })
+        commit({ type: 'next', taskId: task.taskId })
+      } else if (task.kind === 'match') {
+        const id = task.entryIds.find(id => !task.matchedEntryIds.includes(id))
+        commit({ type: 'answer', taskId: task.taskId, entryId: id, answer: id, attemptId: `reverse-fixture-answer-${attempt++}` })
+      } else {
+        const entry = bundle.entries.find(entry => entry.entryId === task.entryId)
+        const answer = task.kind === 'cloze' ? entry.cloze.acceptedAnswers[0]
+          : task.kind === 'write-word' ? entry.writing.acceptedAnswers[0]
+            : task.kind === 'choose-article' ? entry.nounData.article : task.entryId
+        commit({ type: 'answer', taskId: task.taskId, answer, attemptId: `reverse-fixture-answer-${attempt++}` })
+      }
+    }
+  }
+  assert.equal(Object.keys(state.reverseProgress).length, 15)
+  commit({ type: 'select-lesson', lessonId: 'lesson-04' })
+  return state
+}
+
+async function playUntilReverse(page) {
+  for (let index = 0; index < 8; index++) {
+    const state = await readState(page), task = state.session.queue[state.session.cursor]
+    if (task.kind === 'reverse-card') return state
+    assert.equal(task.kind, 'flashcard', 'reverse cards are interleaved into the new-card block')
+    if (!task.revealed) await clickAndSave(page, page.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
+    await clickAndSave(page, page.locator('.flashcard-next'))
+  }
+  throw new Error('No reverse card appeared among the seven planned cards')
 }
 
 function oldVersionTwoDraft() {
@@ -205,6 +378,8 @@ function oldVersionTwoDraft() {
       old.schemaVersion = 2
       delete old.activeLessonId
       delete old.savedSessions
+      delete old.reverseProgress
+      delete old.reverseReviews
       delete old.session.lessonId
       validateVersionTwoState(old, lessonOneBundle)
       return old
@@ -223,7 +398,8 @@ try {
   let page = await context.newPage()
   await page.goto(origin)
   await page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).waitFor()
-  await checkpoint('mobile home / RTL / no horizontal overflow at 320, 360 and 1280', async () => {
+  await checkpoint('mobile home fits 320x568, 360x800 and 390x844 without document scrolling', async () => {
+    await assertViewport(page, 'home', '.hero-button')
     for (const width of [320, 360, 1280]) {
       await page.setViewportSize({ width, height: 850 })
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), true)
@@ -382,7 +558,7 @@ try {
     await lessonPage.goto(origin)
     await lessonPage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).waitFor()
     const migrated = await readState(lessonPage)
-    assert.equal(migrated.schemaVersion, 3)
+    assert.equal(migrated.schemaVersion, 4)
     assert.deepEqual(migrated.progress, old.progress)
     assert.deepEqual(migrated.attempts, old.attempts)
     assert.equal(migrated.session.draft, old.session.draft)
@@ -460,6 +636,129 @@ try {
     await second.getByRole('alert').filter({ hasText: 'تب دیگری' }).waitFor()
     await isolated.close()
   })
+  await checkpoint('daily target uses a modal with contained keyboard focus and reachable continue control', async () => {
+    const isolated = await browser.newContext({ viewport: { width: 320, height: 568 }, isMobile: true, hasTouch: true, locale: 'fa-IR', timezoneId: 'Europe/Berlin', reducedMotion: 'reduce' })
+    observeContext(isolated)
+    await installClock(isolated, '2026-11-01T12:00:00.000Z')
+    const targetPage = await isolated.newPage()
+    await targetPage.goto(`${origin}/__test/setup`)
+    const initial = createInitialState(bundle, 'Europe/Berlin')
+    initial.dailyActivity['2026-11-01'] = initial.settings.targetActiveMs
+    await writeState(targetPage, initial)
+    await targetPage.goto(origin)
+    await targetPage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).click()
+    const dialog = targetPage.locator('.target-dialog[open]')
+    await dialog.waitFor()
+    await assertViewport(targetPage, 'daily goal dialog', '.target-dialog button')
+    const before = await readState(targetPage)
+    for (let key = 0; key < 5; key++) {
+      await targetPage.keyboard.press('Tab')
+      assert.equal(await targetPage.evaluate(() => document.activeElement === document.body || !!document.activeElement.closest('.target-dialog')), true, 'keyboard cannot focus underlying controls (native dialog may focus browser chrome)')
+    }
+    assert.equal(await dialog.evaluate(element => element.matches(':modal')), true, 'daily target is a real modal top layer')
+    await targetPage.locator('.flashcard').evaluate(element => element.focus())
+    assert.equal(await targetPage.locator('.flashcard').evaluate(element => element === document.activeElement), false, 'underlying exercise is inert to programmatic focus')
+    assert.deepEqual((await readState(targetPage)).attempts, before.attempts, 'Tab does not answer the underlying exercise')
+    await clickAndSave(targetPage, dialog.getByRole('button', { name: 'ادامهٔ تمرین', exact: true }))
+    await targetPage.locator('.target-dialog').waitFor({ state: 'hidden' })
+    assert.equal((await readState(targetPage)).session.targetAcknowledged, true)
+    await assertViewport(targetPage, 'after goal acknowledgement', '.flashcard')
+    await isolated.close()
+  })
+  await checkpoint('V3 learned evidence activates cross-lesson reverse cards; reveal, lesson switching and offline reload preserve the answer', async () => {
+    const isolated = await browser.newContext({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true, locale: 'fa-IR', timezoneId: 'Europe/Berlin', reducedMotion: 'reduce' })
+    observeContext(isolated)
+    const clockNow = '2026-11-01T12:00:00.000Z'
+    await installClock(isolated, clockNow)
+    const reversePage = await isolated.newPage()
+    await reversePage.goto(`${origin}/__test/setup`)
+    const old = completedReverseFixture()
+    old.schemaVersion = 3
+    delete old.reverseProgress
+    delete old.reverseReviews
+    await writeState(reversePage, old)
+    await reversePage.goto(origin)
+    await reversePage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).waitFor()
+    let current = await readState(reversePage)
+    assert.equal(current.schemaVersion, 4)
+    assert.equal(Object.keys(current.reverseProgress).length, 15)
+    assert.equal(current.reverseReviews.length, 0)
+    assert.deepEqual(current.progress, old.progress)
+    assert.deepEqual(current.attempts, old.attempts)
+    diagnostics.push({ kind: 'reverse-phase', phase: 'before-start-or-resume' })
+    await clickAndSave(reversePage, reversePage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }))
+    current = await readState(reversePage)
+    const newIds = current.session.queue.filter(task => task.kind === 'flashcard').map(task => task.entryId)
+    const reverseTasks = current.session.queue.filter(task => task.kind === 'reverse-card')
+    assert.equal(newIds.length, 5)
+    assert.equal(reverseTasks.length, 2)
+    assert.equal(new Set(reverseTasks.map(task => task.entryId)).size, 2)
+    assert.ok(reverseTasks.every(task => !newIds.includes(task.entryId) && bundle.entries.find(entry => entry.entryId === task.entryId).introducedInLessonId === lessonOneBundle.lesson.lessonId))
+    assert.ok(reverseTasks.every(task => Date.parse(current.reverseProgress[task.entryId].nextDueAt) <= Date.parse(clockNow)))
+    current = await playUntilReverse(reversePage)
+    const task = current.session.queue[current.session.cursor]
+    const entry = bundle.entries.find(entry => entry.entryId === task.entryId)
+    const previous = structuredClone(current.progress[task.entryId])
+    assert.ok((await reversePage.locator('.reverse-card').innerText()).includes(entry.meaningFa))
+    assert.ok(!(await reversePage.locator('.task-content').innerText()).includes(entry.lemma), 'German answer stays hidden before reveal')
+    await assertViewport(reversePage, 'reverse Persian front', '.reverse-reveal')
+    await saveScreenshot(reversePage, 'reverse-front-360.png')
+    await clickAndSave(reversePage, reversePage.locator('.reverse-reveal'))
+    assert.ok((await reversePage.locator('.reverse-card').innerText()).includes(entry.lemma))
+    if (entry.nounData) assert.ok((await reversePage.locator('.reverse-card').innerText()).includes(entry.nounData.article))
+    await assertViewport(reversePage, 'reverse revealed answer', '.reverse-correct, .reverse-incorrect')
+    await saveScreenshot(reversePage, 'reverse-answer-360.png')
+    const queue = structuredClone((await readState(reversePage)).session.queue)
+    diagnostics.push({ kind: 'reverse-phase', phase: 'before-pause' })
+    await clickAndSave(reversePage, reversePage.getByRole('button', { name: 'توقف و بازگشت', exact: true }))
+    await reversePage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
+    diagnostics.push({ kind: 'reverse-phase', phase: 'before-first-lesson' })
+    await clickAndSave(reversePage, reversePage.locator(`[data-lesson-id="${lessonOneBundle.lesson.lessonId}"] .lesson-open-button`))
+    await reversePage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
+    diagnostics.push({ kind: 'reverse-phase', phase: 'before-back-to-four' })
+    await clickAndSave(reversePage, reversePage.locator('[data-lesson-id="lesson-04"] .lesson-open-button'))
+    diagnostics.push({ kind: 'reverse-phase', phase: 'before-start-or-resume' })
+    await clickAndSave(reversePage, reversePage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }))
+    assert.equal((await readState(reversePage)).session.queue[(await readState(reversePage)).session.cursor].revealed, true)
+    assert.deepEqual((await readState(reversePage)).session.queue, queue)
+    await reversePage.locator('.offline-pill').filter({ hasText: 'آمادهٔ آفلاین' }).waitFor()
+    await isolated.setOffline(true)
+    diagnostics.push({ kind: 'reverse-phase', phase: 'before-offline-reload' })
+    await reversePage.reload()
+    await reversePage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).click()
+    await reversePage.locator('.reverse-incorrect').waitFor()
+    current = await readState(reversePage)
+    assert.equal(current.reverseReviews.length, 0, 'reveal/reload never completes a review')
+    assert.equal(current.session.queue[current.session.cursor].taskId, task.taskId)
+    assert.deepEqual(current.session.queue, queue)
+    assert.deepEqual(current.progress[task.entryId], previous)
+    diagnostics.push({ kind: 'reverse-phase', phase: 'before-wrong-rating' })
+    await clickAndSave(reversePage, reversePage.locator('.reverse-incorrect'))
+    current = await readState(reversePage)
+    assert.equal(current.reverseReviews.length, 1)
+    assert.equal(current.reverseReviews[0].correct, false)
+    assert.equal(current.reverseProgress[task.entryId].incorrectCount, 1)
+    assert.equal(current.reverseProgress[task.entryId].successStreak, 0)
+    assert.equal(current.reverseProgress[task.entryId].intervalDays, 1)
+    assert.equal(current.reverseProgress[task.entryId].nextDueAt, '2026-11-02T12:00:00.000Z')
+    assert.deepEqual(current.progress[task.entryId], previous, 'reverse rating leaves typed/recognition progress intact')
+    assert.equal(current.session.queue.slice(current.session.cursor).filter(item => item.kind === 'reverse-card' && item.entryId === task.entryId).length, 0, 'wrong card never repeats immediately')
+    await playToEnd(reversePage)
+    current = await readState(reversePage)
+    assert.equal(current.reverseReviews.length, 2)
+    const correct = current.reverseReviews.find(item => item.correct)
+    assert.ok(correct)
+    assert.equal(current.reverseProgress[correct.entryId].intervalDays, 3)
+    assert.equal(current.reverseProgress[correct.entryId].nextDueAt, '2026-11-04T12:00:00.000Z')
+    assert.equal(current.activeLessonId, 'lesson-04')
+    assert.equal(current.session.introducedEntryIds.length, 5)
+    const ratedIds = current.reverseReviews.map(item => item.entryId)
+    diagnostics.push({ kind: 'reverse-phase', phase: 'before-start-or-resume' })
+    await clickAndSave(reversePage, reversePage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }))
+    current = await readState(reversePage)
+    assert.ok(current.session.queue.filter(item => item.kind === 'reverse-card').every(item => !ratedIds.includes(item.entryId)), 'future-scheduled reverse words are not selected again')
+    await isolated.close()
+  })
   await checkpoint('real IndexedDB atomic abort, optimistic concurrency and load/recovery', async () => {
     const isolated = await browser.newContext()
     observeContext(isolated)
@@ -492,10 +791,10 @@ try {
 } catch (error) {
   results.push({ passed: false, error: error.message })
   for (const page of observedPages.keys()) await capture(page, 'failure')
-  console.error(error.message)
+  console.error(error.stack ?? error.message)
   process.exitCode = 1
 } finally {
   await browser?.close()
   await new Promise(resolve => server.close(resolve))
-  await writeFile(path.join(directory, 'browser-report.json'), JSON.stringify({ at: new Date().toISOString(), results, diagnostics, exercisedKinds: [...exercisedKinds] }, null, 2))
+  await writeFile(path.join(directory, 'browser-report.json'), JSON.stringify({ at: new Date().toISOString(), checkpointFilter: process.env.WORTZEIT_BROWSER_CHECKPOINT ?? null, results, diagnostics, exercisedKinds: [...exercisedKinds] }, null, 2))
 }
