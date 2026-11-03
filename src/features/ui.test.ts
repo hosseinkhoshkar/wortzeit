@@ -19,6 +19,7 @@ const javascript = ts.transpileModule(`${source}\nexport { TaskPanel, SkillDetai
 }).outputText.replace(/import ['"]\.\.\/App\.css['"];?/u, '')
   .replace(/from (['"])(react(?:\/jsx-runtime)?)\1/gu,
     (_match, _quote: string, specifier: string) => `from '${pathToFileURL(require.resolve(specifier)).href}'`)
+  .replace("from '../learning/examples.ts'", `from '${new URL('../learning/examples.ts', import.meta.url).href}'`)
 const view = await import(`data:text/javascript;base64,${Buffer.from(javascript).toString('base64')}`)
 const now = '2026-10-28T12:00:00.000Z'
 
@@ -173,7 +174,7 @@ test('revealed reverse card restores German article and self-assessment without 
   assert.match(html, /class="article"/u)
   assert.match(html, /درست گفتم/u)
   assert.match(html, /اشتباه گفتم/u)
-  assert.match(html, /مثال و ارجاع/u)
+  assert.match(html, /ارجاع این واژه/u)
   assert.ok(!html.includes('reverse-reveal'))
   assert.ok(!html.includes('feedback-next'))
 })
@@ -215,4 +216,64 @@ test('daily target prompt uses a labelled native dialog and explicit continuatio
   assert.ok(!html.includes('role="status"'))
   assert.match(html, /پایان و دیدن خلاصه/u)
   assert.match(html, /ادامهٔ تمرین/u)
+})
+
+
+const expandedNoun: Entry = { ...noun, examples: [noun.examples[0],
+  { exampleId: 'ui-extra-1', de: 'Das ist ein neuer Beispielsatz.', fa: 'این یک جملهٔ نمونهٔ تازه است.', origin: 'authored' },
+  { exampleId: 'ui-extra-2', de: 'Wir lesen diesen Satz zusammen.', fa: 'ما این جمله را با هم می‌خوانیم.', origin: 'authored' },
+] }
+function expandedProps(task: SessionTask) {
+  const props = propsFor(task)
+  props.bundle = { ...bundle, entries: bundle.entries.map(entry => entry.entryId === expandedNoun.entryId ? expandedNoun : entry) }
+  return props
+}
+
+test('initial learning keeps the original example on the card and offers extras only after reveal', () => {
+  const task: SessionTask = { taskId: 'card-more', kind: 'flashcard', entryId: noun.entryId, revealed: false }
+  const props = expandedProps(task)
+  const hidden = renderTask(task, props)
+  assert.ok(!hidden.includes('مثال‌های بیشتر'))
+  assert.ok(!hidden.includes(expandedNoun.examples[1].de))
+  task.revealed = true
+  const html = renderTask(task, props)
+  const back = html.match(/class="card-face card-back"[\s\S]*?<\/span><\/span><\/button>/u)?.[0] ?? ''
+  assert.ok(back.includes(expandedNoun.examples[0].de))
+  assert.ok(!back.includes(expandedNoun.examples[1].de) && !back.includes(expandedNoun.examples[2].de))
+  assert.match(html, /مثال‌های بیشتر/u)
+  assert.ok(html.includes(expandedNoun.examples[1].de) && html.includes(expandedNoun.examples[1].fa))
+  assert.ok(html.includes(expandedNoun.examples[2].de) && html.includes(expandedNoun.examples[2].fa))
+})
+
+test('reverse sentence rotates only with completed review history, not rendering or manual example access', () => {
+  const task: SessionTask = { taskId: 'reverse-examples', kind: 'reverse-card', entryId: noun.entryId, revealed: true }
+  const props = expandedProps(task)
+  for (const [completed, index] of [[0, 1], [1, 2], [2, 0], [3, 1]]) {
+    props.state.reverseReviews = Array.from({ length: completed }, (_, i) => ({ reviewId: `past-${i}`, sessionId: `past-session-${i}`,
+      taskId: `past-task-${i}`, entryId: noun.entryId, correct: i % 2 === 0, at: now, studyDate: '2026-10-28' }))
+    const before = structuredClone(props.state)
+    const html = renderTask(task, props)
+    const direct = html.match(/class="reverse-example">([\s\S]*?)<div class="card-detail-row"/u)?.[1] ?? ''
+    assert.ok(direct.includes(expandedNoun.examples[index].de) && direct.includes(expandedNoun.examples[index].fa))
+    for (let other = 0; other < 3; other++) if (other !== index) assert.ok(!direct.includes(expandedNoun.examples[other].de))
+    assert.match(html, /این جمله را بلند بخوان/u)
+    assert.match(html, /دیدن مثال‌ها امتیاز مرور را تغییر نمی‌دهد/u)
+    assert.equal(renderTask(task, props), html)
+    assert.deepEqual(props.state, before)
+  }
+})
+
+test('unrevealed reverse card exposes no original or additional examples or extra-example control', () => {
+  const task: SessionTask = { taskId: 'reverse-hidden-extras', kind: 'reverse-card', entryId: noun.entryId, revealed: false }
+  const html = renderTask(task, expandedProps(task))
+  for (const example of expandedNoun.examples) { assert.ok(!html.includes(example.de)); assert.ok(!html.includes(example.fa)) }
+  assert.ok(!html.includes('مثال‌های بیشتر'))
+})
+
+test('word details retain the original sentence and allow manual access to the two paired additional examples', () => {
+  const props = expandedProps({ taskId: 'card', kind: 'flashcard', entryId: noun.entryId, revealed: true })
+  const html = renderToStaticMarkup(createElement(view.LessonWordList, { entries: [expandedNoun], props }))
+  for (const example of expandedNoun.examples) { assert.ok(html.includes(example.de)); assert.ok(html.includes(example.fa)) }
+  assert.match(html, /مثال‌های بیشتر/u)
+  assert.equal((html.match(/<dialog/gu) ?? []).length, 2, 'examples and sources are separate dialogs')
 })
