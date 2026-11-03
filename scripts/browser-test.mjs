@@ -9,6 +9,8 @@ import { courseBundle as bundle } from '../src/content/catalog.ts'
 import { lessonOneBundle } from '../src/content/lesson-one.ts'
 import { validateVersionTwoState } from '../src/storage/legacy-v2.ts'
 import { createInitialState, transition } from '../src/learning/engine.ts'
+import { scheduleReverseReview, reverseStudyDate } from '../src/learning/reverse.ts'
+import { validateState } from '../src/storage/index.ts'
 
 const results = []
 const diagnostics = []
@@ -238,6 +240,19 @@ async function continueFeedback(page, state) {
   if (task.kind === 'match') return waitState(page, next => next.session.feedback?.attemptId !== state.session.feedback?.attemptId)
   return clickAndSave(page, page.getByRole('button', { name: 'ادامه', exact: true }))
 }
+async function checkMoreExamples(page, entry, currentExample) {
+  const before = learningSnapshot(await readState(page))
+  await page.getByRole('button', { name: 'مثال‌های بیشتر', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'مثال‌های بیشتر', exact: true })
+  await dialog.waitFor()
+  const others = entry.examples.filter(example => example.exampleId !== currentExample.exampleId)
+  assert.equal(await dialog.locator('.example-block').count(), others.length)
+  const text = await dialog.innerText()
+  for (const example of others) assert.ok(text.includes(example.de) && text.includes(example.fa), 'additional German/Persian pair stays together')
+  await dialog.getByRole('button', { name: 'بستن جزئیات', exact: true }).click()
+  assert.equal(learningSnapshot(await readState(page)), before, 'manual examples do not complete review or modify schedules')
+}
+
 async function finishCards(page) {
   let count = 0
   for (;;) {
@@ -245,6 +260,11 @@ async function finishCards(page) {
     if (task.kind !== 'flashcard') return count
     if (!task.revealed) await clickAndSave(page, page.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
     if (count === 0) {
+      const entry = bundle.entries.find(entry => entry.entryId === task.entryId)
+      await page.locator('.flashcard.is-flipped').waitFor()
+      assert.equal(await page.locator('.card-example-de').textContent(), entry.examples[0].de)
+      assert.ok(!await page.locator('.flashcard').innerText().then(text => text.includes(entry.examples[1].de)))
+      await checkMoreExamples(page, entry, entry.examples[0])
       await assertViewport(page, 'flashcard back', '.flashcard, .flashcard-next')
       await saveScreenshot(page, 'flashcard-back-360.png')
     }
@@ -701,11 +721,15 @@ try {
     const previous = structuredClone(current.progress[task.entryId])
     assert.ok((await reversePage.locator('.reverse-card').innerText()).includes(entry.meaningFa))
     assert.ok(!(await reversePage.locator('.task-content').innerText()).includes(entry.lemma), 'German answer stays hidden before reveal')
+    assert.equal(await reversePage.getByRole('button', { name: 'مثال‌های بیشتر', exact: true }).count(), 0)
     await assertViewport(reversePage, 'reverse Persian front', '.reverse-reveal')
     await saveScreenshot(reversePage, 'reverse-front-360.png')
     await clickAndSave(reversePage, reversePage.locator('.reverse-reveal'))
     assert.ok((await reversePage.locator('.reverse-card').innerText()).includes(entry.lemma))
     if (entry.nounData) assert.ok((await reversePage.locator('.reverse-card').innerText()).includes(entry.nounData.article))
+    assert.equal(await reversePage.locator('.reverse-example [lang=de]').innerText(), entry.examples[1].de)
+    assert.ok((await reversePage.locator('.reverse-example').innerText()).includes(entry.examples[1].fa))
+    await checkMoreExamples(reversePage, entry, entry.examples[1])
     await assertViewport(reversePage, 'reverse revealed answer', '.reverse-correct, .reverse-incorrect')
     await saveScreenshot(reversePage, 'reverse-answer-360.png')
     const queue = structuredClone((await readState(reversePage)).session.queue)
@@ -732,6 +756,12 @@ try {
     assert.equal(current.session.queue[current.session.cursor].taskId, task.taskId)
     assert.deepEqual(current.session.queue, queue)
     assert.deepEqual(current.progress[task.entryId], previous)
+    assert.equal(await reversePage.locator('.reverse-example [lang=de]').innerText(), entry.examples[1].de)
+    await checkMoreExamples(reversePage, entry, entry.examples[1])
+    const response = await reversePage.evaluate(async () => {
+      const response = await window.fetch('/content/examples/Lesson-30-B1.json'); return response.json()
+    })
+    assert.equal(response.entries.every(row => row.additionalExamples.length === 2), true, 'all source data is available offline')
     diagnostics.push({ kind: 'reverse-phase', phase: 'before-wrong-rating' })
     await clickAndSave(reversePage, reversePage.locator('.reverse-incorrect'))
     current = await readState(reversePage)
@@ -758,6 +788,50 @@ try {
     current = await readState(reversePage)
     assert.ok(current.session.queue.filter(item => item.kind === 'reverse-card').every(item => !ratedIds.includes(item.entryId)), 'future-scheduled reverse words are not selected again')
     await isolated.close()
+  })
+  await checkpoint('second and third reverse examples rotate from completed history and survive reveal/reload without manual progress', async () => {
+    for (const priorCount of [1, 2]) {
+      let seedState = completedReverseFixture()
+      const entryId = Object.keys(seedState.reverseProgress)[0]
+      const entry = bundle.entries.find(entry => entry.entryId === entryId)
+      for (let index = 0; index < priorCount; index++) {
+        const at = seedState.reverseProgress[entryId].nextDueAt
+        seedState.reverseReviews.push({ reviewId: `example-history-${index}`, sessionId: `example-history-${index}`,
+          taskId: `example-history-${index}`, entryId, correct: index % 2 === 0, at,
+          studyDate: reverseStudyDate(at, seedState.settings.studyTimeZone) })
+        scheduleReverseReview(seedState.reverseProgress[entryId], index % 2 === 0, at, seedState.settings.studyTimeZone)
+      }
+      const now = seedState.reverseProgress[entryId].nextDueAt
+      let chosen
+      for (let seed = 0; seed < 1000; seed++) {
+        const candidate = transition(seedState, { type: 'start-session', sessionId: `example-review-${priorCount}`, seed }, bundle, now)
+        const task = candidate.session.queue.find(task => task.kind === 'reverse-card' && task.entryId === entryId)
+        if (task) { chosen = candidate; chosen.session.queue = [task]; chosen.session.cursor = 0; break }
+      }
+      assert.ok(chosen, 'due target can be selected without forcing a future review')
+      validateState(chosen, bundle)
+      const isolated = await browser.newContext({ viewport: { width: 320, height: 568 }, isMobile: true, hasTouch: true, locale: 'fa-IR', reducedMotion: 'reduce' })
+      observeContext(isolated)
+      await installClock(isolated, now)
+      const examplePage = await isolated.newPage()
+      await examplePage.goto(`${origin}/__test/setup`)
+      await writeState(examplePage, chosen)
+      await examplePage.goto(origin)
+      await examplePage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).click()
+      await examplePage.locator('.reverse-reveal').waitFor()
+      assert.equal(await examplePage.locator('.reverse-example').count(), 0)
+      await clickAndSave(examplePage, examplePage.locator('.reverse-reveal'))
+      const expected = entry.examples[(priorCount + 1) % 3]
+      assert.equal(await examplePage.locator('.reverse-example [lang=de]').innerText(), expected.de)
+      await checkMoreExamples(examplePage, entry, expected)
+      await assertViewport(examplePage, `rotating example ${priorCount}`, '.reverse-correct, .reverse-incorrect')
+      await examplePage.reload()
+      await examplePage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).click()
+      await examplePage.locator('.reverse-correct').waitFor()
+      assert.equal(await examplePage.locator('.reverse-example [lang=de]').innerText(), expected.de)
+      assert.equal((await readState(examplePage)).reverseReviews.length, priorCount)
+      await isolated.close()
+    }
   })
   await checkpoint('real IndexedDB atomic abort, optimistic concurrency and load/recovery', async () => {
     const isolated = await browser.newContext()

@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import type { ContentBundle, Entry, EntryProgress, LearningCommand, LessonDefinition, LessonSummary, ReverseProgress, ReverseReview, SessionTask, WortzeitUIProps } from '../contracts/index.ts'
+import type { ContentBundle, Entry, EntryProgress, Example, LearningCommand, LessonDefinition, LessonSummary, ReverseProgress, ReverseReview, SessionTask, WortzeitUIProps } from '../contracts/index.ts'
+import { getReverseExample } from '../learning/examples.ts'
 import '../App.css'
 
 type Page = 'home' | 'lessons' | 'words' | 'about' | 'session' | 'summary'
@@ -98,8 +99,13 @@ function Sources({ entry, bundle }: { entry: Entry; bundle: ContentBundle }) {
     return <li key={id}>{source?.title} · {ref.locator}</li>
   })}</ul><p>تطبیق با گزیدهٔ موجود؛ اصل کتاب به‌طور جامع بررسی نشده است.</p></div></DetailSheet>
 }
-function ExampleBlock({ entry }: { entry: Entry }) {
-  return <div className="example-block"><span className="tiny-label">مثال تألیفی</span><p lang="de" dir="ltr">{entry.examples[0]?.de}</p><p>{entry.examples[0]?.fa}</p></div>
+function ExampleBlock({ entry, example = entry.examples[0] }: { entry: Entry; example?: Example }) {
+  return <div className="example-block" data-example-id={example?.exampleId}><span className="tiny-label">مثال تألیفی</span><p lang="de" dir="ltr">{example?.de}</p><p>{example?.fa}</p></div>
+}
+function MoreExamples({ entry, currentExampleId }: { entry: Entry; currentExampleId?: string }) {
+  const others = entry.examples.filter(example => example.exampleId !== currentExampleId)
+  if (!others.length || entry.examples.length < 2) return null
+  return <DetailSheet title="مثال‌های بیشتر"><div className="more-examples"><p className="speaking-note">این جمله‌ها را بلند بخوان.</p>{others.map(example => <ExampleBlock key={example.exampleId} entry={entry} example={example} />)}<p className="example-reading-note">دیدن مثال‌ها امتیاز مرور را تغییر نمی‌دهد.</p></div></DetailSheet>
 }
 function SkillDetails({ entry, progress }: { entry: Entry; progress?: EntryProgress }) {
   const skills = [
@@ -179,6 +185,7 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
     : task.kind === 'cloze' ? helpedEntry.cloze.acceptedAnswers[0]
       : task.kind === 'choose-article' ? helpedEntry.nounData?.article ?? '' : helpedEntry.meaningFa : ''
   const writtenTask = task.kind === 'write-word' || task.kind === 'cloze'
+  const reverseExample = entry && task.kind === 'reverse-card' && task.revealed ? getReverseExample(entry, state.reverseReviews) : null
   return <div className={`task-content task-${task.kind} ${feedback ? 'has-feedback' : ''}`}>
     {task.kind === 'flashcard' && entry && <>
       <div className="task-heading"><span className="eyebrow"><Icon name="book" /> کارت {number(cardIndex + 1)} از {number(cards.length)}</span><h1>یک دوست تازه برای حافظه‌ات.</h1><p>کارت را بچرخان و معنی و مثال را ببین.</p></div>
@@ -189,10 +196,10 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
       }}>
         <span className="flashcard-inner">
           <span className="card-face card-front" aria-hidden={showBack}><span className="tiny-label">واژهٔ آلمانی</span><span className="card-word"><GermanWord entry={entry} /></span><span className="flip-hint"><Icon name="flip" /> برای دیدن معنی، لمس کن</span></span>
-          <span className="card-face card-back" aria-hidden={!showBack}><span className="tiny-label">معنی فارسی</span><strong className="card-meaning">{entry.meaningFa}</strong><span className="card-example-label">مثال تألیفی</span><span className="card-example-de" lang="de" dir="ltr">{entry.examples[0]?.de}</span><span className="card-example-fa">{entry.examples[0]?.fa}</span><span className="flip-hint"><Icon name="flip" /> برگشت به واژه</span></span>
+          <span className="card-face card-back" aria-hidden={!showBack}><span className="tiny-label">معنی فارسی</span><strong className="card-meaning">{entry.meaningFa}</strong><span className="card-example-label">مثال تألیفی · جمله را بلند بخوان</span><span className="card-example-de" lang="de" dir="ltr">{entry.examples[0]?.de}</span><span className="card-example-fa">{entry.examples[0]?.fa}</span><span className="flip-hint"><Icon name="flip" /> برگشت به واژه</span></span>
         </span>
       </button>
-      <div className="card-detail-row">{task.revealed ? <Sources entry={entry} bundle={bundle} /> : <span>برای دیدن معنی، کارت را لمس کن.</span>}</div>
+      <div className="card-detail-row">{task.revealed ? <><MoreExamples entry={entry} currentExampleId={entry.examples[0]?.exampleId} /><Sources entry={entry} bundle={bundle} /></> : <span>برای دیدن معنی، کارت را لمس کن.</span>}</div>
       <button type="button" className="primary-button wide flashcard-next" onClick={next} disabled={disabled || !task.revealed}>{nextIsCard ? 'کارت بعدی' : 'برویم سراغ تمرین'} <Icon name="arrow" /></button>
     </>}
     {task.kind === 'reverse-card' && entry && <>
@@ -201,9 +208,9 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
         <span className="tiny-label">{lessonLabel((bundle.lessons ?? [bundle.lesson]).find(lesson => lesson.lessonId === entry.introducedInLessonId) ?? bundle.lesson)}</span>
         <strong className="reverse-meaning">{entry.meaningFa}</strong>
         {!task.revealed && <p className="reverse-cue">{entry.writing.cueFa}</p>}
-        {task.revealed && <div className="reverse-answer" role="status"><GermanWord entry={entry} /><p className="speaking-note">واژه را یک بار بلند بگو.</p></div>}
+        {task.revealed && <><div className="reverse-answer" role="status"><GermanWord entry={entry} /></div>{reverseExample && <div className="reverse-example"><ExampleBlock entry={entry} example={reverseExample} /><p className="speaking-note">این جمله را بلند بخوان.</p></div>}</>}
       </div>
-      {task.revealed ? <><div className="card-detail-row"><DetailSheet title="مثال و ارجاع"><ExampleBlock entry={entry} /><p>این جمله را بلند بخوان.</p><Sources entry={entry} bundle={bundle} /></DetailSheet></div><div className="reverse-rating" aria-label="ارزیابی یادآوری آلمانی"><button type="button" className="secondary-button reverse-incorrect" disabled={disabled} onClick={() => void send({ type: 'rate-reverse', taskId: task.taskId, reviewId: crypto.randomUUID(), correct: false })}><Icon name="close" />اشتباه گفتم</button><button type="button" className="primary-button reverse-correct" disabled={disabled} onClick={() => void send({ type: 'rate-reverse', taskId: task.taskId, reviewId: crypto.randomUUID(), correct: true })}><Icon name="check" />درست گفتم</button></div></>
+      {task.revealed ? <><div className="card-detail-row"><MoreExamples entry={entry} currentExampleId={reverseExample?.exampleId} /><Sources entry={entry} bundle={bundle} /></div><div className="reverse-rating" aria-label="ارزیابی یادآوری آلمانی"><button type="button" className="secondary-button reverse-incorrect" disabled={disabled} onClick={() => void send({ type: 'rate-reverse', taskId: task.taskId, reviewId: crypto.randomUUID(), correct: false })}><Icon name="close" />اشتباه گفتم</button><button type="button" className="primary-button reverse-correct" disabled={disabled} onClick={() => void send({ type: 'rate-reverse', taskId: task.taskId, reviewId: crypto.randomUUID(), correct: true })}><Icon name="check" />درست گفتم</button></div></>
         : <><div className="card-detail-row"><span>یادآوری کن؛ نمایش پاسخ امتیاز نیست.</span></div><button type="button" className="primary-button wide reverse-reveal" disabled={disabled} onClick={() => void send({ type: 'reveal-card', taskId: task.taskId })}>نمایش پاسخ<Icon name="flip" /></button></>}
     </>}
     {task.kind === 'choose-meaning' && entry && !feedback && <>
@@ -279,7 +286,7 @@ function LessonWordList({ entries, props }: { entries: Entry[]; props: WortzeitU
   const { bundle, state, statuses, now } = props
   return <div className="word-list">{entries.map(entry => <details className="word-item" key={entry.entryId}>
           <summary><span className="word-item-main"><GermanWord entry={entry} /><span>{entry.meaningFa}</span></span><span className={`word-status status-${statuses[entry.entryId]}`}><i />{statusLabels[statuses[entry.entryId]]}</span><span className="details-chevron" aria-hidden="true">⌄</span></summary>
-          <div className="word-item-details"><ExampleBlock entry={entry} /><SkillDetails entry={entry} progress={state.progress[entry.entryId]} /><ReverseSkillDetails progress={state.reverseProgress?.[entry.entryId]} now={now} /><Sources entry={entry} bundle={bundle} />{state.progress[entry.entryId]?.nextDueAt && <p className="word-due">مرور بعدی: {dateLabel(state.progress[entry.entryId].nextDueAt, now)}</p>}</div>
+          <div className="word-item-details"><ExampleBlock entry={entry} /><MoreExamples entry={entry} currentExampleId={entry.examples[0]?.exampleId} /><SkillDetails entry={entry} progress={state.progress[entry.entryId]} /><ReverseSkillDetails progress={state.reverseProgress?.[entry.entryId]} now={now} /><Sources entry={entry} bundle={bundle} />{state.progress[entry.entryId]?.nextDueAt && <p className="word-due">مرور بعدی: {dateLabel(state.progress[entry.entryId].nextDueAt, now)}</p>}</div>
         </details>)}</div>
 }
 

@@ -14,7 +14,10 @@
     "test": "node --test --test-isolation=none src/content/*.test.ts src/learning/*.test.ts src/storage/*.test.ts src/controller/*.test.ts src/pwa/*.test.ts src/features/*.test.ts",
     "test:browser": "node scripts/browser-test.mjs",
     "verify:dist": "node scripts/verify-dist.mjs",
-    "preview": "vite preview --host 127.0.0.1 --configLoader native"
+    "preview": "vite preview --host 127.0.0.1 --configLoader native",
+    "sync:examples": "node scripts/sync-examples.mjs",
+    "prebuild": "node scripts/sync-examples.mjs",
+    "prebuild:portable": "node scripts/sync-examples.mjs"
   },
   "dependencies": {
     "react": "19.2.4",
