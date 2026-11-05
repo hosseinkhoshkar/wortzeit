@@ -95,6 +95,34 @@
  .wortzeit-app .summary-actions button .wz-icon{width:16px;height:16px;flex:0 0 16px}
 }
 
+/* Speech controls are siblings of the flip action, never nested buttons. */
+.flashcard-flip{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:inherit;background:transparent}
+.flashcard .flashcard-inner{overflow:auto;overscroll-behavior:contain}
+.flashcard .card-face{position:relative;inset:auto;min-height:100%;overflow:visible;pointer-events:none}
+.flashcard .card-face[aria-hidden=true]{display:none}
+.flashcard .speaker-button{position:relative;pointer-events:auto}
+.spoken-word{display:flex;align-items:center;justify-content:center;gap:10px;direction:ltr;max-width:100%}
+.spoken-word .german-word{min-width:0}
+.speaker-button{display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;min-height:44px;padding:10px;border:1px solid #d9c9e9;border-radius:14px;background:#f4eef9;color:#67478c;touch-action:manipulation}
+.speaker-button svg{width:22px;height:22px}
+.speaker-button[aria-pressed=true]{background:#dfd1ee;border-color:#9a77bc}
+.pronunciation-toolbar{display:flex;align-items:center;gap:10px;flex:0 0 auto;min-height:44px;margin-block:2px}
+.pronunciation-speed{display:flex;align-items:center;gap:7px;white-space:nowrap;font-size:11px;color:var(--muted)}
+.pronunciation-speed select{font:inherit;color:var(--ink);background:#fffdfb;border:1px solid #ded1e9;border-radius:12px;min-height:44px;padding:4px 7px;outline-offset:3px}
+.pronunciation-speed select:focus-visible{outline:3px solid #9169ba}
+.pronunciation-status{font-size:11px;line-height:1.7;color:#81553f;overflow-wrap:anywhere}
+.pronunciation-status:empty{display:none}
+.detail-sheet-body>.pronunciation-status{margin-top:12px}
+.example-sentence{display:flex;align-items:center;gap:8px;margin-top:6px}
+.example-sentence .example-de{flex:1;min-width:0;font-size:16px;color:#48573f;overflow-wrap:anywhere}
+.more-examples .example-de{color:#5d447b}
+.reverse-example .example-de{font-size:20px;color:#3b7058;line-height:1.6}
+.card-face .card-example{width:100%;margin:0;padding:0;background:transparent}
+.card-example .example-sentence{margin-top:4px}
+.card-example .card-example-de{font-size:20px;color:#4d435b;line-height:1.6}
+.card-example .card-example-fa{font-size:12px;color:var(--muted)}
+@media(max-width:720px){.task-content>.pronunciation-toolbar{margin:0}.task-content>.task-heading{margin-block:8px}.reverse-example .example-de,.card-example .card-example-de{font-size:17px}.card-example .card-example-fa{font-size:12px}.pronunciation-toolbar{gap:7px}}
+@media(max-width:720px) and (max-height:650px){.reverse-example .example-de,.card-example .card-example-de{font-size:15px}.card-example .card-example-fa{font-size:11px}.task-content>.task-heading{margin-block:2px}}
 /* Examples remain optional; reviewing a sentence never changes the study queue. */
 .more-examples{display:grid;gap:12px}.more-examples .example-block{margin:0;background:#f4eef9;border-radius:16px}.more-examples .example-block>p[lang=de]{color:#5d447b;overflow-wrap:anywhere}.more-examples .example-block>p:not([lang=de]){color:#746681}.example-reading-note{font-size:12px;color:#82728e;line-height:1.8}.reverse-example{width:100%;max-width:560px;flex:0 0 auto}.reverse-example .example-block{margin:0;background:#e8f4ed;padding:14px 18px;border-radius:16px}.reverse-example .example-block>p[lang=de]{font-size:20px;color:#3b7058;line-height:1.6;margin-top:6px;overflow-wrap:anywhere}.reverse-example .example-block>p:not([lang=de]){font-size:14px;color:#647e6e;line-height:1.9}.reverse-example .speaking-note{font-size:12px;margin-top:8px;color:#64816e}.card-detail-row{gap:10px}.card-detail-row>.details-trigger{white-space:nowrap}
 @media(max-width:720px){.reverse-card.is-revealed{gap:9px;justify-content:safe center}.reverse-card.is-revealed .reverse-meaning{font-size:23px}.reverse-card.is-revealed .reverse-answer{font-size:29px}.reverse-example .example-block{padding:10px 13px}.reverse-example .example-block>p[lang=de]{font-size:17px;line-height:1.6}.reverse-example .example-block>p:not([lang=de]){font-size:12px;line-height:1.8}.reverse-example .tiny-label{font-size:9px}.reverse-example .speaking-note{font-size:10px;margin-top:5px}.card-detail-row{gap:7px}.card-detail-row>.details-trigger{font-size:11px;padding-inline:7px}}

@@ -11,6 +11,7 @@ import { validateVersionTwoState } from '../src/storage/legacy-v2.ts'
 import { createInitialState, transition } from '../src/learning/engine.ts'
 import { scheduleReverseReview, reverseStudyDate } from '../src/learning/reverse.ts'
 import { validateState } from '../src/storage/index.ts'
+import { checkPronunciation } from './pronunciation-browser.mjs'
 
 const results = []
 const diagnostics = []
@@ -433,7 +434,7 @@ try {
     await page.locator('.flashcard').scrollIntoViewIfNeeded()
     const before = await readState(page)
     const changes = await page.evaluate(() => new Promise(resolve => {
-      const card = document.querySelector('.flashcard')
+      const card = document.querySelector('.flashcard-flip')
       const startY = window.scrollY
       const records = []
       const observer = new MutationObserver(mutations => {
@@ -676,8 +677,8 @@ try {
       assert.equal(await targetPage.evaluate(() => document.activeElement === document.body || !!document.activeElement.closest('.target-dialog')), true, 'keyboard cannot focus underlying controls (native dialog may focus browser chrome)')
     }
     assert.equal(await dialog.evaluate(element => element.matches(':modal')), true, 'daily target is a real modal top layer')
-    await targetPage.locator('.flashcard').evaluate(element => element.focus())
-    assert.equal(await targetPage.locator('.flashcard').evaluate(element => element === document.activeElement), false, 'underlying exercise is inert to programmatic focus')
+    await targetPage.locator('.flashcard-flip').evaluate(element => element.focus())
+    assert.equal(await targetPage.locator('.flashcard-flip').evaluate(element => element === document.activeElement), false, 'underlying exercise is inert to programmatic focus')
     assert.deepEqual((await readState(targetPage)).attempts, before.attempts, 'Tab does not answer the underlying exercise')
     await clickAndSave(targetPage, dialog.getByRole('button', { name: 'ادامهٔ تمرین', exact: true }))
     await targetPage.locator('.target-dialog').waitFor({ state: 'hidden' })
@@ -832,6 +833,9 @@ try {
       assert.equal((await readState(examplePage)).reverseReviews.length, priorCount)
       await isolated.close()
     }
+  })
+  await checkpoint('native pronunciation: visible German, speed, dialog and navigation cancellation without learning or rotation changes', async () => {
+    await checkPronunciation({ browser, origin, bundle, observeContext, writeState, readState, learningSnapshot, clickAndSave, assertViewport, saveScreenshot, completedReverseFixture, installClock })
   })
   await checkpoint('real IndexedDB atomic abort, optimistic concurrency and load/recovery', async () => {
     const isolated = await browser.newContext()

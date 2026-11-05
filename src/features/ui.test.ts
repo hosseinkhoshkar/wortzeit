@@ -4,7 +4,8 @@ import { createRequire } from 'node:module'
 import { test } from 'node:test'
 import { pathToFileURL } from 'node:url'
 import { createElement } from 'react'
-import { renderToStaticMarkup } from 'react-dom/server'
+import { renderToStaticMarkup as renderMarkup } from 'react-dom/server'
+import type { ReactNode } from 'react'
 import ts from 'typescript'
 import type { ContentBundle, Entry, EntryProgress, LessonDefinition, SessionTask, WortzeitUIProps } from '../contracts/index.ts'
 import { lessonOneBundle as bundle } from '../content/lesson-one.ts'
@@ -14,13 +15,17 @@ import { createInitialState } from '../learning/engine.ts'
 // with React SSR. These are static content/accessibility checks, not browser proof.
 const require = createRequire(import.meta.url)
 const source = readFileSync(new URL('./WortzeitUI.tsx', import.meta.url), 'utf8')
-const javascript = ts.transpileModule(`${source}\nexport { TaskPanel, SkillDetails, LessonCards, LessonWordList, lessonEntries, ReverseReviewSummary, TargetPrompt }`, {
+const javascript = ts.transpileModule(`${source}\nexport { TaskPanel, SkillDetails, LessonCards, LessonWordList, lessonEntries, ReverseReviewSummary, TargetPrompt, PronunciationProvider }`, {
   compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2023 },
 }).outputText.replace(/import ['"]\.\.\/App\.css['"];?/u, '')
   .replace(/from (['"])(react(?:\/jsx-runtime)?)\1/gu,
     (_match, _quote: string, specifier: string) => `from '${pathToFileURL(require.resolve(specifier)).href}'`)
   .replace("from '../learning/examples.ts'", `from '${new URL('../learning/examples.ts', import.meta.url).href}'`)
+  .replace("from './pronunciation.ts'", `from '${new URL('./pronunciation.ts', import.meta.url).href}'`)
 const view = await import(`data:text/javascript;base64,${Buffer.from(javascript).toString('base64')}`)
+function renderToStaticMarkup(element: ReactNode) {
+  return renderMarkup(createElement(view.PronunciationProvider, null, element))
+}
 const now = '2026-10-28T12:00:00.000Z'
 
 function propsFor(task: SessionTask): WortzeitUIProps {
@@ -53,6 +58,7 @@ test('writing displays only Persian prompt/cue before answering, with German LTR
   assert.ok(html.includes(noun.writing.promptFa))
   assert.ok(html.includes(noun.writing.cueFa))
   assert.ok(!html.includes(noun.writing.acceptedAnswers[0]))
+  assert.ok(!html.includes('speaker-button'), 'writing cannot play a hidden answer or sentence')
   assert.match(html, /id="german-answer" lang="de" dir="ltr"/u)
   assert.match(html, /value="An"/u)
   assert.match(html, /نمایش پاسخ/u)
@@ -64,6 +70,7 @@ test('article question hides the article until feedback and provides all three t
   const html = renderTask(task, props)
   assert.ok(html.includes(noun.lemma))
   assert.ok(!html.includes('class="article"'))
+  assert.ok(!html.includes('speaker-button'), 'article question cannot play the full noun with its answer')
   for (const option of task.options) assert.ok(html.includes(`>${option}</button>`))
   props.state.session!.feedback = { attemptId: 'a', entryId: noun.entryId, correct: true, expectedAnswer: noun.nounData!.article, explanationFa: 'ثبت شد', assisted: false }
   const answered = renderTask(task, props)
@@ -163,6 +170,7 @@ test('reverse card conceals every German answer and example until persisted reve
   assert.ok(!html.includes(noun.lemma))
   assert.ok(!html.includes(noun.examples[0].de))
   assert.ok(!html.includes('reverse-rating'))
+  assert.ok(!html.includes('speaker-button'), 'hidden German has no audio control')
   assert.match(html, /reverse-reveal/u)
   assert.match(html, /نمایش پاسخ/u)
 })
@@ -175,6 +183,8 @@ test('revealed reverse card restores German article and self-assessment without 
   assert.match(html, /درست گفتم/u)
   assert.match(html, /اشتباه گفتم/u)
   assert.match(html, /ارجاع این واژه/u)
+  assert.match(html, /پخش تلفظ واژهٔ آلمانی/u)
+  assert.match(html, /پخش تلفظ جملهٔ آلمانی/u)
   assert.ok(!html.includes('reverse-reveal'))
   assert.ok(!html.includes('feedback-next'))
 })
@@ -237,7 +247,7 @@ test('initial learning keeps the original example on the card and offers extras 
   assert.ok(!hidden.includes(expandedNoun.examples[1].de))
   task.revealed = true
   const html = renderTask(task, props)
-  const back = html.match(/class="card-face card-back"[\s\S]*?<\/span><\/span><\/button>/u)?.[0] ?? ''
+  const back = html.match(/class="card-face card-back"[\s\S]*?class="card-detail-row"/u)?.[0] ?? ''
   assert.ok(back.includes(expandedNoun.examples[0].de))
   assert.ok(!back.includes(expandedNoun.examples[1].de) && !back.includes(expandedNoun.examples[2].de))
   assert.match(html, /مثال‌های بیشتر/u)

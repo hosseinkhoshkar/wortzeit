@@ -1,7 +1,9 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { createContext, useContext, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react'
 import type { ReactNode } from 'react'
 import type { ContentBundle, Entry, EntryProgress, Example, LearningCommand, LessonDefinition, LessonSummary, ReverseProgress, ReverseReview, SessionTask, WortzeitUIProps } from '../contracts/index.ts'
 import { getReverseExample } from '../learning/examples.ts'
+import { browserPronunciation, wordPronunciation } from './pronunciation.ts'
+import type { Pronunciation } from './pronunciation.ts'
 import '../App.css'
 
 type Page = 'home' | 'lessons' | 'words' | 'about' | 'session' | 'summary'
@@ -66,17 +68,61 @@ function dateLabel(value: string | null, now: string) {
 function GermanWord({ entry }: { entry: Entry }) {
   return <span lang="de" dir="ltr" className="german-word">{entry.nounData && <span className="article">{entry.nounData.article} </span>}{entry.lemma}</span>
 }
+const PronunciationContext = createContext<Pronunciation | null>(null)
+const SpeechScope = createContext('page')
+function usePronunciation() {
+  const playback = useContext(PronunciationContext)
+  if (!playback) throw new Error('PronunciationProvider is required')
+  return playback
+}
+function PronunciationProvider({ children }: { children: ReactNode }) {
+  const [playback] = useState(browserPronunciation)
+  useEffect(() => {
+    const disconnect = playback.connect()
+    const stop = () => playback.stop()
+    const hide = () => { if (document.visibilityState !== 'visible') stop() }
+    window.addEventListener('pagehide', stop)
+    document.addEventListener('visibilitychange', hide)
+    return () => { disconnect(); window.removeEventListener('pagehide', stop); document.removeEventListener('visibilitychange', hide) }
+  }, [playback])
+  return <PronunciationContext value={playback}>{children}</PronunciationContext>
+}
+function SpeakerButton({ text, sentence = false }: { text: string; sentence?: boolean }) {
+  const playback = usePronunciation()
+  const scope = useContext(SpeechScope)
+  const id = useId()
+  const snapshot = useSyncExternalStore(playback.subscribe, playback.getSnapshot, playback.getSnapshot)
+  const playing = snapshot.activeId === id
+  useEffect(() => () => playback.stopButton(id), [playback, id, text])
+  const label = `${playing ? 'توقف پخش' : 'پخش تلفظ'} ${sentence ? 'جملهٔ آلمانی' : 'واژهٔ آلمانی'}`
+  return <button type="button" className="speaker-button" aria-label={label} title={label} aria-pressed={playing} onClick={event => { event.stopPropagation(); playback.toggle(id, scope, text) }}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{playing ? <path d="M6 6h12v12H6Z" /> : <><path d="m11 4-6 5H2v6h3l6 5ZM15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14" /></>}</svg>
+  </button>
+}
+function PronunciationStatus() {
+  const playback = usePronunciation()
+  const { message } = useSyncExternalStore(playback.subscribe, playback.getSnapshot, playback.getSnapshot)
+  return <p className="pronunciation-status" role="status" aria-live="polite">{message}</p>
+}
+function PronunciationSettings() {
+  const playback = usePronunciation()
+  const { rate } = useSyncExternalStore(playback.subscribe, playback.getSnapshot, playback.getSnapshot)
+  return <div className="pronunciation-toolbar"><label className="pronunciation-speed">سرعت تلفظ<select value={rate} onChange={event => playback.setRate(event.target.value === '0.8' ? 0.8 : 1)}><option value="1">عادی</option><option value="0.8">آهسته</option></select></label><PronunciationStatus /></div>
+}
 function DetailSheet({ title, label, children, disabled = false, beforeOpen }: {
   title: string; label?: string; children: ReactNode; disabled?: boolean; beforeOpen?: () => Promise<void>
 }) {
   const dialog = useRef<HTMLDialogElement>(null)
   const titleId = useId()
+  const speechScope = useId()
+  const playback = usePronunciation()
+  useEffect(() => () => playback.stopScope(speechScope), [playback, speechScope])
   const [opening, setOpening] = useState(false)
   return <><button type="button" className="text-button details-trigger" disabled={disabled || opening} onClick={async () => {
     if (opening) return
     setOpening(true)
     try { await beforeOpen?.(); dialog.current?.showModal() } catch { /* Application keeps the retryable command. */ } finally { setOpening(false) }
-  }}><Icon name="info" />{label ?? title}</button><dialog ref={dialog} className="detail-sheet" aria-labelledby={titleId} onClick={event => { if (event.target === event.currentTarget) dialog.current?.close() }}><div className="detail-sheet-header"><h2 id={titleId}>{title}</h2><button type="button" className="sheet-close" aria-label="بستن جزئیات" onClick={() => dialog.current?.close()}><Icon name="close" /></button></div><div className="detail-sheet-body">{children}</div></dialog></>
+  }}><Icon name="info" />{label ?? title}</button><dialog ref={dialog} className="detail-sheet" aria-labelledby={titleId} onClose={() => playback.stopScope(speechScope)} onClick={event => { if (event.target === event.currentTarget) dialog.current?.close() }}><div className="detail-sheet-header"><h2 id={titleId}>{title}</h2><button type="button" className="sheet-close" aria-label="بستن جزئیات" onClick={() => dialog.current?.close()}><Icon name="close" /></button></div><div className="detail-sheet-body"><SpeechScope value={speechScope}>{children}<PronunciationStatus /></SpeechScope></div></dialog></>
 }
 function TargetPrompt({ active, minutes, disabled, onFinish, onContinue }: {
   active: boolean; minutes: number; disabled: boolean; onFinish: () => Promise<void>; onContinue: () => Promise<void>
@@ -99,8 +145,8 @@ function Sources({ entry, bundle }: { entry: Entry; bundle: ContentBundle }) {
     return <li key={id}>{source?.title} · {ref.locator}</li>
   })}</ul><p>تطبیق با گزیدهٔ موجود؛ اصل کتاب به‌طور جامع بررسی نشده است.</p></div></DetailSheet>
 }
-function ExampleBlock({ entry, example = entry.examples[0] }: { entry: Entry; example?: Example }) {
-  return <div className="example-block" data-example-id={example?.exampleId}><span className="tiny-label">مثال تألیفی</span><p lang="de" dir="ltr">{example?.de}</p><p>{example?.fa}</p></div>
+function ExampleBlock({ entry, example = entry.examples[0], card = false }: { entry: Entry; example?: Example; card?: boolean }) {
+  return <div className={`example-block${card ? ' card-example' : ''}`} data-example-id={example?.exampleId}><span className="tiny-label">مثال تألیفی</span><div className="example-sentence" dir="ltr"><p className={`example-de${card ? ' card-example-de' : ''}`} lang="de" dir="ltr">{example?.de}</p>{example?.de && <SpeakerButton text={example.de} sentence />}</div><p className={card ? 'card-example-fa' : undefined}>{example?.fa}</p></div>
 }
 function MoreExamples({ entry, currentExampleId }: { entry: Entry; currentExampleId?: string }) {
   const others = entry.examples.filter(example => example.exampleId !== currentExampleId)
@@ -138,6 +184,8 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
   const [selectedLeft, setSelectedLeft] = useState<string | null>(null)
   const [showBack, setShowBack] = useState(task.kind === 'flashcard' && task.revealed)
   const sending = useRef(false)
+  const playback = usePronunciation()
+  useEffect(() => () => playback.stop(), [playback, task.taskId])
   const disabled = busy || !!error
   const commandRef = useRef(onCommand)
   useEffect(() => { commandRef.current = onCommand }, [onCommand])
@@ -178,6 +226,13 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
     setSelectedLeft(null)
     void send({ type: 'next', taskId: task.taskId })
   }
+  async function flipCard() {
+    if (disabled || task.kind !== 'flashcard') return
+    playback.stop()
+    if (!task.revealed) {
+      try { await onCommand({ type: 'reveal-card', taskId: task.taskId }); setShowBack(true) } catch { /* Remain on the saved side. */ }
+    } else setShowBack(value => !value)
+  }
   const feedbackEntry = feedback && bundle.entries.find(item => item.entryId === feedback.entryId)
   const assistance = state.assistanceEvents.filter(event => event.taskId === task.taskId).at(-1)
   const helpedEntry = assistance ? bundle.entries.find(item => item.entryId === assistance.entryId) : entry
@@ -187,18 +242,16 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
   const writtenTask = task.kind === 'write-word' || task.kind === 'cloze'
   const reverseExample = entry && task.kind === 'reverse-card' && task.revealed ? getReverseExample(entry, state.reverseReviews) : null
   return <div className={`task-content task-${task.kind} ${feedback ? 'has-feedback' : ''}`}>
+    <PronunciationSettings />
     {task.kind === 'flashcard' && entry && <>
       <div className="task-heading"><span className="eyebrow"><Icon name="book" /> کارت {number(cardIndex + 1)} از {number(cards.length)}</span><h1>یک دوست تازه برای حافظه‌ات.</h1><p>کارت را بچرخان و معنی و مثال را ببین.</p></div>
-      <button type="button" className={`flashcard ${showBack ? 'is-flipped' : ''}`} aria-label={showBack ? 'نمایش روی کارت' : 'چرخاندن کارت و نمایش معنی'} aria-pressed={showBack} disabled={disabled} onClick={async () => {
-        if (!task.revealed) {
-          try { await onCommand({ type: 'reveal-card', taskId: task.taskId }); setShowBack(true) } catch { /* Remain on the saved side. */ }
-        } else setShowBack(value => !value)
-      }}>
-        <span className="flashcard-inner">
-          <span className="card-face card-front" aria-hidden={showBack}><span className="tiny-label">واژهٔ آلمانی</span><span className="card-word"><GermanWord entry={entry} /></span><span className="flip-hint"><Icon name="flip" /> برای دیدن معنی، لمس کن</span></span>
-          <span className="card-face card-back" aria-hidden={!showBack}><span className="tiny-label">معنی فارسی</span><strong className="card-meaning">{entry.meaningFa}</strong><span className="card-example-label">مثال تألیفی · جمله را بلند بخوان</span><span className="card-example-de" lang="de" dir="ltr">{entry.examples[0]?.de}</span><span className="card-example-fa">{entry.examples[0]?.fa}</span><span className="flip-hint"><Icon name="flip" /> برگشت به واژه</span></span>
-        </span>
-      </button>
+      <div className={`flashcard ${showBack ? 'is-flipped' : ''}`} onClick={() => void flipCard()}>
+        <div className="flashcard-inner">
+          <button type="button" className="flashcard-flip" aria-label={showBack ? 'نمایش روی کارت' : 'چرخاندن کارت و نمایش معنی'} aria-pressed={showBack} disabled={disabled} />
+          <div className="card-face card-front" aria-hidden={showBack} inert={showBack}><span className="tiny-label">واژهٔ آلمانی</span><div className="card-word spoken-word"><GermanWord entry={entry} />{!showBack && <SpeakerButton text={wordPronunciation(entry)} />}</div><span className="flip-hint"><Icon name="flip" /> برای دیدن معنی، لمس کن</span></div>
+          <div className="card-face card-back" aria-hidden={!showBack} inert={!showBack}><span className="tiny-label">معنی فارسی</span><strong className="card-meaning">{entry.meaningFa}</strong>{showBack && <ExampleBlock entry={entry} card />}<span className="flip-hint"><Icon name="flip" /> برگشت به واژه</span></div>
+        </div>
+      </div>
       <div className="card-detail-row">{task.revealed ? <><MoreExamples entry={entry} currentExampleId={entry.examples[0]?.exampleId} /><Sources entry={entry} bundle={bundle} /></> : <span>برای دیدن معنی، کارت را لمس کن.</span>}</div>
       <button type="button" className="primary-button wide flashcard-next" onClick={next} disabled={disabled || !task.revealed}>{nextIsCard ? 'کارت بعدی' : 'برویم سراغ تمرین'} <Icon name="arrow" /></button>
     </>}
@@ -208,7 +261,7 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
         <span className="tiny-label">{lessonLabel((bundle.lessons ?? [bundle.lesson]).find(lesson => lesson.lessonId === entry.introducedInLessonId) ?? bundle.lesson)}</span>
         <strong className="reverse-meaning">{entry.meaningFa}</strong>
         {!task.revealed && <p className="reverse-cue">{entry.writing.cueFa}</p>}
-        {task.revealed && <><div className="reverse-answer" role="status"><GermanWord entry={entry} /></div>{reverseExample && <div className="reverse-example"><ExampleBlock entry={entry} example={reverseExample} /><p className="speaking-note">این جمله را بلند بخوان.</p></div>}</>}
+        {task.revealed && <><div className="reverse-answer spoken-word" role="status"><GermanWord entry={entry} /><SpeakerButton text={wordPronunciation(entry)} /></div>{reverseExample && <div className="reverse-example"><ExampleBlock entry={entry} example={reverseExample} /><p className="speaking-note">این جمله را بلند بخوان.</p></div>}</>}
       </div>
       {task.revealed ? <><div className="card-detail-row"><MoreExamples entry={entry} currentExampleId={reverseExample?.exampleId} /><Sources entry={entry} bundle={bundle} /></div><div className="reverse-rating" aria-label="ارزیابی یادآوری آلمانی"><button type="button" className="secondary-button reverse-incorrect" disabled={disabled} onClick={() => void send({ type: 'rate-reverse', taskId: task.taskId, reviewId: crypto.randomUUID(), correct: false })}><Icon name="close" />اشتباه گفتم</button><button type="button" className="primary-button reverse-correct" disabled={disabled} onClick={() => void send({ type: 'rate-reverse', taskId: task.taskId, reviewId: crypto.randomUUID(), correct: true })}><Icon name="check" />درست گفتم</button></div></>
         : <><div className="card-detail-row"><span>یادآوری کن؛ نمایش پاسخ امتیاز نیست.</span></div><button type="button" className="primary-button wide reverse-reveal" disabled={disabled} onClick={() => void send({ type: 'reveal-card', taskId: task.taskId })}>نمایش پاسخ<Icon name="flip" /></button></>}
@@ -284,22 +337,28 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
 
 function LessonWordList({ entries, props }: { entries: Entry[]; props: WortzeitUIProps }) {
   const { bundle, state, statuses, now } = props
-  return <div className="word-list">{entries.map(entry => <details className="word-item" key={entry.entryId}>
+  const playback = usePronunciation()
+  return <div className="word-list">{entries.map(entry => <details className="word-item" key={entry.entryId} onToggle={event => { if (!event.currentTarget.open) playback.stopScope(entry.entryId) }}>
           <summary><span className="word-item-main"><GermanWord entry={entry} /><span>{entry.meaningFa}</span></span><span className={`word-status status-${statuses[entry.entryId]}`}><i />{statusLabels[statuses[entry.entryId]]}</span><span className="details-chevron" aria-hidden="true">⌄</span></summary>
-          <div className="word-item-details"><ExampleBlock entry={entry} /><MoreExamples entry={entry} currentExampleId={entry.examples[0]?.exampleId} /><SkillDetails entry={entry} progress={state.progress[entry.entryId]} /><ReverseSkillDetails progress={state.reverseProgress?.[entry.entryId]} now={now} /><Sources entry={entry} bundle={bundle} />{state.progress[entry.entryId]?.nextDueAt && <p className="word-due">مرور بعدی: {dateLabel(state.progress[entry.entryId].nextDueAt, now)}</p>}</div>
+          <div className="word-item-details"><SpeechScope value={entry.entryId}><ExampleBlock entry={entry} /><MoreExamples entry={entry} currentExampleId={entry.examples[0]?.exampleId} /><SkillDetails entry={entry} progress={state.progress[entry.entryId]} /><ReverseSkillDetails progress={state.reverseProgress?.[entry.entryId]} now={now} /><Sources entry={entry} bundle={bundle} />{state.progress[entry.entryId]?.nextDueAt && <p className="word-due">مرور بعدی: {dateLabel(state.progress[entry.entryId].nextDueAt, now)}</p>}</SpeechScope></div>
         </details>)}</div>
 }
 
 export function WortzeitUI(props: WortzeitUIProps) {
+  return <PronunciationProvider><WortzeitView {...props} /></PronunciationProvider>
+}
+function WortzeitView(props: WortzeitUIProps) {
   const { bundle, state, stats, summary, statuses, busy, error, offlineStatus, now, onCommand, onRetry, onSessionVisibilityChange } = props
   const [page, setPage] = useState<Page>('home')
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
+  const playback = usePronunciation()
   const selectingLesson = useRef(false)
   const session = state.session
   const task = session && session.state !== 'ended' ? session.queue[session.cursor] : null
   const effectivePage = page === 'session' && session?.state === 'ended' ? 'summary'
     : page === 'session' && session?.state === 'paused' ? 'home' : page
+  useEffect(() => () => playback.stop(), [playback, effectivePage, state.activeLessonId])
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [effectivePage])
   useEffect(() => {
     const viewport = window.visualViewport
@@ -400,6 +459,7 @@ export function WortzeitUI(props: WortzeitUIProps) {
         <DetailSheet title="دربارهٔ نتیجهٔ جلسه"><p>پاسخ‌های درست ممکن است با کمک باشند؛ تعداد پاسخ درست به‌تنهایی تسلط را نشان نمی‌دهد. فاصلهٔ مرور با یادآوری مستقل در روزهای جدا بیشتر می‌شود. این گزیده، پایان همهٔ واژگان اصل این درس نیست.</p><p>مرور معکوس، ارزیابی شخصیِ فارسی به آلمانی است و امتیازش جدا از تمرین نوشتن ذخیره می‌شود.</p></DetailSheet><div className="summary-actions"><button className="primary-button" type="button" disabled={disabled} onClick={() => void start()}>ادامهٔ یادگیری<Icon name="arrow" /></button><button className="secondary-button" type="button" onClick={() => setPage('home')}>بازگشت به خانه</button></div>
       </section>}
       {effectivePage === 'words' && <section className="words-page">
+        <PronunciationSettings />
         <div className="page-intro"><div><span className="eyebrow">واژه‌نامهٔ کوچک تو</span><h1>واژه‌های {lessonLabel(activeLesson)}<span className="orange-dot">.</span></h1><p>{number(total)} مدخل از گزیدهٔ موجود؛ وضعیت‌ها براساس پیشرفت واقعی تو هستند.</p></div><span className="level-pill" lang="de" dir="ltr">A1</span></div>
         <p className="stabilization-note">«تثبیت‌شده» یعنی دست‌کم سه مرور مستقلِ موعدرسیده در روزهای جدا، بدون خطا یا کمک در میان آن‌ها؛ برای اسم، پاسخ آرتیکلِ بدون کمک هم لازم است. مرور بلندمدت همچنان ادامه دارد.</p>
         <label className="word-search"><span className="sr-only">جست‌وجوی واژه یا معنی</span><input type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="واژه یا معنی‌اش را جست‌وجو کن…" /></label>
