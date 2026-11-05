@@ -1,6 +1,6 @@
 ﻿# قواعد یادگیری نسخهٔ۲
 
-سیاست `learning-policy-v2` برای همان بستهٔ ۲۰مدخلی درس اول است؛ [قرارداد](data-contract.md) و [typeها](../src/contracts/index.ts) مرجع اجرا هستند.
+سیاست مشترک `learning-policy-v2` برای درس‌های فعال کاتالوگ است؛ [قرارداد](data-contract.md) و [typeها](../src/contracts/index.ts) مرجع اجرا هستند. افزودن درس۵ قواعد مرور و سقف۵ جدید را عوض نمی‌کند؛ [دامنه و پذیرش](lesson-five-acceptance.md).
 
 ## صف و تمرین متناسب
 

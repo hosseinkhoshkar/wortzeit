@@ -6,6 +6,8 @@ export { lessonBundles }
 
 /** The original lesson IDs and all twenty existing entry identities stay unchanged. */
 export const courseBundle: ContentBundle = {
+  // Save compatibility identifier: the schema-4 reader compares this exactly.
+  // Additive lessons keep it; the PWA build hash independently refreshes assets.
   contentVersion: 'course-a1-lessons-01-04-v1',
   lesson: lessonBundles[0].lesson,
   lessons: lessonBundles.map(bundle => bundle.lesson),
@@ -13,8 +15,8 @@ export const courseBundle: ContentBundle = {
   sourceRefs: lessonBundles.flatMap(bundle => bundle.sourceRefs),
   entries: lessonBundles.flatMap(bundle => bundle.entries).map(extendEntryExamples),
   provenance: {
-    file: 'reference/vocabulary/Lesson-01-A1.txt؛ reference/vocabulary/Lesson-04-A1.txt',
+    file: lessonBundles.map(bundle => bundle.provenance.file).join('؛ '),
     reviewStatus: 'excerpt-checked',
-    noteFa: 'درس اول شامل همان ۲۰ مدخل قبلی است. درس چهارم تمام ۸۴ مدخل فایل گزیدهٔ درس چهارم را دارد. معنی، آرتیکل و ارجاع‌ها با همین فایل‌ها تطبیق داده شده‌اند؛ تأیید جامع اصل کتاب نیست. مثال‌ها و جمله‌های تمرین تألیفی‌اند.',
+    noteFa: 'درس اول شامل همان ۲۰ مدخل قبلی است. درس چهارم تمام ۸۴ و درس پنجم تمام ۷۶ مدخل فایل گزیدهٔ خود را دارند. معنی، آرتیکل و ارجاع‌ها با همین فایل‌ها تطبیق داده شده‌اند؛ تأیید جامع اصل کتاب نیست. مثال‌ها و جمله‌های تمرین تألیفی‌اند.',
   },
 }

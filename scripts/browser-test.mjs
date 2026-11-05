@@ -164,8 +164,8 @@ async function assertViewport(page, label, controlSelector) {
   await page.setViewportSize({ width: 360, height: 800 })
 }
 
-async function checkKeyboardViewport(page) {
-  if (layoutCheckedKinds.has('keyboard')) return
+async function checkKeyboardViewport(page, force = false) {
+  if (layoutCheckedKinds.has('keyboard') && !force) return
   layoutCheckedKinds.add('keyboard')
   await page.setViewportSize({ width: 360, height: 800 })
   await page.evaluate(() => {
@@ -339,11 +339,12 @@ async function playToEnd(page, stopAtWritten = false, wrongMatch = false) {
   throw new Error('Session did not terminate')
 }
 
-function completedReverseFixture() {
+function completedReverseFixture(learnedLessonId = bundle.lesson.lessonId) {
   const learnedAt = '2026-10-28T12:00:00.000Z'
   let state = createInitialState(bundle, 'Europe/Berlin')
   let attempt = 0
   const commit = command => { state = transition(state, command, bundle, learnedAt) }
+  commit({ type: 'select-lesson', lessonId: learnedLessonId })
   for (let batch = 0; batch < 3; batch++) {
     commit({ type: 'start-session', sessionId: `reverse-fixture-${batch}`, seed: 43 + batch })
     for (let step = 0; state.session.state !== 'ended'; step++) {
@@ -584,7 +585,7 @@ try {
     assert.deepEqual(migrated.attempts, old.attempts)
     assert.equal(migrated.session.draft, old.session.draft)
     await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
-    assert.equal(await lessonPage.locator('.lesson-card').count(), 2)
+    assert.equal(await lessonPage.locator('.lesson-card').count(), 3)
     for (const width of [320, 360, 430, 1280]) {
       await lessonPage.setViewportSize({ width, height: 850 })
       assert.equal(await lessonPage.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), true)
@@ -628,6 +629,80 @@ try {
     const ended = await playToEnd(lessonPage)
     assert.equal(ended.session.introducedEntryIds.length, 5)
     assert.ok(ended.session.introducedEntryIds.every(id => id.startsWith('a1-l04-')))
+    await isolated.close()
+  })
+  await checkpoint('lesson-five deep link, schema-4 compatibility, lesson 4/5 drafts and offline examples', async () => {
+    const isolated = await browser.newContext({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true, locale: 'fa-IR', reducedMotion: 'reduce' })
+    observeContext(isolated)
+    await installClock(isolated, '2026-11-04T12:00:00.000Z')
+    const lessonPage = await isolated.newPage()
+    const old = JSON.parse(await readFile('src/storage/fixtures/pre-lesson-five-schema4.json', 'utf8'))
+    await lessonPage.goto(`${origin}/__test/setup`)
+    await writeState(lessonPage, old)
+    await lessonPage.goto(`${origin}/?lesson=lesson-05`)
+    await lessonPage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).waitFor()
+    const selected = await readState(lessonPage)
+    assert.equal(selected.activeLessonId, 'lesson-05')
+    for (const key of ['contentVersion', 'progress', 'attempts', 'reverseProgress', 'reverseReviews', 'dailyActivity']) assert.deepEqual(selected[key], old[key])
+    assert.deepEqual(selected.savedSessions['lesson-04'], old.session)
+    assert.deepEqual(selected.savedSessions['a1-lesson-01'], old.savedSessions['a1-lesson-01'])
+    assert.ok((await lessonPage.locator('.hero-panel').innerText()).includes('Endlich ein Zimmer!'))
+    await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
+    assert.equal(await lessonPage.locator('.lesson-card').count(), 3)
+    for (const [id, count] of [['a1-lesson-01', 20], ['lesson-04', 84], ['lesson-05', 76]]) {
+      assert.equal(await lessonPage.locator(`[data-lesson-id="${id}"] [role=progressbar]`).getAttribute('aria-valuemax'), String(count))
+    }
+    await saveScreenshot(lessonPage, 'lesson-five-catalog-360.png')
+    await lessonPage.getByRole('button', { name: 'واژه‌ها', exact: true }).click()
+    assert.equal(await lessonPage.locator('.word-item').count(), 76)
+    await lessonPage.getByRole('button', { name: 'خانه', exact: true }).click()
+    await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }))
+    let current = await readState(lessonPage)
+    assert.equal(current.session.queue.filter(task => task.kind === 'flashcard').length, 5)
+    for (let guard = 0; guard < 3 && current.session.queue[current.session.cursor].kind === 'reverse-card'; guard++) {
+      assert.equal(await lessonPage.locator('.task-content .speaker-button').count(), 0)
+      await clickAndSave(lessonPage, lessonPage.locator('.reverse-reveal'))
+      await clickAndSave(lessonPage, lessonPage.locator('.reverse-correct'))
+      current = await readState(lessonPage)
+    }
+    const task = current.session.queue[current.session.cursor]
+    assert.equal(task.kind, 'flashcard')
+    const entry = bundle.entries.find(entry => entry.entryId === task.entryId)
+    assert.equal(entry.introducedInLessonId, 'lesson-05')
+    await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
+    assert.equal(await lessonPage.locator('.card-back [lang=de]').innerText(), entry.examples[0].de)
+    await checkMoreExamples(lessonPage, entry, entry.examples[0])
+    await playToEnd(lessonPage, true)
+    const draft = 'Entwurf aus Lektion fünf'
+    await lessonPage.getByLabel('پاسخ تو', { exact: true }).fill(draft)
+    await waitState(lessonPage, state => state.session.draft === draft)
+    await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'توقف و بازگشت', exact: true }))
+    const fifth = (await readState(lessonPage)).session
+    await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
+    await clickAndSave(lessonPage, lessonPage.locator('[data-lesson-id="lesson-04"] .lesson-open-button'))
+    assert.deepEqual((await readState(lessonPage)).session, old.session)
+    await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }), true)
+    assert.equal(await lessonPage.getByLabel('پاسخ تو', { exact: true }).inputValue(), old.session.draft)
+    await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'توقف و بازگشت', exact: true }))
+    await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
+    await clickAndSave(lessonPage, lessonPage.locator('[data-lesson-id="lesson-05"] .lesson-open-button'))
+    assert.deepEqual((await readState(lessonPage)).session, fifth)
+    await lessonPage.locator('.offline-pill').filter({ hasText: 'آمادهٔ آفلاین' }).waitFor()
+    await isolated.setOffline(true)
+    await lessonPage.reload()
+    await clickAndSave(lessonPage, lessonPage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }), true)
+    assert.equal(await lessonPage.getByLabel('پاسخ تو', { exact: true }).inputValue(), draft)
+    current = await readState(lessonPage)
+    assert.deepEqual(current.session.queue, fifth.queue)
+    assert.equal(current.session.cursor, fifth.cursor)
+    await saveScreenshot(lessonPage, 'lesson-five-offline-draft-360.png')
+    const ended = await playToEnd(lessonPage)
+    assert.equal(ended.session.introducedEntryIds.length, 5)
+    assert.ok(ended.session.introducedEntryIds.every(id => id.startsWith('a1-l05-')))
+    await lessonPage.getByRole('button', { name: 'واژه‌ها', exact: true }).click()
+    await lessonPage.locator('.word-item').first().locator('summary').click()
+    assert.ok((await lessonPage.locator('.word-item').first().innerText()).includes(entry.examples[0].de))
+    await checkMoreExamples(lessonPage, entry, entry.examples[0])
     await isolated.close()
   })
   await checkpoint('direct lesson-four link recovers after first write abort and never reuses an unlocked writer', async () => {
@@ -834,8 +909,41 @@ try {
       await isolated.close()
     }
   })
+  await checkpoint('lesson-five cloze cues distinguish bathroom and fetching forms in mobile and keyboard viewports', async () => {
+    const now = '2026-11-01T12:00:00.000Z'
+    const learned = completedReverseFixture('lesson-05')
+    for (const lemma of ['Bad', 'Badezimmer', 'bringen']) {
+      const entry = bundle.entries.find(entry => entry.introducedInLessonId === 'lesson-05' && entry.lemma === lemma)
+      let state = transition(learned, { type: 'select-lesson', lessonId: 'lesson-05' }, bundle, now)
+      state = transition(state, { type: 'start-session', sessionId: `fifth-cue-${lemma}`, seed: 4 }, bundle, now)
+      state.session.queue = [{ taskId: `fifth-cue-${lemma}:cloze`, kind: 'cloze', entryId: entry.entryId, cycleKind: 'scheduled' }]
+      state.session.cursor = 0
+      state.session.feedback = null
+      validateState(state, bundle)
+      const isolated = await browser.newContext({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true, locale: 'fa-IR', reducedMotion: 'reduce' })
+      observeContext(isolated)
+      await installClock(isolated, now)
+      const cuePage = await isolated.newPage()
+      await cuePage.goto(`${origin}/__test/setup`)
+      await writeState(cuePage, state)
+      await cuePage.goto(`${origin}/?lesson=lesson-05`)
+      await clickAndSave(cuePage, cuePage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }), true)
+      assert.equal(await cuePage.locator('.cloze-question .writing-cue').innerText(), entry.writing.cueFa)
+      assert.equal(await cuePage.locator('.task-content .speaker-button').count(), 0)
+      await assertViewport(cuePage, `lesson-five ${lemma} cloze cue`, '.answer-form input, .answer-form button')
+      await cuePage.getByLabel('پاسخ تو', { exact: true }).fill(entry.lemma)
+      await waitState(cuePage, value => value.session.draft === entry.lemma)
+      await checkKeyboardViewport(cuePage, true)
+      assert.equal(await cuePage.locator('.writing-cue').isVisible(), true)
+      await isolated.close()
+    }
+  })
   await checkpoint('native pronunciation: visible German, speed, dialog and navigation cancellation without learning or rotation changes', async () => {
     await checkPronunciation({ browser, origin, bundle, observeContext, writeState, readState, learningSnapshot, clickAndSave, assertViewport, saveScreenshot, completedReverseFixture, installClock })
+  })
+  await checkpoint('lesson-five pronunciation and hidden reverse answers with real lesson-five review history', async () => {
+    await checkPronunciation({ browser, origin, bundle, observeContext, writeState, readState, learningSnapshot, clickAndSave, assertViewport, saveScreenshot,
+      completedReverseFixture: () => completedReverseFixture('lesson-05'), installClock, lessonId: 'lesson-05' })
   })
   await checkpoint('real IndexedDB atomic abort, optimistic concurrency and load/recovery', async () => {
     const isolated = await browser.newContext()

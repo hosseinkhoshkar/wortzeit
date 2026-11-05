@@ -39,7 +39,7 @@ const lastSpeech = page => page.evaluate(() => {
 })
 const cancellations = page => page.evaluate(() => window.__speech.cancellations)
 
-export async function checkPronunciation({ browser, origin, bundle, observeContext, writeState, readState, learningSnapshot, clickAndSave, assertViewport, saveScreenshot, completedReverseFixture, installClock }) {
+export async function checkPronunciation({ browser, origin, bundle, observeContext, writeState, readState, learningSnapshot, clickAndSave, assertViewport, saveScreenshot, completedReverseFixture, installClock, lessonId = 'lesson-04' }) {
   const now = '2026-11-01T12:00:00.000Z'
   const context = await browser.newContext({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true, locale: 'fa-IR', reducedMotion: 'reduce' })
   observeContext(context)
@@ -47,7 +47,7 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
   await installSpeech(context)
   try {
     const page = await context.newPage()
-    const initial = transition(createInitialState(bundle, 'Europe/Berlin'), { type: 'select-lesson', lessonId: 'lesson-04' }, bundle, now)
+    const initial = transition(createInitialState(bundle, 'Europe/Berlin'), { type: 'select-lesson', lessonId }, bundle, now)
     const chosen = transition(initial, { type: 'start-session', sessionId: 'speech-card', seed: 5 }, bundle, now)
     const nounIndex = chosen.session.queue.findIndex(task => task.kind === 'flashcard' && bundle.entries.find(entry => entry.entryId === task.entryId)?.nounData)
     assert.ok(nounIndex >= 0, 'the first batch includes a noun')
@@ -103,7 +103,7 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     assert.equal(learningSnapshot(await readState(page)), revealed, 'all examples leave learning and rotation untouched')
     await assertViewport(page, 'pronunciation normal card', '.speaker-button, .pronunciation-speed select, .flashcard-flip, .flashcard-next')
     await page.setViewportSize({ width: 320, height: 568 })
-    await saveScreenshot(page, 'pronunciation-card-320.png')
+    await saveScreenshot(page, `pronunciation-${lessonId}-card-320.png`)
     await sentence.click()
     await page.getByRole('button', { name: 'نمایش روی کارت', exact: true }).press('Enter')
     await word.waitFor()
@@ -158,7 +158,7 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     assert.equal(await active.getAttribute('aria-pressed'), 'true')
     await assertViewport(page, 'pronunciation reverse card', '.speaker-button, .pronunciation-speed select, .reverse-correct, .reverse-incorrect')
     await page.setViewportSize({ width: 320, height: 568 })
-    await saveScreenshot(page, 'pronunciation-reverse-320.png')
+    await saveScreenshot(page, `pronunciation-${lessonId}-reverse-320.png`)
     await page.getByRole('button', { name: 'مثال‌های بیشتر', exact: true }).click()
     const dialog = page.getByRole('dialog', { name: 'مثال‌های بیشتر', exact: true })
     await dialog.locator('.speaker-button').first().click()

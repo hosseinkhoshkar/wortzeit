@@ -219,8 +219,13 @@ function start(state: AppState, command: Extract<LearningCommand, { type: 'start
   session.queue.push(...mixReverseCards(newCards, reverseIds, session.sessionId, command.seed))
   for (const entry of newEntries) queueNewEntryPractice(session, entry, command.seed)
   // This task appears only after their cards, never introduces an unseen word by itself.
-  const matchPool = [...newEntries.map(entry => entry.entryId), ...activeEntries(state, bundle).filter(entry => state.progress[entry.entryId]).map(entry => entry.entryId)]
-  const matchIds = [...new Set(matchPool)].slice(0, 4)
+  const matchPool = [...newEntries, ...activeEntries(state, bundle).filter(entry => state.progress[entry.entryId])]
+  const seenMeanings = new Set<string>()
+  const matchIds = matchPool.filter(entry => {
+    if (seenMeanings.has(entry.meaningFa)) return false
+    seenMeanings.add(entry.meaningFa)
+    return true
+  }).slice(0, 4).map(entry => entry.entryId)
   if (matchIds.length === 4 && session.queue.length > 0) {
     let rightOrder = shuffled(matchIds, command.seed ^ 0x5b1a)
     const leftOrder = shuffled(matchIds, command.seed ^ 0x77ab)

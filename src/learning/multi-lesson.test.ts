@@ -3,6 +3,7 @@ import { test } from 'node:test'
 import type { AppState, ContentBundle, LearningCommand } from '../contracts/index.ts'
 import type { AppState as VersionTwoState } from '../contracts/legacy-v2.ts'
 import { lessonOneBundle } from '../content/lesson-one.ts'
+import { courseBundle } from '../content/catalog.ts'
 import { createInitialState, currentTask, getActiveLesson, getHomeStats, getLessons, transition } from './engine.ts'
 import { loadState, migrateState, validateState } from '../storage/index.ts'
 import { validateVersionTwoState } from '../storage/legacy-v2.ts'
@@ -144,6 +145,20 @@ test('V2 upgrade into course preserves every learned field and pending session w
   assert.deepEqual(old, original)
   assert.deepEqual(migrateState(next, course), next)
   assert.throws(() => migrateState({ ...old, contentVersion: 'unknown-version' }, course))
+})
+
+test('legacy schema-2 and schema-3 saves still migrate into the real three-lesson catalog', () => {
+  const oldTwo = versionTwoSnapshot()
+  const { reverseProgress, reverseReviews, ...base } = draftState(lessonOneBundle)
+  void reverseProgress; void reverseReviews
+  for (const old of [oldTwo, { ...base, schemaVersion: 3 }]) {
+    const actual = migrateState(old, courseBundle)
+    const expected = migrateState(old, course)
+    assert.deepEqual(actual, expected)
+    assert.deepEqual(actual.progress, old.progress)
+    assert.deepEqual(actual.attempts, old.attempts)
+    assert.equal(actual.session!.draft, old.session!.draft)
+  }
 })
 
 test('V3 single-lesson snapshot upgrades its content version without resetting the original lesson', () => {

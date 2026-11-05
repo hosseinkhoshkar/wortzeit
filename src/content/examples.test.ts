@@ -5,6 +5,7 @@ import { execFileSync } from 'node:child_process'
 import { courseBundle } from './catalog.ts'
 import { lessonOneBundle } from './lesson-one.ts'
 import { lessonFourBundle } from './lesson-four.ts'
+import { lessonFiveBundle } from './lesson-five.ts'
 import { extendEntryExamples } from './extend-examples.ts'
 import { discoverExampleCatalog, validateExampleCatalog } from '../../scripts/example-catalog.mjs'
 
@@ -19,7 +20,7 @@ test('every discovered source lesson has exactly two authored, paired examples f
 })
 
 test('all active entry identities, original examples and game data stay intact; attachment is idempotent', () => {
-  const originals = [...lessonOneBundle.entries, ...lessonFourBundle.entries]
+  const originals = [...lessonOneBundle.entries, ...lessonFourBundle.entries, ...lessonFiveBundle.entries]
   for (const original of originals) {
     const extended = courseBundle.entries.find(entry => entry.entryId === original.entryId)!
     assert.equal(extended.examples.length, 3)

@@ -1,5 +1,6 @@
 import { lessonOneBundle } from './lesson-one.ts'
 import { lessonFourBundle } from './lesson-four.ts'
+import { lessonFiveBundle } from './lesson-five.ts'
 
 /** One registry for enabled lessons; source-only lesson catalogs remain independent. */
-export const lessonBundles = [lessonOneBundle, lessonFourBundle]
+export const lessonBundles = [lessonOneBundle, lessonFourBundle, lessonFiveBundle]

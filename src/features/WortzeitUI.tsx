@@ -39,7 +39,7 @@ function GardenIllustration() {
 const number = (value: number) => value.toLocaleString('fa-IR')
 const lessonNumber = (lesson: LessonDefinition) => Number(lesson.lessonId.match(/\d+$/u)?.[0] ?? 1)
 function lessonLabel(lesson: LessonDefinition) {
-  return lessonNumber(lesson) === 1 ? 'درس اول' : lessonNumber(lesson) === 4 ? 'درس چهارم' : 'درس ' + number(lessonNumber(lesson))
+  return lessonNumber(lesson) === 1 ? 'درس اول' : lessonNumber(lesson) === 4 ? 'درس چهارم' : lessonNumber(lesson) === 5 ? 'درس پنجم' : 'درس ' + number(lessonNumber(lesson))
 }
 function lessonEntries(bundle: ContentBundle, lessonId: string) {
   return bundle.entries.filter(entry => entry.introducedInLessonId === lessonId)
@@ -279,7 +279,7 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
     </>}
     {(task.kind === 'cloze' || task.kind === 'write-word') && entry && !feedback && <>
       <div className="task-heading"><span className="eyebrow"><Icon name="book" /> {task.cycleKind === 'scheduled' ? 'مرور موعدرسیده' : task.cycleKind === 'recovery' ? 'یک فرصت دیگر' : task.kind === 'write-word' ? 'نوشتن واژه' : 'جای خالی'}</span><h1>{task.kind === 'write-word' ? 'واژه را به آلمانی بنویس.' : 'جمله را کامل کن.'}</h1><p>{task.kind === 'write-word' ? 'از روی معنی و سرنخ فارسی، واژه را به خاطر بیاور.' : 'واژهٔ مناسب را به آلمانی بنویس.'}</p></div>
-      {task.kind === 'cloze' ? <div className="cloze-question"><span className="tiny-label">جملهٔ تألیفی</span><p lang="de" dir="ltr">{entry.cloze.sentence.split('___').map((part, i) => <span key={i}>{i > 0 && <span className="blank-mark" aria-label="جای خالی">…</span>}{part}</span>)}</p><p className="cloze-translation">{entry.cloze.translationFa}</p></div>
+      {task.kind === 'cloze' ? <div className="cloze-question"><span className="tiny-label">جملهٔ تألیفی</span><p lang="de" dir="ltr">{entry.cloze.sentence.split('___').map((part, i) => <span key={i}>{i > 0 && <span className="blank-mark" aria-label="جای خالی">…</span>}{part}</span>)}</p><p className="cloze-translation">{entry.cloze.translationFa}</p><p className="writing-cue">{entry.writing.cueFa}</p></div>
         : <div className="writing-question"><span className="tiny-label">معنی هدف</span><p className="writing-prompt">{entry.writing.promptFa}</p><p className="writing-cue">{entry.writing.cueFa}</p></div>}
       <form onSubmit={event => { event.preventDefault(); if (draft.trim() && !feedback) { event.currentTarget.querySelector('input')?.blur(); answer(draft) } }} className="answer-form">
         <label htmlFor="german-answer">پاسخ تو</label>

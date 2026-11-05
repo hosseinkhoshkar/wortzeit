@@ -4,14 +4,15 @@ import { courseBundle } from '../content/catalog.ts'
 import { currentTask, createInitialState, transition } from '../learning/engine.ts'
 import { validateState } from '../storage/index.ts'
 
-test('all84 real lesson-four entries complete through valid sessions without introducing a lesson-one word', () => {
+for (const [lessonId, count] of [['lesson-04', 84], ['lesson-05', 76]] as const) {
+test(`all ${count} real ${lessonId} entries complete through valid sessions without introducing another lesson's word`, () => {
   const now = '2026-10-28T12:00:00.000Z'
   let state = createInitialState(courseBundle, 'Europe/Berlin')
-  state = transition(state, { type: 'select-lesson', lessonId: 'lesson-04' }, courseBundle, now)
-  const lessonEntries = courseBundle.entries.filter(entry => entry.introducedInLessonId === 'lesson-04')
+  state = transition(state, { type: 'select-lesson', lessonId }, courseBundle, now)
+  const lessonEntries = courseBundle.entries.filter(entry => entry.introducedInLessonId === lessonId)
   const byId = new Map(lessonEntries.map(entry => [entry.entryId, entry]))
   let attempts = 0
-  for (let session = 0; session < 17; session++) {
+  for (let session = 0; session < Math.ceil(count / 5); session++) {
     state = transition(state, { type: 'start-session', sessionId: `lesson4-${session}`, seed: session + 1 }, courseBundle, now)
     for (let step = 0; step < 300; step++) {
       const task = currentTask(state)
@@ -20,7 +21,8 @@ test('all84 real lesson-four entries complete through valid sessions without int
         break
       }
       const targets = task.kind === 'match' ? task.entryIds : [task.entryId]
-      assert.ok(targets.every(id => byId.has(id)), 'all questions belong to lesson4')
+      assert.ok(targets.every(id => byId.has(id)), 'all questions belong to the selected lesson')
+      if (task.kind === 'match') assert.equal(new Set(task.entryIds.map(id => byId.get(id)!.meaningFa)).size, 4)
       if (state.session!.feedback) {
         state = transition(state, { type: 'next', taskId: task.taskId }, courseBundle, now)
         continue
@@ -46,7 +48,8 @@ test('all84 real lesson-four entries complete through valid sessions without int
     validateState(state, courseBundle)
     state = structuredClone(state)
   }
-  assert.equal(Object.keys(state.progress).length, 84)
+  assert.equal(Object.keys(state.progress).length, count)
   assert.ok(lessonEntries.every(entry => state.progress[entry.entryId] && !state.progress[entry.entryId].initialRecallPending))
   assert.ok(Object.values(state.progress).every(progress => progress.wrongCount === 0 && progress.intervalIndex === 0))
 })
+}

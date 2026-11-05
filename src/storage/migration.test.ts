@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { lessonOneBundle } from '../content/lesson-one.ts'
+import { courseBundle } from '../content/catalog.ts'
 import type { AppState as LegacyState, Attempt as LegacyAttempt, ContentBundle as LegacyBundle } from '../contracts/legacy-v1.ts'
 import { createInitialState, currentTask, transition } from '../learning/engine.ts'
 import { loadState, migrateState, saveState, validateState } from './index.ts'
@@ -92,6 +93,16 @@ test('migration preserves paused/ended/current feedback/match/draft records and 
     assert.equal(migrated.session!.targetAcknowledgedDate, null)
     assert.deepEqual(migrateState(migrated, lessonOneBundle), migrated, 'second migration does not increment revision')
     assert.throws(() => validateLegacyState(migrated, legacyBundle), /./, 'old reader explicitly rejects v2')
+  }
+})
+
+test('legacy schema-1 saves still migrate into the real three-lesson catalog without losing drafts or evidence', () => {
+  for (const mode of ['paused', 'ended', 'feedback', 'draft', 'match'] as const) {
+    const old = legacySample(mode)
+    const expected = migrateState(old, lessonOneBundle)
+    const actual = migrateState(old, courseBundle)
+    assert.deepEqual(actual, { ...expected, contentVersion: courseBundle.contentVersion,
+      session: expected.session ? { ...expected.session, contentVersion: courseBundle.contentVersion } : null })
   }
 })
 

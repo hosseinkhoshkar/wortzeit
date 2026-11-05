@@ -38,7 +38,6 @@ export function validateContent(bundle: ContentBundle): string[] {
     if (entries.length < 4 || new Set(lesson.introducedEntryIds).size !== expected.length || lesson.introducedEntryIds.length !== expected.length || expected.some(id => !lesson.introducedEntryIds.includes(id))) errors.push(`Introduction IDs must cover each entry once: ${lesson.lessonId}`)
     const orders = entries.map(entry => entry.introductionOrder)
     if (new Set(orders).size !== expected.length || orders.some(order => !Number.isInteger(order) || order < 1 || order > expected.length)) errors.push(`Introduction order must be unique and contiguous: ${lesson.lessonId}`)
-    if (new Set(entries.map(entry => entry.meaningFa)).size !== entries.length) errors.push(`Matching requires distinct meanings within a lesson: ${lesson.lessonId}`)
   }
   for (const ref of bundle.sourceRefs) {
     if (!sourceIds.has(ref.sourceId) || !lessonIds.has(ref.lessonId) || !ref.locator.trim()) errors.push(`Broken source reference: ${ref.sourceRefId}`)
