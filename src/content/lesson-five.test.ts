@@ -4,6 +4,7 @@ import test from 'node:test'
 import { lessonFiveBundle as bundle } from './lesson-five.ts'
 import { courseBundle } from './catalog.ts'
 import { validateContent } from './validate.ts'
+import { createInitialState, transition } from '../learning/engine.ts'
 
 test('all 76 lesson-five source rows retain stable IDs, exact headwords, meanings, articles and every locator', () => {
   const text = readFileSync(new URL('../../reference/vocabulary/Lesson-05-A1.txt', import.meta.url), 'utf8')
@@ -12,7 +13,6 @@ test('all 76 lesson-five source rows retain stable IDs, exact headwords, meaning
   assert.equal(bundle.entries.length, 76)
   for (const [index, entry] of bundle.entries.entries()) {
     assert.equal(entry.entryId, `a1-l05-${String(index + 1).padStart(3, '0')}`)
-    assert.equal(entry.introductionOrder, index + 1)
     assert.equal((entry.nounData ? `${entry.nounData.article} ` : '') + entry.lemma, rows[index][2])
     assert.equal(entry.meaningFa, rows[index][3])
     assert.deepEqual(entry.sourceRefIds.map(id => bundle.sourceRefs.find(ref => ref.sourceRefId === id)?.locator), rows[index][4].split('؛ '))
@@ -29,6 +29,26 @@ test('all 76 lesson-five source rows retain stable IDs, exact headwords, meaning
   assert.equal(bundle.provenance.file, 'reference/vocabulary/Lesson-05-A1.txt')
   assert.ok(bundle.provenance.noteFa.includes('تأیید جامع اصل کتاب نیست'))
   assert.deepEqual(validateContent(bundle), [])
+})
+
+test('lesson five introduces new cards in printed textbook page order', () => {
+  const studyEntries = bundle.entries.toSorted((a, b) => a.introductionOrder - b.introductionOrder)
+  const pages = studyEntries.map(entry => {
+    const textbookRefs = bundle.sourceRefs.filter(ref => ref.sourceId === 'source-textbook' && entry.sourceRefIds.includes(ref.sourceRefId))
+    return Math.min(...textbookRefs.map(ref => Number(ref.locator.split('چاپی ')[1])))
+  })
+  assert.deepEqual(pages, pages.toSorted((a, b) => a - b))
+  assert.equal(pages.filter(Number.isFinite).length, 60)
+  assert.deepEqual(studyEntries.slice(60).map(entry => entry.entryId),
+    bundle.entries.filter(entry => !bundle.sourceRefs.some(ref => ref.sourceId === 'source-textbook' && entry.sourceRefIds.includes(ref.sourceRefId))).map(entry => entry.entryId))
+  assert.deepEqual(studyEntries.map(entry => entry.entryId), bundle.lesson.introducedEntryIds)
+
+  const now = '2026-11-06T12:00:00.000Z'
+  const selected = transition(createInitialState(courseBundle, 'Europe/Berlin'), { type: 'select-lesson', lessonId: 'lesson-05' }, courseBundle, now)
+  const started = transition(selected, { type: 'start-session', sessionId: 'lesson-five-page-order', seed: 1 }, courseBundle, now)
+  assert.deepEqual(studyEntries.slice(0, 5).map(entry => entry.lemma), ['Es geht', 'Internet', 'Vermieter', 'abholen', 'ausziehen'])
+  assert.deepEqual(started.session!.queue.filter(task => task.kind === 'flashcard').map(task => task.entryId),
+    studyEntries.slice(0, 5).map(entry => entry.entryId))
 })
 
 test('each lesson-five entry has its original bilingual cloze example and two unchanged sidecar examples', () => {

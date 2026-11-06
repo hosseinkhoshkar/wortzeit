@@ -115,7 +115,7 @@ test('seeded mixing changes positions, keeps new-word order and cannot select a 
     const state = fourth(learned, TOMORROW, seed)
     const cards = state.session!.queue.filter(task => task.kind === 'flashcard')
     assert.equal(cards.length, 5)
-    assert.deepEqual(cards.map(card => card.entryId), bundle.entries.filter(entry => entry.introducedInLessonId === 'lesson-04').slice(0, 5).map(entry => entry.entryId))
+    assert.deepEqual(cards.map(card => card.entryId), bundle.lessons!.find(lesson => lesson.lessonId === 'lesson-04')!.introducedEntryIds.slice(0, 5))
     positions.add(state.session!.queue.flatMap((task, index) => task.kind === 'reverse-card' ? [index] : []).join(','))
     assert.deepEqual(state.session!.queue, fourth(learned, TOMORROW, seed).session!.queue.map(task => ({ ...task,
       taskId: task.taskId.replace(/reverse-session-\d+/u, state.session!.sessionId) })))

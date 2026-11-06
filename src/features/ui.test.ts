@@ -163,6 +163,14 @@ test('fourth lesson vocabulary renders only that lesson and keeps unrelated entr
 })
 
 
+test('lesson-five vocabulary follows its flashcard introduction order', () => {
+  const entries: Entry[] = view.lessonEntries(courseBundle, 'lesson-05')
+  const fifth = courseBundle.lessons!.find(lesson => lesson.lessonId === 'lesson-05')!
+  assert.equal(entries.length, 76)
+  assert.deepEqual(entries.map(entry => entry.entryId), fifth.introducedEntryIds)
+  assert.deepEqual(entries.slice(0, 5).map(entry => entry.lemma), ['Es geht', 'Internet', 'Vermieter', 'abholen', 'ausziehen'])
+})
+
 test('reverse card conceals every German answer and example until persisted reveal', () => {
   const task: SessionTask = { taskId: 'reverse', kind: 'reverse-card', entryId: noun.entryId, revealed: false }
   const html = renderTask(task)

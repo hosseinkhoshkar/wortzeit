@@ -15,7 +15,6 @@ test('lesson four contains every one of the 84 supplied headwords, meanings, art
     const original = originals[index]
     const headword = entry.nounData ? `${entry.nounData.article} ${entry.lemma}` : entry.lemma
     assert.equal(entry.entryId, `a1-l04-${String(index + 1).padStart(3, '0')}`)
-    assert.equal(entry.introductionOrder, index + 1)
     assert.equal(headword, original[2])
     assert.equal(entry.meaningFa, original[3])
     assert.deepEqual(entry.sourceRefIds.map(id => lessonFourBundle.sourceRefs.find(ref => ref.sourceRefId === id)?.locator), original[4].split('؛ '))

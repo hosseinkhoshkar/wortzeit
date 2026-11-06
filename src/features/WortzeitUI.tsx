@@ -43,6 +43,7 @@ function lessonLabel(lesson: LessonDefinition) {
 }
 function lessonEntries(bundle: ContentBundle, lessonId: string) {
   return bundle.entries.filter(entry => entry.introducedInLessonId === lessonId)
+    .sort((a, b) => a.introductionOrder - b.introductionOrder)
 }
 function LessonCards({ summaries, activeLessonId, disabled, onChoose }: {
   summaries: LessonSummary[]; activeLessonId: string; disabled: boolean; onChoose: (lessonId: string) => Promise<void>

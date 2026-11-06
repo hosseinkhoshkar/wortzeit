@@ -1,5 +1,6 @@
 import type { ContentBundle, Entry, SourceRef } from '../contracts/index.ts'
 import { lessonFiveSourceRows } from './lesson-five-source.ts'
+import { textbookStudyOrder } from './textbook-study-order.ts'
 
 const lessonId = 'lesson-05'
 type Pedagogy = readonly [partOfSpeech: Entry['partOfSpeech'], exampleDe: string, exampleFa: string, cueFa: string]
@@ -102,6 +103,8 @@ const sourceRefs: SourceRef[] = lessonFiveSourceRows.flatMap(row => row.refs.map
   sourceRefId: `${row.entryId}-ref-${index + 1}`, sourceId: sourceIdFor(locator), lessonId, locator,
 })))
 
+const studyOrder = textbookStudyOrder(lessonFiveSourceRows)
+
 // Do not ask learners to distinguish near-equivalent bathroom/fetching meanings.
 const overlappingGroups = [['das Bad', 'das Badezimmer'], ['abholen', 'holen', 'bringen', 'mitbringen']]
 const entries: Entry[] = lessonFiveSourceRows.map((row, index) => {
@@ -119,7 +122,7 @@ const entries: Entry[] = lessonFiveSourceRows.map((row, index) => {
   const optionPool = [...new Map((sameRole.length >= 3 ? sameRole : [...sameRole, ...otherRole]).map(other => [other.meaningFa, other])).values()]
   const options = [0, 1, 2].map(offset => optionPool[(index + offset) % optionPool.length].entryId)
   return {
-    entryId: row.entryId, introducedInLessonId: lessonId, introductionOrder: index + 1,
+    entryId: row.entryId, introducedInLessonId: lessonId, introductionOrder: studyOrder.get(row.entryId)!,
     lemma, partOfSpeech, meaningFa: row.meaningFa,
     ...(article ? { nounData: { article, plural: null, pluralNote: lemma === 'Möbel'
       ? 'این مدخل در فایل به‌صورت جمع آمده است؛ صورت مفرد ارائه نشده است.'
@@ -142,7 +145,7 @@ export const lessonFiveBundle: ContentBundle = {
     { sourceId: 'source-audio-transcript', kind: 'audioTranscript', title: 'DaF kompakt A1–B1 — متن گفت‌وگوهای صوتی', edition: null },
   ],
   sourceRefs,
-  lesson: { lessonId, titleDe: 'Endlich ein Zimmer!', titleFa: 'بالاخره یک اتاق!', level: 'A1', coverage: 'partial', introducedEntryIds: entries.map(entry => entry.entryId) },
+  lesson: { lessonId, titleDe: 'Endlich ein Zimmer!', titleFa: 'بالاخره یک اتاق!', level: 'A1', coverage: 'partial', introducedEntryIds: [...studyOrder.keys()] },
   entries,
   provenance: {
     file: 'reference/vocabulary/Lesson-05-A1.txt', reviewStatus: 'excerpt-checked',
