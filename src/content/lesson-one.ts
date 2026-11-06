@@ -1,5 +1,4 @@
 import type { ContentBundle, Entry, SourceRef } from '../contracts/index.ts'
-import { textbookStudyOrder } from './textbook-study-order.ts'
 
 const lessonId = 'a1-lesson-01'
 
@@ -195,15 +194,13 @@ const sourceRefs: SourceRef[] = seeds.flatMap((seed) => seed.refs.split('؛ ').m
   locator,
 })))
 
-const studyOrder = textbookStudyOrder(seeds.map(seed => ({ entryId: ids[seed.key], refs: seed.refs.split('؛ ') })))
-
-const entries: Entry[] = seeds.map(seed => {
+const entries: Entry[] = seeds.map((seed, index) => {
   const entryId = ids[seed.key]
   const sourceRefIds = sourceRefs.filter((ref) => ref.sourceRefId.startsWith(`${entryId}-ref-`)).map((ref) => ref.sourceRefId)
   return {
     entryId,
     introducedInLessonId: lessonId,
-    introductionOrder: studyOrder.get(entryId)!,
+    introductionOrder: index + 1,
     lemma: seed.lemma,
     partOfSpeech: seed.partOfSpeech,
     meaningFa: seed.meaningFa,
@@ -236,7 +233,7 @@ export const lessonOneBundle: ContentBundle = {
   sourceRefs,
   lesson: {
     lessonId, titleDe: 'Ich und die anderen', titleFa: 'من و دیگران', level: 'A1', coverage: 'partial',
-    introducedEntryIds: [...studyOrder.keys()],
+    introducedEntryIds: entries.map((entry) => entry.entryId),
   },
   entries,
   provenance: {

@@ -1,6 +1,5 @@
 import type { ContentBundle, Entry, SourceRef } from '../contracts/index.ts'
 import { lessonFourSourceRows } from './lesson-four-source.ts'
-import { textbookStudyOrder } from './textbook-study-order.ts'
 
 const lessonId = 'lesson-04'
 type Pedagogy = readonly [partOfSpeech: Entry['partOfSpeech'], exampleDe: string, exampleFa: string, cueFa: string]
@@ -114,8 +113,6 @@ const sourceRefs: SourceRef[] = lessonFourSourceRows.flatMap(row => row.refs.map
   sourceRefId: `${row.entryId}-ref-${index + 1}`, sourceId: sourceIdFor(locator), lessonId, locator,
 })))
 
-const studyOrder = textbookStudyOrder(lessonFourSourceRows)
-
 const entries: Entry[] = lessonFourSourceRows.map((row, index) => {
   const [partOfSpeech, exampleDe, exampleFa, cueFa] = pedagogy[row.entryId]
   const nounMatch = row.headword.match(/^(der|die|das) (.+)$/)
@@ -131,7 +128,7 @@ const entries: Entry[] = lessonFourSourceRows.map((row, index) => {
   const optionPool = sameRole.length >= 3 ? sameRole : [...sameRole, ...otherRole]
   const options = [0, 1, 2].map(offset => optionPool[(index + offset) % optionPool.length].entryId)
   return {
-    entryId: row.entryId, introducedInLessonId: lessonId, introductionOrder: studyOrder.get(row.entryId)!,
+    entryId: row.entryId, introducedInLessonId: lessonId, introductionOrder: index + 1,
     lemma, partOfSpeech, meaningFa: row.meaningFa,
     ...(article ? { nounData: { article, plural: null, pluralNote: 'جمع در فایل واژگان ارائه نشده است؛ صورت جمع حدس زده نشده است.' } } : {}),
     sourceRefIds, occurrences: [{ lessonId, sourceRefIds: [...sourceRefIds] }],
@@ -152,7 +149,7 @@ export const lessonFourBundle: ContentBundle = {
     { sourceId: 'source-audio-transcript', kind: 'audioTranscript', title: 'DaF kompakt A1–B1 — متن گفت‌وگوهای صوتی', edition: null },
   ],
   sourceRefs,
-  lesson: { lessonId, titleDe: 'Spiel und Spaß', titleFa: 'بازی و سرگرمی', level: 'A1', coverage: 'partial', introducedEntryIds: [...studyOrder.keys()] },
+  lesson: { lessonId, titleDe: 'Spiel und Spaß', titleFa: 'بازی و سرگرمی', level: 'A1', coverage: 'partial', introducedEntryIds: entries.map(entry => entry.entryId) },
   entries,
   provenance: {
     file: 'reference/vocabulary/Lesson-04-A1.txt', reviewStatus: 'excerpt-checked',

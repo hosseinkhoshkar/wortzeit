@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import { lessonFiveBundle as bundle } from './lesson-five.ts'
-import { courseBundle } from './catalog.ts'
+import { courseBundle, lessonBundles } from './catalog.ts'
 import { validateContent } from './validate.ts'
 import { createInitialState, transition } from '../learning/engine.ts'
+
+const bundle = lessonBundles.find(lesson => lesson.lesson.lessonId === 'lesson-05')!
 
 test('all 76 lesson-five source rows retain stable IDs, exact headwords, meanings, articles and every locator', () => {
   const text = readFileSync(new URL('../../reference/vocabulary/Lesson-05-A1.txt', import.meta.url), 'utf8')

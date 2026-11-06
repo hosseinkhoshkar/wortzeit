@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { courseBundle } from './catalog.ts'
-import { lessonOneBundle } from './lesson-one.ts'
-import { lessonFourBundle } from './lesson-four.ts'
-import { lessonFiveBundle } from './lesson-five.ts'
+import { courseBundle, lessonBundles } from './catalog.ts'
+import { withTextbookStudyOrder } from './textbook-study-order.ts'
+import { validateContent } from './validate.ts'
 import { createInitialState, transition } from '../learning/engine.ts'
+
+const [lessonOneBundle, lessonFourBundle, lessonFiveBundle] = lessonBundles
 
 test('lessons one and four use printed textbook page order for new flashcards', () => {
   const now = '2026-11-06T12:00:00.000Z'
@@ -27,7 +28,26 @@ test('lessons one and four use printed textbook page order for new flashcards', 
       bundle.lesson.introducedEntryIds.slice(0, 5))
   }
 })
-import { validateContent } from './validate.ts'
+test('a later lesson uses printed pages even when textbook locators include notes', () => {
+  const bundle = structuredClone(lessonFiveBundle)
+  bundle.lesson.lessonId = 'lesson-06'
+  const [workbookOnly, later, earlier, samePage] = bundle.entries
+  bundle.entries = [workbookOnly, later, earlier, samePage]
+  bundle.sourceRefs = [
+    { sourceRefId: 'workbook', sourceId: 'source-workbook', lessonId: 'lesson-06', locator: 'کتاب تمرین: PDF 12، چاپی 10' },
+    { sourceRefId: 'later', sourceId: 'source-textbook', lessonId: 'lesson-06', locator: 'کتاب درسی: PDF 61، چاپی 59' },
+    { sourceRefId: 'earlier', sourceId: 'source-textbook', lessonId: 'lesson-06', locator: 'کتاب درسی: PDF 60، چاپی 58 [شکل متن: Freunde]' },
+  ]
+  workbookOnly.sourceRefIds = ['workbook']
+  later.sourceRefIds = ['later']
+  earlier.sourceRefIds = ['later', 'earlier']
+  samePage.sourceRefIds = ['earlier']
+
+  const ordered = withTextbookStudyOrder(bundle)
+  assert.deepEqual(ordered.lesson.introducedEntryIds, [earlier.entryId, samePage.entryId, later.entryId, workbookOnly.entryId])
+  assert.deepEqual(ordered.entries.map(entry => entry.introductionOrder), [4, 3, 1, 2])
+  assert.deepEqual(ordered.entries.map(entry => entry.entryId), bundle.entries.map(entry => entry.entryId))
+})
 
 test('the catalog exposes lessons 1, 4 and 5 with 180 entries and unchanged existing identities', () => {
   assert.deepEqual(validateContent(courseBundle), [])
