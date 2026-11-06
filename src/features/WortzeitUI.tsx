@@ -66,8 +66,8 @@ function dateLabel(value: string | null, now: string) {
   if (new Date(value).getTime() <= new Date(now).getTime()) return 'اکنون، آمادهٔ مرور'
   return new Intl.DateTimeFormat('fa-IR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(value))
 }
-function GermanWord({ entry }: { entry: Entry }) {
-  return <span lang="de" dir="ltr" className="german-word">{entry.nounData && <span className="article">{entry.nounData.article} </span>}{entry.lemma}</span>
+function GermanWord({ entry, showArticle = true }: { entry: Entry; showArticle?: boolean }) {
+  return <span lang="de" dir="ltr" className="german-word">{showArticle && entry.nounData && <span className="article">{entry.nounData.article} </span>}{entry.lemma}</span>
 }
 const PronunciationContext = createContext<Pronunciation | null>(null)
 const SpeechScope = createContext('page')
@@ -105,10 +105,8 @@ function PronunciationStatus() {
   const { message } = useSyncExternalStore(playback.subscribe, playback.getSnapshot, playback.getSnapshot)
   return <p className="pronunciation-status" role="status" aria-live="polite">{message}</p>
 }
-function PronunciationSettings() {
-  const playback = usePronunciation()
-  const { rate } = useSyncExternalStore(playback.subscribe, playback.getSnapshot, playback.getSnapshot)
-  return <div className="pronunciation-toolbar"><label className="pronunciation-speed">سرعت تلفظ<select value={rate} onChange={event => playback.setRate(event.target.value === '0.8' ? 0.8 : 1)}><option value="1">عادی</option><option value="0.8">آهسته</option></select></label><PronunciationStatus /></div>
+function SpokenWord({ entry, showArticle = true }: { entry: Entry; showArticle?: boolean }) {
+  return <span className="spoken-word"><GermanWord entry={entry} showArticle={showArticle} /><SpeakerButton text={showArticle ? wordPronunciation(entry) : entry.lemma} /></span>
 }
 function DetailSheet({ title, label, children, disabled = false, beforeOpen }: {
   title: string; label?: string; children: ReactNode; disabled?: boolean; beforeOpen?: () => Promise<void>
@@ -237,13 +235,10 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
   const feedbackEntry = feedback && bundle.entries.find(item => item.entryId === feedback.entryId)
   const assistance = state.assistanceEvents.filter(event => event.taskId === task.taskId).at(-1)
   const helpedEntry = assistance ? bundle.entries.find(item => item.entryId === assistance.entryId) : entry
-  const canonicalAnswer = helpedEntry ? task.kind === 'write-word' ? helpedEntry.writing.acceptedAnswers[0]
-    : task.kind === 'cloze' ? helpedEntry.cloze.acceptedAnswers[0]
-      : task.kind === 'choose-article' ? helpedEntry.nounData?.article ?? '' : helpedEntry.meaningFa : ''
   const writtenTask = task.kind === 'write-word' || task.kind === 'cloze'
   const reverseExample = entry && task.kind === 'reverse-card' && task.revealed ? getReverseExample(entry, state.reverseReviews) : null
   return <div className={`task-content task-${task.kind} ${feedback ? 'has-feedback' : ''}`}>
-    <PronunciationSettings />
+    <PronunciationStatus />
     {task.kind === 'flashcard' && entry && <>
       <div className="task-heading"><span className="eyebrow"><Icon name="book" /> کارت {number(cardIndex + 1)} از {number(cards.length)}</span><h1>یک دوست تازه برای حافظه‌ات.</h1><p>کارت را بچرخان و معنی و مثال را ببین.</p></div>
       <div className={`flashcard ${showBack ? 'is-flipped' : ''}`} onClick={() => void flipCard()}>
@@ -262,14 +257,14 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
         <span className="tiny-label">{lessonLabel((bundle.lessons ?? [bundle.lesson]).find(lesson => lesson.lessonId === entry.introducedInLessonId) ?? bundle.lesson)}</span>
         <strong className="reverse-meaning">{entry.meaningFa}</strong>
         {!task.revealed && <p className="reverse-cue">{entry.writing.cueFa}</p>}
-        {task.revealed && <><div className="reverse-answer spoken-word" role="status"><GermanWord entry={entry} /><SpeakerButton text={wordPronunciation(entry)} /></div>{reverseExample && <div className="reverse-example"><ExampleBlock entry={entry} example={reverseExample} /><p className="speaking-note">این جمله را بلند بخوان.</p></div>}</>}
+        {task.revealed && <><div className="reverse-answer" role="status"><SpokenWord entry={entry} /></div>{reverseExample && <div className="reverse-example"><ExampleBlock entry={entry} example={reverseExample} /><p className="speaking-note">این جمله را بلند بخوان.</p></div>}</>}
       </div>
       {task.revealed ? <><div className="card-detail-row"><MoreExamples entry={entry} currentExampleId={reverseExample?.exampleId} /><Sources entry={entry} bundle={bundle} /></div><div className="reverse-rating" aria-label="ارزیابی یادآوری آلمانی"><button type="button" className="secondary-button reverse-incorrect" disabled={disabled} onClick={() => void send({ type: 'rate-reverse', taskId: task.taskId, reviewId: crypto.randomUUID(), correct: false })}><Icon name="close" />اشتباه گفتم</button><button type="button" className="primary-button reverse-correct" disabled={disabled} onClick={() => void send({ type: 'rate-reverse', taskId: task.taskId, reviewId: crypto.randomUUID(), correct: true })}><Icon name="check" />درست گفتم</button></div></>
         : <><div className="card-detail-row"><span>یادآوری کن؛ نمایش پاسخ امتیاز نیست.</span></div><button type="button" className="primary-button wide reverse-reveal" disabled={disabled} onClick={() => void send({ type: 'reveal-card', taskId: task.taskId })}>نمایش پاسخ<Icon name="flip" /></button></>}
     </>}
     {task.kind === 'choose-meaning' && entry && !feedback && <>
       <div className="task-heading"><span className="eyebrow"><Icon name="spark" /> انتخاب معنی</span><h1>معنی درست کدام است؟</h1><p>یکی از چهار گزینه را انتخاب کن.</p></div>
-      <div className="question-word"><GermanWord entry={entry} /></div>
+      <div className="question-word"><SpokenWord entry={entry} /></div>
       <div className="meaning-options">{task.optionIds.map((id, index) => {
         const option = bundle.entries.find(item => item.entryId === id)!
         const attempt = feedback && state.attempts.find(item => item.attemptId === feedback.attemptId)
@@ -280,7 +275,7 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
     </>}
     {(task.kind === 'cloze' || task.kind === 'write-word') && entry && !feedback && <>
       <div className="task-heading"><span className="eyebrow"><Icon name="book" /> {task.cycleKind === 'scheduled' ? 'مرور موعدرسیده' : task.cycleKind === 'recovery' ? 'یک فرصت دیگر' : task.kind === 'write-word' ? 'نوشتن واژه' : 'جای خالی'}</span><h1>{task.kind === 'write-word' ? 'واژه را به آلمانی بنویس.' : 'جمله را کامل کن.'}</h1><p>{task.kind === 'write-word' ? 'از روی معنی و سرنخ فارسی، واژه را به خاطر بیاور.' : 'واژهٔ مناسب را به آلمانی بنویس.'}</p></div>
-      {task.kind === 'cloze' ? <div className="cloze-question"><span className="tiny-label">جملهٔ تألیفی</span><p lang="de" dir="ltr">{entry.cloze.sentence.split('___').map((part, i) => <span key={i}>{i > 0 && <span className="blank-mark" aria-label="جای خالی">…</span>}{part}</span>)}</p><p className="cloze-translation">{entry.cloze.translationFa}</p><p className="writing-cue">{entry.writing.cueFa}</p></div>
+      {task.kind === 'cloze' ? <div className="cloze-question"><span className="tiny-label">جملهٔ تألیفی</span><p lang="de" dir="ltr">{entry.cloze.sentence.split('___').map((part, i) => <span key={i}>{i > 0 && <span className="blank-mark" aria-label="جای خالی">…</span>}{part}</span>)}<SpeakerButton text={entry.cloze.sentence.replace('___', '…')} sentence /></p><p className="cloze-translation">{entry.cloze.translationFa}</p><p className="writing-cue">{entry.writing.cueFa}</p></div>
         : <div className="writing-question"><span className="tiny-label">معنی هدف</span><p className="writing-prompt">{entry.writing.promptFa}</p><p className="writing-cue">{entry.writing.cueFa}</p></div>}
       <form onSubmit={event => { event.preventDefault(); if (draft.trim() && !feedback) { event.currentTarget.querySelector('input')?.blur(); answer(draft) } }} className="answer-form">
         <label htmlFor="german-answer">پاسخ تو</label>
@@ -295,7 +290,7 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
     </>}
     {task.kind === 'choose-article' && entry?.nounData && !feedback && <>
       <div className="task-heading"><span className="eyebrow"><Icon name="book" /> آرتیکل اسم</span><h1>این اسم با کدام آرتیکل می‌آید؟</h1><p>آرتیکل را همراه خود واژه به خاطر بسپار.</p></div>
-      <div className="question-word article-question-word"><span className="article-question-mark" aria-hidden="true">?</span><span className="german-word" lang="de" dir="ltr">{entry.lemma}</span></div>
+      <div className="question-word article-question-word"><span className="article-question-mark" aria-hidden="true">?</span><SpokenWord entry={entry} showArticle={false} /></div>
       <p className="article-meaning">{entry.meaningFa}</p>
       <div className="article-options">{task.options.map(option => {
         const attempt = feedback && state.attempts.find(item => item.attemptId === feedback.attemptId)
@@ -311,7 +306,7 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
         <div className="match-column"><span className="tiny-label" lang="de">Deutsch</span>{task.leftOrder.map(id => {
           const word = bundle.entries.find(item => item.entryId === id)!
           const matched = task.matchedEntryIds.includes(id)
-          return <button className={`match-tile word-tile ${selectedLeft === id ? 'is-selected' : ''} ${matched ? 'is-matched' : ''} ${feedback && !feedback.correct && feedback.entryId === id ? 'answer-wrong' : ''}`} type="button" key={id} disabled={disabled || !!feedback || matched} aria-pressed={selectedLeft === id} onClick={() => setSelectedLeft(id)}><GermanWord entry={word} />{matched && <><Icon name="check" /><span className="sr-only">وصل شد</span></>}</button>
+          return <div className="match-word-tile" key={id}><button className={`match-tile word-tile ${selectedLeft === id ? 'is-selected' : ''} ${matched ? 'is-matched' : ''} ${feedback && !feedback.correct && feedback.entryId === id ? 'answer-wrong' : ''}`} type="button" disabled={disabled || !!feedback || matched} aria-pressed={selectedLeft === id} onClick={() => setSelectedLeft(id)}><GermanWord entry={word} />{matched && <><Icon name="check" /><span className="sr-only">وصل شد</span></>}</button><SpeakerButton text={wordPronunciation(word)} /></div>
         })}</div>
         <div className="match-column" dir="rtl"><span className="tiny-label">فارسی</span>{task.rightOrder.map(id => {
           const word = bundle.entries.find(item => item.entryId === id)!
@@ -322,14 +317,14 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
     </>}
     {task.kind !== 'flashcard' && task.kind !== 'reverse-card' && (!feedback || task.kind === 'match') && <section className="assistance-panel" aria-label="کمک در تمرین"><div className="assistance-actions">
       <DetailSheet title="مثال راهنما" label="دیدن مثال راهنما" disabled={disabled || !!feedback} beforeOpen={() => send({ type: 'assist', taskId: task.taskId, eventId: crypto.randomUUID(), kind: 'hint' })}><p>با دیدن راهنما این تلاش با کمک ثبت می‌شود.</p>{task.assisted && helpedEntry && <ExampleBlock entry={helpedEntry} />}</DetailSheet>
-      <DetailSheet title="پاسخ تمرین" label="نمایش پاسخ" disabled={disabled || !!feedback} beforeOpen={() => send({ type: 'assist', taskId: task.taskId, eventId: crypto.randomUUID(), kind: 'answer' })}><p>این تلاش مستقل محسوب نمی‌شود.</p>{task.assisted && helpedEntry && <p>پاسخ: {task.kind === 'choose-article' || task.kind === 'match' ? <><GermanWord entry={helpedEntry} /><span> — {helpedEntry.meaningFa}</span></> : <bdi lang={writtenTask ? 'de' : 'fa'} dir={writtenTask ? 'ltr' : 'rtl'}>{canonicalAnswer}</bdi>}</p>}</DetailSheet>
+      <DetailSheet title="پاسخ تمرین" label="نمایش پاسخ" disabled={disabled || !!feedback} beforeOpen={() => send({ type: 'assist', taskId: task.taskId, eventId: crypto.randomUUID(), kind: 'answer' })}><p>این تلاش مستقل محسوب نمی‌شود.</p>{task.assisted && helpedEntry && <p>پاسخ: {task.kind === 'choose-article' || task.kind === 'match' ? <><SpokenWord entry={helpedEntry} /><span> — {helpedEntry.meaningFa}</span></> : writtenTask ? <SpokenWord entry={helpedEntry} showArticle={false} /> : <bdi lang="fa" dir="rtl">{helpedEntry.meaningFa}</bdi>}</p>}</DetailSheet>
     </div></section>}
     {feedback && task.kind !== 'match' && task.kind !== 'reverse-card' && <div className={`feedback ${feedback.correct ? 'feedback-correct' : 'feedback-wrong'} ${feedback.assisted ? 'feedback-assisted' : ''}`} role="status" aria-live="polite">
       <div className="feedback-title"><span className="feedback-symbol"><Icon name={feedback.correct ? 'check' : 'close'} /></span><strong>{feedback.correct ? feedback.assisted ? 'درست بود؛ این تلاش با کمک ثبت شد.' : 'درست بود، آفرین!' : 'این بار درست نبود؛ با هم مرور کنیم.'}</strong></div>
       {(writtenTask || !feedback.correct) && <p className="correct-answer">{writtenTask ? 'صورت معیار:' : 'پاسخ درست:'} <bdi lang={writtenTask || task.kind === 'choose-article' ? 'de' : 'fa'} dir={writtenTask || task.kind === 'choose-article' ? 'ltr' : 'rtl'}>{feedback.expectedAnswer}</bdi></p>}
-      {task.kind === 'choose-article' && feedbackEntry && <p className="article-answer"><GermanWord entry={feedbackEntry} /><span>{feedbackEntry.meaningFa}</span></p>}
+      {task.kind === 'choose-article' && feedbackEntry && <p className="article-answer"><SpokenWord entry={feedbackEntry} /><span>{feedbackEntry.meaningFa}</span></p>}
       {feedback.assisted && <p className="assisted-feedback-note">این پاسخ، یادآوری مستقل یا پلهٔ تازهٔ مرور محسوب نمی‌شود.</p>}
-      {feedbackEntry && <div className="feedback-word"><GermanWord entry={feedbackEntry} /><p>{feedbackEntry.meaningFa}</p></div>}
+      {feedbackEntry && task.kind !== 'choose-article' && <div className="feedback-word"><SpokenWord entry={feedbackEntry} /><p>{feedbackEntry.meaningFa}</p></div>}
       <DetailSheet title="مثال و توضیح پاسخ"><p>{feedback.explanationFa}</p>{feedbackEntry && <ExampleBlock entry={feedbackEntry} />}</DetailSheet>
       <button className="primary-button wide feedback-next" type="button" onClick={next} disabled={disabled}>ادامه<Icon name="arrow" /></button>
     </div>}
@@ -339,10 +334,10 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
 function LessonWordList({ entries, props }: { entries: Entry[]; props: WortzeitUIProps }) {
   const { bundle, state, statuses, now } = props
   const playback = usePronunciation()
-  return <div className="word-list">{entries.map(entry => <details className="word-item" key={entry.entryId} onToggle={event => { if (!event.currentTarget.open) playback.stopScope(entry.entryId) }}>
+  return <div className="word-list">{entries.map(entry => <div className="word-list-row" key={entry.entryId}><details className="word-item" onToggle={event => { if (!event.currentTarget.open) playback.stopScope(entry.entryId) }}>
           <summary><span className="word-item-main"><GermanWord entry={entry} /><span>{entry.meaningFa}</span></span><span className={`word-status status-${statuses[entry.entryId]}`}><i />{statusLabels[statuses[entry.entryId]]}</span><span className="details-chevron" aria-hidden="true">⌄</span></summary>
           <div className="word-item-details"><SpeechScope value={entry.entryId}><ExampleBlock entry={entry} /><MoreExamples entry={entry} currentExampleId={entry.examples[0]?.exampleId} /><SkillDetails entry={entry} progress={state.progress[entry.entryId]} /><ReverseSkillDetails progress={state.reverseProgress?.[entry.entryId]} now={now} /><Sources entry={entry} bundle={bundle} />{state.progress[entry.entryId]?.nextDueAt && <p className="word-due">مرور بعدی: {dateLabel(state.progress[entry.entryId].nextDueAt, now)}</p>}</SpeechScope></div>
-        </details>)}</div>
+        </details><SpeakerButton text={wordPronunciation(entry)} /></div>)}</div>
 }
 
 export function WortzeitUI(props: WortzeitUIProps) {
@@ -460,7 +455,7 @@ function WortzeitView(props: WortzeitUIProps) {
         <DetailSheet title="دربارهٔ نتیجهٔ جلسه"><p>پاسخ‌های درست ممکن است با کمک باشند؛ تعداد پاسخ درست به‌تنهایی تسلط را نشان نمی‌دهد. فاصلهٔ مرور با یادآوری مستقل در روزهای جدا بیشتر می‌شود. این گزیده، پایان همهٔ واژگان اصل این درس نیست.</p><p>مرور معکوس، ارزیابی شخصیِ فارسی به آلمانی است و امتیازش جدا از تمرین نوشتن ذخیره می‌شود.</p></DetailSheet><div className="summary-actions"><button className="primary-button" type="button" disabled={disabled} onClick={() => void start()}>ادامهٔ یادگیری<Icon name="arrow" /></button><button className="secondary-button" type="button" onClick={() => setPage('home')}>بازگشت به خانه</button></div>
       </section>}
       {effectivePage === 'words' && <section className="words-page">
-        <PronunciationSettings />
+        <PronunciationStatus />
         <div className="page-intro"><div><span className="eyebrow">واژه‌نامهٔ کوچک تو</span><h1>واژه‌های {lessonLabel(activeLesson)}<span className="orange-dot">.</span></h1><p>{number(total)} مدخل از گزیدهٔ موجود؛ وضعیت‌ها براساس پیشرفت واقعی تو هستند.</p></div><span className="level-pill" lang="de" dir="ltr">A1</span></div>
         <p className="stabilization-note">«تثبیت‌شده» یعنی دست‌کم سه مرور مستقلِ موعدرسیده در روزهای جدا، بدون خطا یا کمک در میان آن‌ها؛ برای اسم، پاسخ آرتیکلِ بدون کمک هم لازم است. مرور بلندمدت همچنان ادامه دارد.</p>
         <label className="word-search"><span className="sr-only">جست‌وجوی واژه یا معنی</span><input type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="واژه یا معنی‌اش را جست‌وجو کن…" /></label>

@@ -11,7 +11,7 @@ import { validateVersionTwoState } from '../src/storage/legacy-v2.ts'
 import { createInitialState, transition } from '../src/learning/engine.ts'
 import { scheduleReverseReview, reverseStudyDate } from '../src/learning/reverse.ts'
 import { validateState } from '../src/storage/index.ts'
-import { checkPronunciation } from './pronunciation-browser.mjs'
+import { checkExercisePronunciation, checkPronunciation } from './pronunciation-browser.mjs'
 
 const results = []
 const diagnostics = []
@@ -277,8 +277,8 @@ async function checkWrongMatch(page, state) {
   const task = state.session.queue[state.session.cursor]
   const id = task.entryIds.find(id => !task.matchedEntryIds.includes(id))
   const wrongId = task.entryIds.find(other => other !== id && !task.matchedEntryIds.includes(other))
-  const left = page.locator('.match-column').nth(0).locator('button').nth(task.leftOrder.indexOf(id))
-  const wrong = page.locator('.match-column').nth(1).locator('button').nth(task.rightOrder.indexOf(wrongId))
+  const left = page.locator('.match-column').nth(0).locator('.match-tile').nth(task.leftOrder.indexOf(id))
+  const wrong = page.locator('.match-column').nth(1).locator('.match-tile').nth(task.rightOrder.indexOf(wrongId))
   await left.click()
   const height = await page.evaluate(() => document.documentElement.scrollHeight)
   await clickAndSave(page, wrong)
@@ -292,7 +292,7 @@ async function checkWrongMatch(page, state) {
   assert.equal(retry.attempts.at(-1).correct, false)
   assert.equal(await left.isEnabled(), true)
   await left.click()
-  await clickAndSave(page, page.locator('.match-column').nth(1).locator('button').nth(task.rightOrder.indexOf(id)))
+  await clickAndSave(page, page.locator('.match-column').nth(1).locator('.match-tile').nth(task.rightOrder.indexOf(id)))
   const corrected = await readState(page)
   assert.equal(corrected.attempts.at(-1).correct, true)
   assert.equal(corrected.attempts.at(-1).assisted, true)
@@ -332,8 +332,8 @@ async function playToEnd(page, stopAtWritten = false, wrongMatch = false) {
     } else {
       if (wrongMatch) { await checkWrongMatch(page, state); wrongMatch = false; continue }
       const id = task.entryIds.find(id => !task.matchedEntryIds.includes(id))
-      await page.locator('.match-column').nth(0).locator('button').nth(task.leftOrder.indexOf(id)).click()
-      await clickAndSave(page, page.locator('.match-column').nth(1).locator('button').nth(task.rightOrder.indexOf(id)))
+      await page.locator('.match-column').nth(0).locator('.match-tile').nth(task.leftOrder.indexOf(id)).click()
+      await clickAndSave(page, page.locator('.match-column').nth(1).locator('.match-tile').nth(task.rightOrder.indexOf(id)))
     }
   }
   throw new Error('Session did not terminate')
@@ -930,7 +930,7 @@ try {
       await cuePage.goto(`${origin}/?lesson=lesson-05`)
       await clickAndSave(cuePage, cuePage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }), true)
       assert.equal(await cuePage.locator('.cloze-question .writing-cue').innerText(), entry.writing.cueFa)
-      assert.equal(await cuePage.locator('.task-content .speaker-button').count(), 0)
+      assert.equal(await cuePage.locator('.cloze-question .speaker-button').count(), 1)
       await assertViewport(cuePage, `lesson-five ${lemma} cloze cue`, '.answer-form input, .answer-form button')
       await cuePage.getByLabel('پاسخ تو', { exact: true }).fill(entry.lemma)
       await waitState(cuePage, value => value.session.draft === entry.lemma)
@@ -939,8 +939,12 @@ try {
       await isolated.close()
     }
   })
-  await checkpoint('native pronunciation: visible German, speed, dialog and navigation cancellation without learning or rotation changes', async () => {
+  await checkpoint('native pronunciation: visible German, default speed, dialog and navigation cancellation without learning or rotation changes', async () => {
     await checkPronunciation({ browser, origin, bundle, observeContext, writeState, readState, learningSnapshot, clickAndSave, assertViewport, saveScreenshot, completedReverseFixture, installClock })
+  })
+  await checkpoint('pronunciation on visible exercise text preserves hidden answers and matching selection', async () => {
+    await checkExercisePronunciation({ browser, origin, bundle, observeContext, writeState, readState, learningSnapshot,
+      clickAndSave, assertViewport, completedReverseFixture, installClock })
   })
   await checkpoint('lesson-five pronunciation and hidden reverse answers with real lesson-five review history', async () => {
     await checkPronunciation({ browser, origin, bundle, observeContext, writeState, readState, learningSnapshot, clickAndSave, assertViewport, saveScreenshot,

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { courseBundle } from '../content/catalog.ts'
-import { createPronunciation, PRONUNCIATION_RATE_KEY, selectGermanVoice, speechMessages, wordPronunciation } from './pronunciation.ts'
+import { createPronunciation, selectGermanVoice, speechMessages, wordPronunciation } from './pronunciation.ts'
 
 const voice = (lang: string, name = 'device voice') => ({ lang, name } as SpeechSynthesisVoice)
 const german = voice('de-DE')
@@ -21,13 +21,11 @@ class MockSynthesis extends EventTarget {
     this.spoken.at(-1)?.onerror?.({ error: 'canceled' } as SpeechSynthesisErrorEvent)
   }
 }
-function setup(stored: string | null = null) {
+function setup() {
   const synthesis = new MockSynthesis()
-  const preferences = new Map(stored ? [[PRONUNCIATION_RATE_KEY, stored]] : [])
-  const storage = { getItem: (key: string) => preferences.get(key) ?? null, setItem: (key: string, value: string) => { preferences.set(key, value) } }
   const createUtterance = (text: string) => ({ text, voice: null, lang: '', rate: 1, onend: null, onerror: null } as unknown as SpeechSynthesisUtterance)
-  const environment = { synthesis: synthesis as unknown as SpeechSynthesis, storage, createUtterance }
-  return { synthesis, preferences, environment, playback: createPronunciation(environment) }
+  const environment = { synthesis: synthesis as unknown as SpeechSynthesis, createUtterance }
+  return { synthesis, environment, playback: createPronunciation(environment) }
 }
 
 test('speaks only stored German, noun with its known article and complete separable infinitive', () => {
@@ -105,27 +103,12 @@ test('missing API, missing utterance constructor, and native failures leave play
   assert.equal(playback.getSnapshot().activeId, null)
 })
 
-test('normal default and slow apply to words and sentences, persist separately, and recover safely from blocked storage', () => {
-  const { playback, synthesis, environment, preferences } = setup()
-  playback.toggle('word', 'card', 'Hallo')
-  assert.equal(synthesis.spoken[0].rate, 1)
-  playback.setRate(0.8)
-  assert.equal(playback.getSnapshot().activeId, null)
+test('words and sentences always play at the default rate', () => {
+  const { playback, synthesis } = setup()
   for (const text of ['die Wohnung', 'Wir sehen heute fern.']) {
     playback.toggle(text, 'card', text)
-    assert.equal(synthesis.spoken.at(-1)?.rate, 0.8)
+    assert.equal(synthesis.spoken.at(-1)?.rate, 1)
   }
-  assert.deepEqual([...preferences], [[PRONUNCIATION_RATE_KEY, '0.8']])
-  assert.equal(createPronunciation(environment).getSnapshot().rate, 0.8)
-  playback.setRate(1)
-  playback.toggle('sentence', 'card', 'Wir sehen heute fern.')
-  assert.equal(synthesis.spoken.at(-1)?.rate, 1)
-  assert.equal(createPronunciation(environment).getSnapshot().rate, 1)
-  for (const invalid of ['0.5', 'NaN', 'broken', null]) assert.equal(setup(invalid).playback.getSnapshot().rate, 1)
-  const blocked = createPronunciation({ ...environment, storage: { getItem: () => { throw new Error('blocked') }, setItem: () => { throw new Error('blocked') } } })
-  assert.equal(blocked.getSnapshot().rate, 1)
-  assert.doesNotThrow(() => blocked.setRate(0.8))
-  assert.equal(blocked.getSnapshot().rate, 0.8)
 })
 
 test('same button stops; rapid replacement invalidates all old end/error callbacks, including a restarted button', () => {
@@ -166,6 +149,6 @@ test('button/surface cleanup only cancels its own audio; global leaving cancels 
   assert.equal(synthesis.cancellations, 3)
   assert.equal(updates, 6)
   unsubscribe()
-  playback.setRate(0.8)
+  playback.toggle('word', 'card', 'Hallo')
   assert.equal(updates, 6)
 })

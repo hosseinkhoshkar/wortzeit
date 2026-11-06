@@ -1,8 +1,9 @@
-/* global window, Event, EventTarget */
+/* global window, Event, EventTarget, structuredClone */
 import assert from 'node:assert/strict'
 import { createInitialState, transition } from '../src/learning/engine.ts'
 import { getReverseExample } from '../src/learning/examples.ts'
 import { validateState } from '../src/storage/index.ts'
+import { wordPronunciation } from '../src/features/pronunciation.ts'
 
 async function installSpeech(context, unsupported = false) {
   await context.addInitScript(unsupported => {
@@ -64,10 +65,10 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     const before = learningSnapshot(await readState(page))
     const word = page.locator('.card-front .speaker-button')
     await word.click()
-    assert.ok((await page.locator('.pronunciation-toolbar .pronunciation-status').innerText()).includes('صدای آلمانی'))
+    assert.ok((await page.locator('.task-content > .pronunciation-status').innerText()).includes('صدای آلمانی'))
     assert.equal(await page.evaluate(() => window.__speech.spoken.length), 0)
     await page.evaluate(() => window.__speech.loadVoices())
-    assert.equal(await page.locator('.pronunciation-toolbar .pronunciation-status').innerText(), '')
+    assert.equal(await page.locator('.task-content > .pronunciation-status').innerText(), '')
     assert.equal(await page.evaluate(() => window.__speech.spoken.length), 0, 'late voices never autoplay')
     await word.focus()
     await word.press('Enter')
@@ -76,9 +77,10 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     await word.press('Space')
     assert.equal(await word.getAttribute('aria-pressed'), 'false')
     assert.equal(learningSnapshot(await readState(page)), before, 'word playback never reveals, submits or advances')
-    await page.getByLabel('سرعت تلفظ').selectOption('0.8')
+    assert.equal(await page.getByLabel('سرعت تلفظ').count(), 0)
+    await page.evaluate(() => window.localStorage.setItem('wortzeit-pronunciation-rate', '0.8'))
     await word.click()
-    assert.equal((await lastSpeech(page)).rate, 0.8)
+    assert.equal((await lastSpeech(page)).rate, 1)
     const cancelBeforeFlip = await cancellations(page)
     await clickAndSave(page, page.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
     assert.ok(await cancellations(page) > cancelBeforeFlip, 'flipping away cancels the word')
@@ -86,7 +88,7 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     const sentence = page.locator('.card-back .speaker-button')
     await sentence.click()
     assert.equal((await lastSpeech(page)).text, entry.examples[0].de)
-    assert.equal((await lastSpeech(page)).rate, 0.8)
+    assert.equal((await lastSpeech(page)).rate, 1)
     await page.getByRole('button', { name: 'مثال‌های بیشتر', exact: true }).click()
     const dialog = page.getByRole('dialog', { name: 'مثال‌های بیشتر', exact: true })
     const examples = dialog.locator('.example-block')
@@ -94,14 +96,14 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     for (let index = 0; index < 2; index++) {
       await examples.nth(index).locator('.speaker-button').click()
       assert.equal((await lastSpeech(page)).text, entry.examples[index + 1].de)
-      assert.equal((await lastSpeech(page)).rate, 0.8)
+      assert.equal((await lastSpeech(page)).rate, 1)
     }
     const beforeClose = await cancellations(page)
     await dialog.getByRole('button', { name: 'بستن جزئیات' }).click()
     await page.waitForFunction(count => window.__speech.cancellations > count, beforeClose)
     assert.equal(await page.locator('.speaker-button[aria-pressed=true]').count(), 0)
     assert.equal(learningSnapshot(await readState(page)), revealed, 'all examples leave learning and rotation untouched')
-    await assertViewport(page, 'pronunciation normal card', '.speaker-button, .pronunciation-speed select, .flashcard-flip, .flashcard-next')
+    await assertViewport(page, 'pronunciation normal card', '.speaker-button, .flashcard-flip, .flashcard-next')
     await page.setViewportSize({ width: 320, height: 568 })
     await saveScreenshot(page, `pronunciation-${lessonId}-card-320.png`)
     await sentence.click()
@@ -113,12 +115,21 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     assert.ok(await cancellations(page) > beforeNext, 'next card cancels playback')
     await page.reload()
     await clickAndSave(page, page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }), true)
-    assert.equal(await page.getByLabel('سرعت تلفظ').inputValue(), '0.8', 'speed survives reload independently')
     await page.evaluate(() => window.__speech.loadVoices())
     await page.locator('.card-front .speaker-button').click()
+    assert.equal((await lastSpeech(page)).rate, 1, 'an old slow preference is ignored after reload')
     const beforePause = await cancellations(page)
     await clickAndSave(page, page.getByRole('button', { name: 'توقف و بازگشت', exact: true }))
     assert.ok(await cancellations(page) > beforePause)
+    await page.getByRole('button', { name: 'واژه‌ها', exact: true }).click()
+    const firstRow = page.locator('.word-list-row').first()
+    const firstEntryId = bundle.lessons.find(lesson => lesson.lessonId === lessonId).introducedEntryIds[0]
+    const firstEntry = bundle.entries.find(entry => entry.entryId === firstEntryId)
+    const beforeListPlayback = learningSnapshot(await readState(page))
+    await firstRow.locator(':scope > .speaker-button').click()
+    assert.equal((await lastSpeech(page)).text, wordPronunciation(firstEntry))
+    assert.equal(await firstRow.locator('details').getAttribute('open'), null, 'playback keeps details closed')
+    assert.equal(learningSnapshot(await readState(page)), beforeListPlayback)
   } finally { await context.close() }
 
   // Use a genuine due reverse task; the test isolates its queue just like the
@@ -156,7 +167,7 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     await active.click()
     await active.click()
     assert.equal(await active.getAttribute('aria-pressed'), 'true')
-    await assertViewport(page, 'pronunciation reverse card', '.speaker-button, .pronunciation-speed select, .reverse-correct, .reverse-incorrect')
+    await assertViewport(page, 'pronunciation reverse card', '.speaker-button, .reverse-correct, .reverse-incorrect')
     await page.setViewportSize({ width: 320, height: 568 })
     await saveScreenshot(page, `pronunciation-${lessonId}-reverse-320.png`)
     await page.getByRole('button', { name: 'مثال‌های بیشتر', exact: true }).click()
@@ -169,7 +180,7 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     assert.equal(await page.locator('.reverse-example [lang=de]').innerText(), expected.de, 'audio never rotates the example')
     await page.evaluate(() => { window.__speech.fail = true })
     await active.click()
-    assert.ok((await page.locator('.pronunciation-toolbar .pronunciation-status').innerText()).includes('پخش تلفظ انجام نشد'))
+    assert.ok((await page.locator('.task-content > .pronunciation-status').innerText()).includes('پخش تلفظ انجام نشد'))
     await clickAndSave(page, page.locator('.reverse-correct'))
     assert.equal((await readState(page)).reverseReviews.length, reverse.reverseReviews.length + 1, 'learning remains usable after failure')
   } finally { await reverseContext.close() }
@@ -183,8 +194,49 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     await page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).waitFor()
     await clickAndSave(page, page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }))
     await page.locator('.card-front .speaker-button').click()
-    assert.ok((await page.locator('.pronunciation-toolbar .pronunciation-status').innerText()).includes('پشتیبانی نمی‌کند'))
+    assert.ok((await page.locator('.task-content > .pronunciation-status').innerText()).includes('پشتیبانی نمی‌کند'))
     await clickAndSave(page, page.getByRole('button', { name: 'چرخاندن کارت و نمایش معنی', exact: true }))
     assert.equal(await page.locator('.flashcard.is-flipped').count(), 1)
   } finally { await unsupported.close() }
+}
+
+export async function checkExercisePronunciation({ browser, origin, bundle, observeContext, writeState, readState, learningSnapshot, clickAndSave, assertViewport, completedReverseFixture, installClock }) {
+  const now = '2026-11-01T12:00:00.000Z'
+  const lessonId = bundle.lesson.lessonId
+  const selected = transition(completedReverseFixture(), { type: 'select-lesson', lessonId }, bundle, now)
+  const started = transition(selected, { type: 'start-session', sessionId: 'speech-exercises', seed: 5 }, bundle, now)
+  const learned = bundle.entries.filter(entry => entry.introducedInLessonId === lessonId && selected.progress[entry.entryId])
+  const noun = learned.find(entry => entry.nounData)
+  assert.ok(noun)
+  const matchIds = learned.slice(0, 4).map(entry => entry.entryId)
+  const scenarios = [
+    [{ taskId: 'speech-meaning', kind: 'choose-meaning', entryId: noun.entryId, optionIds: noun.meaningOptionEntryIds }, '.question-word .speaker-button', wordPronunciation(noun)],
+    [{ taskId: 'speech-article', kind: 'choose-article', entryId: noun.entryId, options: ['der', 'die', 'das'] }, '.question-word .speaker-button', noun.lemma],
+    [{ taskId: 'speech-cloze', kind: 'cloze', entryId: noun.entryId, cycleKind: 'scheduled' }, '.cloze-question .speaker-button', noun.cloze.sentence.replace('___', '…')],
+    [{ taskId: 'speech-match', kind: 'match', entryIds: matchIds, leftOrder: matchIds, rightOrder: [...matchIds].reverse(), matchedEntryIds: [] }, '.match-word-tile .speaker-button', wordPronunciation(learned[0])],
+  ]
+  const context = await browser.newContext({ viewport: { width: 320, height: 568 }, isMobile: true, hasTouch: true, locale: 'fa-IR', reducedMotion: 'reduce' })
+  observeContext(context)
+  await installClock(context, now)
+  await installSpeech(context)
+  try {
+    const page = await context.newPage()
+    for (const [task, selector, expected] of scenarios) {
+      const state = structuredClone(started)
+      Object.assign(state.session, { queue: [task], cursor: 0, introducedEntryIds: [], feedback: null })
+      validateState(state, bundle)
+      await page.goto(`${origin}/__test/setup`)
+      await writeState(page, state)
+      await page.goto(origin)
+      await clickAndSave(page, page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }), true)
+      await page.evaluate(() => window.__speech.loadVoices())
+      const before = learningSnapshot(await readState(page))
+      await page.locator(selector).first().click()
+      assert.equal((await lastSpeech(page)).text, expected)
+      assert.equal((await lastSpeech(page)).rate, 1)
+      assert.equal(learningSnapshot(await readState(page)), before)
+      if (task.kind === 'match') assert.equal(await page.locator('.word-tile.is-selected').count(), 0)
+      await assertViewport(page, `speech on ${task.kind}`, selector)
+    }
+  } finally { await context.close() }
 }

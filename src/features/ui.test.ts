@@ -71,7 +71,7 @@ test('article question hides the article until feedback and provides all three t
   const html = renderTask(task, props)
   assert.ok(html.includes(noun.lemma))
   assert.ok(!html.includes('class="article"'))
-  assert.ok(!html.includes('speaker-button'), 'article question cannot play the full noun with its answer')
+  assert.match(html, /speaker-button/u, 'the visible noun can be played without its hidden article')
   for (const option of task.options) assert.ok(html.includes(`>${option}</button>`))
   props.state.session!.feedback = { attemptId: 'a', entryId: noun.entryId, correct: true, expectedAnswer: noun.nounData!.article, explanationFa: 'ثبت شد', assisted: false }
   const answered = renderTask(task, props)
@@ -157,6 +157,7 @@ test('fourth lesson vocabulary renders only that lesson and keeps unrelated entr
   assert.ok(html.includes('دورهٔ آزمایشی چهارم') && html.includes('Kurs'))
   const main = [...html.matchAll(/class="word-item-main">([\s\S]*?)<\/span><span class="word-status/gu)]
   assert.equal(main.length, 1)
+  assert.match(html, /<\/details><button type="button" class="speaker-button"/u)
   assert.ok(main[0][1].includes('Kurs') && main[0][1].includes('دورهٔ آزمایشی چهارم'))
   assert.ok(!main[0][1].includes('Hallo') && !main[0][1].includes('Familienname'))
   assert.match(html, /lang="de" dir="ltr"/u)
@@ -339,6 +340,6 @@ test('real lesson-five clozes show Persian cues to distinguish Bad/Badezimmer an
     const html = renderTask(task, props)
     assert.ok(html.includes(entry.cloze.translationFa))
     assert.ok(html.includes(`<p class="writing-cue">${entry.writing.cueFa}</p>`))
-    assert.ok(!html.includes('speaker-button'), 'a cue must not enable audio of the missing answer')
+    assert.equal((html.match(/class="speaker-button"/gu) ?? []).length, 1, 'only the visible sentence has a playback control')
   }
 })
