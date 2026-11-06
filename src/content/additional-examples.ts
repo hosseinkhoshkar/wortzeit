@@ -3641,5 +3641,775 @@ export const additionalExamplesByEntry: Record<string, Example[]> = {
       "fa": "مغازه امروز چه ساعتی می‌بندد؟",
       "origin": "authored"
     }
+  ],
+  "a1-l07-001": [
+    {
+      "exampleId": "a1-l07-001-additional-1",
+      "de": "Steig bitte am Bahnhof aus.",
+      "fa": "لطفاً در ایستگاه قطار پیاده شو.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-001-additional-2",
+      "de": "Wo müssen wir aus dem Bus aussteigen?",
+      "fa": "کجا باید از اتوبوس پیاده شویم؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-002": [
+    {
+      "exampleId": "a1-l07-002-additional-1",
+      "de": "Wir holen unsere Freunde am Bahnhof ab.",
+      "fa": "می‌رویم ایستگاه قطار دنبال دوستانمان.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-002-additional-2",
+      "de": "Vom Bahnhof sind es zehn Minuten zum Hotel.",
+      "fa": "از ایستگاه قطار تا هتل ده دقیقه راه است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-003": [
+    {
+      "exampleId": "a1-l07-003-additional-1",
+      "de": "Bitte begründen Sie Ihre Antwort.",
+      "fa": "لطفاً برای پاسختان دلیل بیاورید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-003-additional-2",
+      "de": "Kannst du deinen Wunsch begründen?",
+      "fa": "می‌توانی برای خواسته‌ات دلیل بیاوری؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-004": [
+    {
+      "exampleId": "a1-l07-004-additional-1",
+      "de": "Meine Freundin berichtet von ihrer Reise.",
+      "fa": "دوستم از سفرش گزارش می‌دهد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-004-additional-2",
+      "de": "Die Zeitung berichtet über das Fest in unserer Stadt.",
+      "fa": "روزنامه دربارهٔ جشن شهر ما گزارش می‌دهد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-005": [
+    {
+      "exampleId": "a1-l07-005-additional-1",
+      "de": "Dieser Künstler ist in Deutschland sehr berühmt.",
+      "fa": "این هنرمند در آلمان خیلی مشهور است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-005-additional-2",
+      "de": "In unserer Stadt gibt es ein berühmtes Theater.",
+      "fa": "در شهر ما یک تئاتر مشهور هست.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-006": [
+    {
+      "exampleId": "a1-l07-006-additional-1",
+      "de": "Morgen besichtigen wir das Rathaus.",
+      "fa": "فردا از ساختمان شهرداری بازدید می‌کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-006-additional-2",
+      "de": "Welche Sehenswürdigkeiten möchtest du besichtigen?",
+      "fa": "دوست داری از کدام جاهای دیدنی بازدید کنی؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-007": [
+    {
+      "exampleId": "a1-l07-007-additional-1",
+      "de": "Die Blumen stehen auf dem Tisch.",
+      "fa": "گل‌ها روی میز هستند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-007-additional-2",
+      "de": "Ich bringe meiner Mutter eine Blume mit.",
+      "fa": "برای مادرم یک گل می‌آورم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-008": [
+    {
+      "exampleId": "a1-l07-008-additional-1",
+      "de": "Der Bus kommt in fünf Minuten.",
+      "fa": "اتوبوس پنج دقیقهٔ دیگر می‌آید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-008-additional-2",
+      "de": "Fährst du mit dem Bus zur Arbeit?",
+      "fa": "با اتوبوس سر کار می‌روی؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-009": [
+    {
+      "exampleId": "a1-l07-009-additional-1",
+      "de": "Ich danke Ihnen für Ihre Hilfe.",
+      "fa": "از کمکتان سپاسگزارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-009-additional-2",
+      "de": "Wir danken unserer Lehrerin für den schönen Ausflug.",
+      "fa": "برای گردش خوب از معلممان تشکر می‌کنیم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-010": [
+    {
+      "exampleId": "a1-l07-010-additional-1",
+      "de": "Wir gehen durch den Park zum Bahnhof.",
+      "fa": "از میان پارک به ایستگاه قطار می‌رویم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-010-additional-2",
+      "de": "Durch das Fenster höre ich die Musik.",
+      "fa": "صدای موسیقی را از پنجره می‌شنوم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-011": [
+    {
+      "exampleId": "a1-l07-011-additional-1",
+      "de": "Wo kann ich eine Fahrkarte kaufen?",
+      "fa": "از کجا می‌توانم بلیط بخرم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-011-additional-2",
+      "de": "Die Fahrkarte nach Berlin kostet dreißig Euro.",
+      "fa": "بلیط برلین سی یورو قیمت دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-012": [
+    {
+      "exampleId": "a1-l07-012-additional-1",
+      "de": "Früher habe ich in einer Wohngemeinschaft gewohnt.",
+      "fa": "قبلاً در یک خانهٔ اشتراکی زندگی می‌کردم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-012-additional-2",
+      "de": "Warst du früher oft im Theater?",
+      "fa": "قبلاً زیاد به تئاتر می‌رفتی؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-013": [
+    {
+      "exampleId": "a1-l07-013-additional-1",
+      "de": "Die Führung durch das Museum beginnt um zehn.",
+      "fa": "بازدید همراه راهنما از موزه ساعت ده شروع می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-013-additional-2",
+      "de": "Wir möchten eine Führung auf Deutsch.",
+      "fa": "ما یک بازدید همراه راهنما به زبان آلمانی می‌خواهیم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-014": [
+    {
+      "exampleId": "a1-l07-014-additional-1",
+      "de": "Mein rechter Fuß tut weh.",
+      "fa": "پای راستم درد می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-014-additional-2",
+      "de": "Dieser Schuh ist zu schmal für meinen Fuß.",
+      "fa": "این کفش برای پای من زیادی باریک است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-015": [
+    {
+      "exampleId": "a1-l07-015-additional-1",
+      "de": "Die Kinder spielen im Garten.",
+      "fa": "بچه‌ها در باغ بازی می‌کنند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-015-additional-2",
+      "de": "Im Garten meiner Eltern stehen viele Blumen.",
+      "fa": "در باغ پدر و مادرم گل‌های زیادی هست.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-016": [
+    {
+      "exampleId": "a1-l07-016-additional-1",
+      "de": "Gefällt dir das Bild über dem Sofa?",
+      "fa": "از تابلوی بالای مبل خوشت می‌آید؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-016-additional-2",
+      "de": "Die neuen Schuhe gefallen meiner Schwester.",
+      "fa": "خواهرم از کفش‌های جدید خوشش می‌آید.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-017": [
+    {
+      "exampleId": "a1-l07-017-additional-1",
+      "de": "Dieser Satz steht in der Gegenwart.",
+      "fa": "این جمله در زمان حال است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-017-additional-2",
+      "de": "Für mich ist die Gegenwart wichtiger als die Vergangenheit.",
+      "fa": "برای من زمان حال از گذشته مهم‌تر است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-018": [
+    {
+      "exampleId": "a1-l07-018-additional-1",
+      "de": "Gehen Sie hier immer geradeaus.",
+      "fa": "از اینجا همین‌طور مستقیم بروید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-018-additional-2",
+      "de": "Fahr an der Kreuzung geradeaus.",
+      "fa": "در تقاطع مستقیم برو.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-019": [
+    {
+      "exampleId": "a1-l07-019-additional-1",
+      "de": "Das Geschenk ist für meine Lehrerin.",
+      "fa": "این هدیه برای معلمم است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-019-additional-2",
+      "de": "Welches Geschenk wünschst du dir zum Geburtstag?",
+      "fa": "برای تولدت چه هدیه‌ای آرزو داری؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-020": [
+    {
+      "exampleId": "a1-l07-020-additional-1",
+      "de": "Das Essen ist fertig. Guten Appetit!",
+      "fa": "غذا آماده است. نوش جان!",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-020-additional-2",
+      "de": "Wir wünschen euch guten Appetit.",
+      "fa": "برای شما آرزو می‌کنیم از غذایتان لذت ببرید.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-021": [
+    {
+      "exampleId": "a1-l07-021-additional-1",
+      "de": "Kennst du die Hauptstadt von Österreich?",
+      "fa": "پایتخت اتریش را می‌شناسی؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-021-additional-2",
+      "de": "Meine Schwester studiert in der Hauptstadt.",
+      "fa": "خواهرم در پایتخت درس می‌خواند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-022": [
+    {
+      "exampleId": "a1-l07-022-additional-1",
+      "de": "Meine Cousine heiratet im Sommer.",
+      "fa": "دخترخاله‌ام تابستان ازدواج می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-022-additional-2",
+      "de": "Wo möchtet ihr heiraten?",
+      "fa": "می‌خواهید کجا ازدواج کنید؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-023": [
+    {
+      "exampleId": "a1-l07-023-additional-1",
+      "de": "An der nächsten Kreuzung gehen Sie links.",
+      "fa": "در تقاطع بعدی به چپ بروید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-023-additional-2",
+      "de": "Der Bus wartet vor der Kreuzung.",
+      "fa": "اتوبوس قبل از تقاطع منتظر است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-024": [
+    {
+      "exampleId": "a1-l07-024-additional-1",
+      "de": "Ich interessiere mich für Kunst.",
+      "fa": "من به هنر علاقه دارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-024-additional-2",
+      "de": "Im Museum sehen wir Kunst aus Italien.",
+      "fa": "در موزه هنر ایتالیا را می‌بینیم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-025": [
+    {
+      "exampleId": "a1-l07-025-additional-1",
+      "de": "Der Künstler zeigt uns seine Bilder.",
+      "fa": "هنرمند تابلوهایش را به ما نشان می‌دهد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-025-additional-2",
+      "de": "Ich möchte den Künstler persönlich kennenlernen.",
+      "fa": "می‌خواهم این هنرمند را حضوری بشناسم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-026": [
+    {
+      "exampleId": "a1-l07-026-additional-1",
+      "de": "Meine Tante ist Künstlerin.",
+      "fa": "خاله‌ام هنرمند است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-026-additional-2",
+      "de": "Die Künstlerin arbeitet in einem kleinen Zimmer.",
+      "fa": "هنرمند زن در یک اتاق کوچک کار می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-027": [
+    {
+      "exampleId": "a1-l07-027-additional-1",
+      "de": "Die Kinder lachen über das lustige Bild.",
+      "fa": "بچه‌ها به تصویر خنده‌دار می‌خندند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-027-additional-2",
+      "de": "Warum lachst du so laut?",
+      "fa": "چرا این‌قدر بلند می‌خندی؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-028": [
+    {
+      "exampleId": "a1-l07-028-additional-1",
+      "de": "Der Kuchen ist wirklich lecker.",
+      "fa": "کیک واقعاً خوشمزه است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-028-additional-2",
+      "de": "Danke für das leckere Abendessen!",
+      "fa": "ممنون از شام خوشمزه!",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-029": [
+    {
+      "exampleId": "a1-l07-029-additional-1",
+      "de": "Leg das Buch bitte auf den Tisch.",
+      "fa": "لطفاً کتاب را روی میز بگذار.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-029-additional-2",
+      "de": "Ich lege die neuen Socken in den Schrank.",
+      "fa": "جوراب‌های جدید را در کمد می‌گذارم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-030": [
+    {
+      "exampleId": "a1-l07-030-additional-1",
+      "de": "Diese Aufgabe ist sehr leicht.",
+      "fa": "این تکلیف خیلی آسان است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-030-additional-2",
+      "de": "Die Tasche ist leicht; ich kann sie allein tragen.",
+      "fa": "کیف سبک است؛ می‌توانم آن را به‌تنهایی حمل کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-031": [
+    {
+      "exampleId": "a1-l07-031-additional-1",
+      "de": "Mein Handy liegt unter der Zeitung.",
+      "fa": "موبایلم زیر روزنامه است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-031-additional-2",
+      "de": "Das Kind liegt im Bett und schläft.",
+      "fa": "کودک در تخت دراز کشیده و خوابیده است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-032": [
+    {
+      "exampleId": "a1-l07-032-additional-1",
+      "de": "Der Film war sehr lustig.",
+      "fa": "فیلم خیلی خنده‌دار بود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-032-additional-2",
+      "de": "Dein Bruder erzählt immer lustige Geschichten.",
+      "fa": "برادرت همیشه داستان‌های خنده‌دار تعریف می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-033": [
+    {
+      "exampleId": "a1-l07-033-additional-1",
+      "de": "Ich habe mehrere Fragen zur Reise.",
+      "fa": "چندین سؤال دربارهٔ سفر دارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-033-additional-2",
+      "de": "In unserer Straße gibt es mehrere kleine Läden.",
+      "fa": "در خیابان ما چندین مغازهٔ کوچک هست.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-034": [
+    {
+      "exampleId": "a1-l07-034-additional-1",
+      "de": "Weißt du, ob das Museum heute offen ist?",
+      "fa": "می‌دانی موزه امروز باز است یا نه؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-034-additional-2",
+      "de": "Ich frage Anna, ob sie zum Fest kommt.",
+      "fa": "از آنا می‌پرسم آیا به جشن می‌آید یا نه.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-035": [
+    {
+      "exampleId": "a1-l07-035-additional-1",
+      "de": "Das Parlament ist in der Hauptstadt.",
+      "fa": "مجلس در پایتخت است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-035-additional-2",
+      "de": "Wir besichtigen morgen das Parlament.",
+      "fa": "فردا از مجلس بازدید می‌کنیم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-036": [
+    {
+      "exampleId": "a1-l07-036-additional-1",
+      "de": "Möchtest du den Kuchen probieren?",
+      "fa": "می‌خواهی کیک را بچشی؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-036-additional-2",
+      "de": "Probier bitte den Salat ohne Salz.",
+      "fa": "لطفاً سالاد را بدون نمک بچش.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-037": [
+    {
+      "exampleId": "a1-l07-037-additional-1",
+      "de": "Das Rathaus steht am großen Platz.",
+      "fa": "ساختمان شهرداری در میدان بزرگ قرار دارد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-037-additional-2",
+      "de": "Vor dem Rathaus treffen wir unsere Freunde.",
+      "fa": "جلوی ساختمان شهرداری با دوستانمان دیدار می‌کنیم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-038": [
+    {
+      "exampleId": "a1-l07-038-additional-1",
+      "de": "Die Regierung informiert die Menschen.",
+      "fa": "دولت به مردم اطلاع‌رسانی می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-038-additional-2",
+      "de": "In der Zeitung steht heute etwas über die Regierung.",
+      "fa": "امروز در روزنامه مطلبی دربارهٔ دولت نوشته شده است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-039": [
+    {
+      "exampleId": "a1-l07-039-additional-1",
+      "de": "Wir planen eine Reise nach Österreich.",
+      "fa": "داریم برای سفری به اتریش برنامه‌ریزی می‌کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-039-additional-2",
+      "de": "Wie lange dauert eure Reise?",
+      "fa": "سفرتان چقدر طول می‌کشد؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-040": [
+    {
+      "exampleId": "a1-l07-040-additional-1",
+      "de": "Fährt dieser Bus in Richtung Bahnhof?",
+      "fa": "این اتوبوس به سمت ایستگاه قطار می‌رود؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-040-additional-2",
+      "de": "Wir gehen in die andere Richtung.",
+      "fa": "ما به سمت دیگری می‌رویم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-041": [
+    {
+      "exampleId": "a1-l07-041-additional-1",
+      "de": "Schmeckt dir der Salat?",
+      "fa": "سالاد به مذاقت خوش می‌آید؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-041-additional-2",
+      "de": "Dieser Tee schmeckt ohne Zucker besser.",
+      "fa": "این چای بدون شکر خوشمزه‌تر است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-042": [
+    {
+      "exampleId": "a1-l07-042-additional-1",
+      "de": "Welche Sehenswürdigkeit besichtigen wir zuerst?",
+      "fa": "اول از کدام جای دیدنی بازدید می‌کنیم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-042-additional-2",
+      "de": "Das Rathaus ist eine bekannte Sehenswürdigkeit.",
+      "fa": "ساختمان شهرداری یک جای دیدنیِ شناخته‌شده است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-043": [
+    {
+      "exampleId": "a1-l07-043-additional-1",
+      "de": "Meine Freundin sucht eine neue Stelle.",
+      "fa": "دوستم دنبال یک موقعیت شغلی جدید می‌گردد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-043-additional-2",
+      "de": "An dieser Stelle gehen Sie nach links.",
+      "fa": "از این نقطه به سمت چپ بروید.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-044": [
+    {
+      "exampleId": "a1-l07-044-additional-1",
+      "de": "Mein Großvater ist vor drei Jahren gestorben.",
+      "fa": "پدربزرگم سه سال پیش درگذشت.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-044-additional-2",
+      "de": "Ohne Wasser sterben die Blumen.",
+      "fa": "گل‌ها بدون آب می‌میرند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-045": [
+    {
+      "exampleId": "a1-l07-045-additional-1",
+      "de": "Wir fahren mit der Straßenbahn zum Museum.",
+      "fa": "با تراموا به موزه می‌رویم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-045-additional-2",
+      "de": "Die Straßenbahn hält vor dem Theater.",
+      "fa": "تراموا جلوی تئاتر توقف می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-046": [
+    {
+      "exampleId": "a1-l07-046-additional-1",
+      "de": "Ein Ticket für das Konzert kostet zwanzig Euro.",
+      "fa": "یک بلیط کنسرت بیست یورو قیمت دارد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-046-additional-2",
+      "de": "Hast du dein Ticket schon gekauft?",
+      "fa": "بلیطت را خریده‌ای؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-047": [
+    {
+      "exampleId": "a1-l07-047-additional-1",
+      "de": "Mein Sohn ist traurig, denn sein Fahrrad ist kaputt.",
+      "fa": "پسرم غمگین است، چون دوچرخه‌اش خراب شده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-047-additional-2",
+      "de": "Warum bist du heute so traurig?",
+      "fa": "چرا امروز این‌قدر ناراحتی؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-048": [
+    {
+      "exampleId": "a1-l07-048-additional-1",
+      "de": "Vom Turm sehen wir die ganze Stadt.",
+      "fa": "از بالای برج تمام شهر را می‌بینیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-048-additional-2",
+      "de": "Der Turm ist höher als das Rathaus.",
+      "fa": "برج از ساختمان شهرداری بلندتر است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-049": [
+    {
+      "exampleId": "a1-l07-049-additional-1",
+      "de": "Ich verstehe dieses Wort überhaupt nicht.",
+      "fa": "اصلاً این واژه را نمی‌فهمم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-049-additional-2",
+      "de": "Hast du überhaupt Zeit für einen Ausflug?",
+      "fa": "اصلاً برای گردش وقت داری؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-050": [
+    {
+      "exampleId": "a1-l07-050-additional-1",
+      "de": "Am Bahnhof müssen wir in den Bus umsteigen.",
+      "fa": "در ایستگاه قطار باید سوار اتوبوس شویم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-050-additional-2",
+      "de": "Wo kann ich in die Straßenbahn umsteigen?",
+      "fa": "کجا می‌توانم وسیله‌ام را عوض کنم و سوار تراموا شوم؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-051": [
+    {
+      "exampleId": "a1-l07-051-additional-1",
+      "de": "Meine Mutter unterrichtet Deutsch.",
+      "fa": "مادرم آلمانی تدریس می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-051-additional-2",
+      "de": "Unterrichtest du auch am Samstag?",
+      "fa": "شنبه هم تدریس می‌کنی؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-052": [
+    {
+      "exampleId": "a1-l07-052-additional-1",
+      "de": "Wir sprechen heute über die Vergangenheit unserer Stadt.",
+      "fa": "امروز دربارهٔ گذشتهٔ شهرمان صحبت می‌کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-052-additional-2",
+      "de": "Dieser Satz steht in der Vergangenheit.",
+      "fa": "این جمله در زمان گذشته است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-053": [
+    {
+      "exampleId": "a1-l07-053-additional-1",
+      "de": "Mein Kollege verkauft sein Auto.",
+      "fa": "همکارم ماشینش را می‌فروشد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-053-additional-2",
+      "de": "Verkaufen Sie auch deutsche Zeitungen?",
+      "fa": "روزنامهٔ آلمانی هم می‌فروشید؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-054": [
+    {
+      "exampleId": "a1-l07-054-additional-1",
+      "de": "Ich trinke weder Kaffee noch Tee.",
+      "fa": "نه قهوه می‌نوشم و نه چای.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-054-additional-2",
+      "de": "Diese Hose ist weder billig noch schön.",
+      "fa": "این شلوار نه ارزان است و نه زیبا.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l07-055": [
+    {
+      "exampleId": "a1-l07-055-additional-1",
+      "de": "In Zukunft möchte ich näher bei der Arbeit wohnen.",
+      "fa": "در آینده می‌خواهم نزدیک‌تر به محل کارم زندگی کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l07-055-additional-2",
+      "de": "Ich denke oft an meine Zukunft.",
+      "fa": "اغلب به آینده‌ام فکر می‌کنم.",
+      "origin": "authored"
+    }
   ]
 }

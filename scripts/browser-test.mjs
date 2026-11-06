@@ -585,7 +585,7 @@ try {
     assert.deepEqual(migrated.attempts, old.attempts)
     assert.equal(migrated.session.draft, old.session.draft)
     await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
-    assert.equal(await lessonPage.locator('.lesson-card').count(), 4)
+    assert.equal(await lessonPage.locator('.lesson-card').count(), 5)
     for (const width of [320, 360, 430, 1280]) {
       await lessonPage.setViewportSize({ width, height: 850 })
       assert.equal(await lessonPage.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), true)
@@ -648,8 +648,8 @@ try {
     assert.deepEqual(selected.savedSessions['a1-lesson-01'], old.savedSessions['a1-lesson-01'])
     assert.ok((await lessonPage.locator('.hero-panel').innerText()).includes('Endlich ein Zimmer!'))
     await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
-    assert.equal(await lessonPage.locator('.lesson-card').count(), 4)
-    for (const [id, count] of [['a1-lesson-01', 20], ['lesson-04', 84], ['lesson-05', 76], ['lesson-06', 80]]) {
+    assert.equal(await lessonPage.locator('.lesson-card').count(), 5)
+    for (const [id, count] of [['a1-lesson-01', 20], ['lesson-04', 84], ['lesson-05', 76], ['lesson-06', 80], ['lesson-07', 55]]) {
       assert.equal(await lessonPage.locator(`[data-lesson-id="${id}"] [role=progressbar]`).getAttribute('aria-valuemax'), String(count))
     }
     await saveScreenshot(lessonPage, 'lesson-five-catalog-360.png')
@@ -950,30 +950,35 @@ try {
     await checkPronunciation({ browser, origin, bundle, observeContext, writeState, readState, learningSnapshot, clickAndSave, assertViewport, saveScreenshot,
       completedReverseFixture: () => completedReverseFixture('lesson-05'), installClock, lessonId: 'lesson-05' })
   })
-  await checkpoint('lesson-six deep link, printed page order, offline and pronunciation', async () => {
-    const context = await browser.newContext({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true, locale: 'fa-IR' })
-    observeContext(context)
-    try {
-      const page = await context.newPage()
-      await page.goto(`${origin}/?lesson=lesson-06`)
-      await page.getByRole('heading', { name: 'Kleider machen Freunde' }).waitFor()
-      await page.getByRole('button', { name: 'واژه‌ها', exact: true }).click()
-      assert.equal(await page.locator('.word-item').count(), 80)
-      assert.equal(await page.locator('.word-item').first().locator('.german-word').first().innerText(), 'freundlich')
-      await page.locator('.offline-pill').filter({ hasText: 'آمادهٔ آفلاین' }).waitFor()
-      await context.setOffline(true)
-      await page.reload()
-      await clickAndSave(page, page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }))
-      const state = await readState(page)
-      assert.equal(state.activeLessonId, 'lesson-06')
-      const lesson = bundle.lessons.find(item => item.lessonId === 'lesson-06')
-      assert.deepEqual(state.session.queue.filter(task => task.kind === 'flashcard').map(task => task.entryId), lesson.introducedEntryIds.slice(0, 5))
-    } finally {
-      await context.close()
-    }
-    await checkPronunciation({ browser, origin, bundle, observeContext, writeState, readState, learningSnapshot, clickAndSave, assertViewport, saveScreenshot,
-      completedReverseFixture: () => completedReverseFixture('lesson-06'), installClock, lessonId: 'lesson-06' })
-  })
+  for (const [label, lessonId, title, count, firstWord] of [
+    ['lesson-six', 'lesson-06', 'Kleider machen Freunde', 80, 'freundlich'],
+    ['lesson-seven', 'lesson-07', 'Grüezi in der Schweiz', 55, 'der Bahnhof'],
+  ]) {
+    await checkpoint(label + ' deep link, printed page order, offline and pronunciation', async () => {
+      const context = await browser.newContext({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true, locale: 'fa-IR' })
+      observeContext(context)
+      try {
+        const page = await context.newPage()
+        await page.goto(`${origin}/?lesson=${lessonId}`)
+        await page.getByRole('heading', { name: title }).waitFor()
+        await page.getByRole('button', { name: 'واژه‌ها', exact: true }).click()
+        assert.equal(await page.locator('.word-item').count(), count)
+        assert.equal(await page.locator('.word-item').first().locator('.german-word').first().innerText(), firstWord)
+        await page.locator('.offline-pill').filter({ hasText: 'آمادهٔ آفلاین' }).waitFor()
+        await context.setOffline(true)
+        await page.reload()
+        await clickAndSave(page, page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }))
+        const state = await readState(page)
+        assert.equal(state.activeLessonId, lessonId)
+        const lesson = bundle.lessons.find(item => item.lessonId === lessonId)
+        assert.deepEqual(state.session.queue.filter(task => task.kind === 'flashcard').map(task => task.entryId), lesson.introducedEntryIds.slice(0, 5))
+      } finally {
+        await context.close()
+      }
+      await checkPronunciation({ browser, origin, bundle, observeContext, writeState, readState, learningSnapshot, clickAndSave, assertViewport, saveScreenshot,
+        completedReverseFixture: () => completedReverseFixture(lessonId), installClock, lessonId })
+    })
+  }
   await checkpoint('real IndexedDB atomic abort, optimistic concurrency and load/recovery', async () => {
     const isolated = await browser.newContext()
     observeContext(isolated)
