@@ -2521,5 +2521,1125 @@ export const additionalExamplesByEntry: Record<string, Example[]> = {
       "fa": "خانهٔ اشتراکی ما یک آشپزخانهٔ بزرگ دارد.",
       "origin": "authored"
     }
+  ],
+  "a1-l06-001": [
+    {
+      "exampleId": "a1-l06-001-additional-1",
+      "de": "Wann fängt der Unterricht heute an?",
+      "fa": "امروز کلاس چه ساعتی شروع می‌شود؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-001-additional-2",
+      "de": "Ich fange morgen mit dem neuen Buch an.",
+      "fa": "فردا خواندن کتاب جدید را شروع می‌کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-002": [
+    {
+      "exampleId": "a1-l06-002-additional-1",
+      "de": "Das Kind hat Angst vor der Kuh.",
+      "fa": "کودک از گاو می‌ترسد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-002-additional-2",
+      "de": "Vor der Prüfung habe ich immer ein bisschen Angst.",
+      "fa": "قبل از امتحان همیشه کمی می‌ترسم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-003": [
+    {
+      "exampleId": "a1-l06-003-additional-1",
+      "de": "Kann ich diese Hose anprobieren?",
+      "fa": "می‌توانم این شلوار را پرو کنم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-003-additional-2",
+      "de": "Probier bitte auch den blauen Mantel an.",
+      "fa": "لطفاً پالتوی آبی را هم پرو کن.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-004": [
+    {
+      "exampleId": "a1-l06-004-additional-1",
+      "de": "Mein Vater trägt heute einen Anzug.",
+      "fa": "پدرم امروز کت‌وشلوار پوشیده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-004-additional-2",
+      "de": "Dieser Anzug ist mir zu teuer.",
+      "fa": "این کت‌وشلوار برایم خیلی گران است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-005": [
+    {
+      "exampleId": "a1-l06-005-additional-1",
+      "de": "Ich brauche Brot und außerdem noch Milch.",
+      "fa": "نان می‌خواهم و علاوه بر آن کمی شیر هم لازم دارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-005-additional-2",
+      "de": "Die Wohnung ist billig und außerdem sehr schön.",
+      "fa": "آپارتمان ارزان است و علاوه بر این خیلی زیباست.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-006": [
+    {
+      "exampleId": "a1-l06-006-additional-1",
+      "de": "Was bedeutet dieses Wort auf Deutsch?",
+      "fa": "این واژه در آلمانی چه معنایی دارد؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-006-additional-2",
+      "de": "Diese Nachricht bedeutet mir viel.",
+      "fa": "این پیام برایم خیلی ارزش دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-007": [
+    {
+      "exampleId": "a1-l06-007-additional-1",
+      "de": "Das Bild hängt über dem Sofa.",
+      "fa": "تابلو بالای مبل آویزان است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-007-additional-2",
+      "de": "Auf diesem Bild sehen wir eine Familie.",
+      "fa": "در این تصویر یک خانواده می‌بینیم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-008": [
+    {
+      "exampleId": "a1-l06-008-additional-1",
+      "de": "Ich bitte dich um Hilfe.",
+      "fa": "از تو درخواست کمک می‌کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-008-additional-2",
+      "de": "Der Lehrer bittet uns, leise zu sprechen.",
+      "fa": "معلم از ما می‌خواهد آرام صحبت کنیم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-009": [
+    {
+      "exampleId": "a1-l06-009-additional-1",
+      "de": "Schreiben Sie Ihren Namen auf das Blatt.",
+      "fa": "نامتان را روی برگه بنویسید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-009-additional-2",
+      "de": "Im Herbst werden viele Blätter gelb.",
+      "fa": "پاییز برگ‌های زیادی زرد می‌شوند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-010": [
+    {
+      "exampleId": "a1-l06-010-additional-1",
+      "de": "Die weiße Bluse passt gut zum Rock.",
+      "fa": "بلوز سفید به دامن می‌آید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-010-additional-2",
+      "de": "Ich suche eine Bluse für die Arbeit.",
+      "fa": "دنبال یک بلوز برای محل کار می‌گردم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-011": [
+    {
+      "exampleId": "a1-l06-011-additional-1",
+      "de": "Meine Schuhe sind braun.",
+      "fa": "کفش‌هایم قهوه‌ای هستند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-011-additional-2",
+      "de": "Möchtest du den braunen oder den schwarzen Gürtel?",
+      "fa": "کمربند قهوه‌ای را می‌خواهی یا مشکی را؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-012": [
+    {
+      "exampleId": "a1-l06-012-additional-1",
+      "de": "Ich schreibe meiner Oma einen Brief.",
+      "fa": "برای مادربزرگم نامه می‌نویسم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-012-additional-2",
+      "de": "Der Brief ist heute mit der Post gekommen.",
+      "fa": "نامه امروز با پست رسیده است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-013": [
+    {
+      "exampleId": "a1-l06-013-additional-1",
+      "de": "Ich denke, dass die Wohnung gut zu uns passt.",
+      "fa": "فکر می‌کنم این آپارتمان برای ما مناسب است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-013-additional-2",
+      "de": "Meine Mutter sagt, dass ich mehr schlafen soll.",
+      "fa": "مادرم می‌گوید باید بیشتر بخوابم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-014": [
+    {
+      "exampleId": "a1-l06-014-additional-1",
+      "de": "Nach dem Kurs gehe ich direkt nach Hause.",
+      "fa": "بعد از کلاس مستقیم به خانه می‌روم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-014-additional-2",
+      "de": "Unser Haus steht direkt am See.",
+      "fa": "خانهٔ ما درست کنار دریاچه است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-015": [
+    {
+      "exampleId": "a1-l06-015-additional-1",
+      "de": "Bitte bringen Sie das Dokument zum Termin mit.",
+      "fa": "لطفاً سند را هنگام مراجعه همراه بیاورید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-015-additional-2",
+      "de": "In diesem Dokument fehlt Ihre Adresse.",
+      "fa": "آدرس شما در این سند نیست.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-016": [
+    {
+      "exampleId": "a1-l06-016-additional-1",
+      "de": "Im Winter ist es früh dunkel.",
+      "fa": "زمستان هوا زود تاریک می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-016-additional-2",
+      "de": "Dunkle Farben passen gut zu meiner Kleidung.",
+      "fa": "رنگ‌های تیره به لباس‌هایم می‌آیند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-017": [
+    {
+      "exampleId": "a1-l06-017-additional-1",
+      "de": "Hast du Durst? Hier ist ein Glas Wasser.",
+      "fa": "تشنه‌ای؟ این هم یک لیوان آب.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-017-additional-2",
+      "de": "Nach dem Sport habe ich großen Durst.",
+      "fa": "بعد از ورزش خیلی تشنه می‌شوم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-018": [
+    {
+      "exampleId": "a1-l06-018-additional-1",
+      "de": "Das Ehepaar wohnt seit drei Jahren hier.",
+      "fa": "این زوج متأهل سه سال است که اینجا زندگی می‌کنند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-018-additional-2",
+      "de": "Wir laden das Ehepaar zum Abendessen ein.",
+      "fa": "این زن و شوهر را برای شام دعوت می‌کنیم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-019": [
+    {
+      "exampleId": "a1-l06-019-additional-1",
+      "de": "Ich lade dich zu meinem Geburtstag ein.",
+      "fa": "تو را به تولدم دعوت می‌کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-019-additional-2",
+      "de": "Wen möchtet ihr zum Fest einladen?",
+      "fa": "می‌خواهید چه کسی را به جشن دعوت کنید؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-020": [
+    {
+      "exampleId": "a1-l06-020-additional-1",
+      "de": "Vielen Dank für die Einladung!",
+      "fa": "خیلی ممنون از دعوتتان!",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-020-additional-2",
+      "de": "Die Einladung zur Party liegt auf dem Tisch.",
+      "fa": "دعوت‌نامهٔ مهمانی روی میز است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-021": [
+    {
+      "exampleId": "a1-l06-021-additional-1",
+      "de": "Bitte entschuldigen Sie meinen Fehler.",
+      "fa": "لطفاً اشتباهم را ببخشید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-021-additional-2",
+      "de": "Kannst du mich für einen Moment entschuldigen?",
+      "fa": "می‌توانی یک لحظه به من اجازه بدهی بروم؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-022": [
+    {
+      "exampleId": "a1-l06-022-additional-1",
+      "de": "Der Fahrer wartet vor dem Hotel.",
+      "fa": "راننده جلوی هتل منتظر است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-022-additional-2",
+      "de": "Unser Fahrer kennt den Weg zur Universität.",
+      "fa": "رانندهٔ ما راه دانشگاه را بلد است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-023": [
+    {
+      "exampleId": "a1-l06-023-additional-1",
+      "de": "Welche Farbe hat dein neues Fahrrad?",
+      "fa": "دوچرخهٔ جدیدت چه رنگی است؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-023-additional-2",
+      "de": "Ich mag diese Farbe sehr.",
+      "fa": "این رنگ را خیلی دوست دارم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-024": [
+    {
+      "exampleId": "a1-l06-024-additional-1",
+      "de": "Wir organisieren ein Fest für die Kinder.",
+      "fa": "برای بچه‌ها یک جشن ترتیب می‌دهیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-024-additional-2",
+      "de": "Zum Fest bringt jeder etwas zu essen mit.",
+      "fa": "هرکس برای جشن چیزی برای خوردن می‌آورد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-025": [
+    {
+      "exampleId": "a1-l06-025-additional-1",
+      "de": "Die Verkäuferin ist sehr freundlich.",
+      "fa": "فروشنده خیلی خوش‌برخورد است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-025-additional-2",
+      "de": "Mein neuer Kollege hat mich freundlich begrüßt.",
+      "fa": "همکار جدیدم با مهربانی به من خوشامد گفت.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-026": [
+    {
+      "exampleId": "a1-l06-026-additional-1",
+      "de": "Unsere Lehrerin liest uns ein Gedicht vor.",
+      "fa": "معلممان برایمان یک شعر می‌خواند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-026-additional-2",
+      "de": "In diesem Buch steht ein kurzes Gedicht.",
+      "fa": "در این کتاب یک شعر کوتاه نوشته شده است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-027": [
+    {
+      "exampleId": "a1-l06-027-additional-1",
+      "de": "Die Kommode ist grau, das Sofa ist blau.",
+      "fa": "دراور خاکستری و مبل آبی است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-027-additional-2",
+      "de": "Ich trage zum grauen Anzug ein weißes Hemd.",
+      "fa": "با کت‌وشلوار خاکستری یک پیراهن سفید می‌پوشم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-028": [
+    {
+      "exampleId": "a1-l06-028-additional-1",
+      "de": "Dieser Gürtel passt nicht zu meiner Hose.",
+      "fa": "این کمربند به شلوارم نمی‌آید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-028-additional-2",
+      "de": "Wie viel kostet der braune Gürtel?",
+      "fa": "کمربند قهوه‌ای چقدر قیمت دارد؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-029": [
+    {
+      "exampleId": "a1-l06-029-additional-1",
+      "de": "Im Winter brauche ich warme Handschuhe.",
+      "fa": "زمستان به دستکش گرم نیاز دارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-029-additional-2",
+      "de": "Ein Handschuh liegt unter dem Bett.",
+      "fa": "یک دستکش زیر تخت است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-030": [
+    {
+      "exampleId": "a1-l06-030-additional-1",
+      "de": "Das Hemd ist noch nass.",
+      "fa": "پیراهن مردانه هنوز خیس است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-030-additional-2",
+      "de": "Welches Hemd möchtest du zum Fest tragen?",
+      "fa": "می‌خواهی برای جشن کدام پیراهن را بپوشی؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-031": [
+    {
+      "exampleId": "a1-l06-031-additional-1",
+      "de": "Bitte seien Sie höflich zu den anderen.",
+      "fa": "لطفاً با دیگران مؤدب باشید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-031-additional-2",
+      "de": "Der Schüler fragt höflich nach dem Weg.",
+      "fa": "دانش‌آموز مؤدبانه مسیر را می‌پرسد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-032": [
+    {
+      "exampleId": "a1-l06-032-additional-1",
+      "de": "Meine neue Hose ist zu lang.",
+      "fa": "شلوار جدیدم زیادی بلند است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-032-additional-2",
+      "de": "Diese Hose kostet nur zwanzig Euro.",
+      "fa": "این شلوار فقط بیست یورو قیمت دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-033": [
+    {
+      "exampleId": "a1-l06-033-additional-1",
+      "de": "Nach der Arbeit habe ich oft Hunger.",
+      "fa": "بعد از کار اغلب گرسنه‌ام می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-033-additional-2",
+      "de": "Hast du keinen Hunger mehr?",
+      "fa": "دیگر گرسنه نیستی؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-034": [
+    {
+      "exampleId": "a1-l06-034-additional-1",
+      "de": "Der Mann mit dem schwarzen Hut ist mein Lehrer.",
+      "fa": "مردی که کلاه لبه‌دار مشکی دارد معلم من است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-034-additional-2",
+      "de": "Im Sommer trage ich gern einen Hut.",
+      "fa": "تابستان‌ها دوست دارم کلاه لبه‌دار بگذارم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-035": [
+    {
+      "exampleId": "a1-l06-035-additional-1",
+      "de": "Zieh bitte deine Jacke an; es ist kalt.",
+      "fa": "لطفاً کاپشنت را بپوش؛ هوا سرد است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-035-additional-2",
+      "de": "Meine Jacke hängt neben der Tür.",
+      "fa": "کاپشنم کنار در آویزان است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-036": [
+    {
+      "exampleId": "a1-l06-036-additional-1",
+      "de": "Ich trage meine Jeans jeden Tag.",
+      "fa": "هر روز شلوار جینم را می‌پوشم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-036-additional-2",
+      "de": "Diese Jeans passt mir gut.",
+      "fa": "این شلوار جین کاملاً اندازه‌ام است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-037": [
+    {
+      "exampleId": "a1-l06-037-additional-1",
+      "de": "Ist jemand zu Hause?",
+      "fa": "کسی خانه است؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-037-additional-2",
+      "de": "Ich suche jemanden für unsere Wohngemeinschaft.",
+      "fa": "دنبال کسی برای خانهٔ اشتراکی‌مان می‌گردم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-038": [
+    {
+      "exampleId": "a1-l06-038-additional-1",
+      "de": "Bezahlen Sie bitte an der Kasse.",
+      "fa": "لطفاً در صندوق پرداخت کنید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-038-additional-2",
+      "de": "Die Verkäuferin steht an der Kasse.",
+      "fa": "فروشنده پشت صندوق ایستاده است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-039": [
+    {
+      "exampleId": "a1-l06-039-additional-1",
+      "de": "Meine Schwester trägt ein rosa Kleid.",
+      "fa": "خواهرم یک پیراهن زنانهٔ صورتی پوشیده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-039-additional-2",
+      "de": "Für die Hochzeit möchte ich ein neues Kleid.",
+      "fa": "برای عروسی یک پیراهن زنانهٔ جدید می‌خواهم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-040": [
+    {
+      "exampleId": "a1-l06-040-additional-1",
+      "de": "Für den Winter brauchen die Kinder warme Kleidung.",
+      "fa": "بچه‌ها برای زمستان به لباس گرم نیاز دارند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-040-additional-2",
+      "de": "Die Kleidung in diesem Laden ist nicht teuer.",
+      "fa": "لباس‌های این مغازه گران نیستند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-041": [
+    {
+      "exampleId": "a1-l06-041-additional-1",
+      "de": "Die Kuh gibt Milch.",
+      "fa": "گاو شیر می‌دهد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-041-additional-2",
+      "de": "Auf dem Foto steht eine braune Kuh neben dem Haus.",
+      "fa": "در عکس یک گاو قهوه‌ای کنار خانه ایستاده است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-042": [
+    {
+      "exampleId": "a1-l06-042-additional-1",
+      "de": "Der Laden macht um neun Uhr auf.",
+      "fa": "مغازه ساعت نه باز می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-042-additional-2",
+      "de": "In diesem Laden kaufe ich meine Kleidung.",
+      "fa": "لباس‌هایم را از این مغازه می‌خرم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-043": [
+    {
+      "exampleId": "a1-l06-043-additional-1",
+      "de": "Die Mütze ist lila.",
+      "fa": "کلاه بنفش است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-043-additional-2",
+      "de": "Meine Tochter möchte einen lila Pullover.",
+      "fa": "دخترم یک پلیور بنفش می‌خواهد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-044": [
+    {
+      "exampleId": "a1-l06-044-additional-1",
+      "de": "Im Herbst trage ich oft einen Mantel.",
+      "fa": "پاییزها اغلب پالتو می‌پوشم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-044-additional-2",
+      "de": "Dieser Mantel hat große Taschen.",
+      "fa": "این پالتو جیب‌های بزرگی دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-045": [
+    {
+      "exampleId": "a1-l06-045-additional-1",
+      "de": "Wo ist meine Mütze?",
+      "fa": "کلاهم کجاست؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-045-additional-2",
+      "de": "Die rote Mütze passt gut zur Jacke.",
+      "fa": "کلاه قرمز به کاپشن می‌آید.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-046": [
+    {
+      "exampleId": "a1-l06-046-additional-1",
+      "de": "Nach dem Regen sind meine Schuhe nass.",
+      "fa": "بعد از باران کفش‌هایم خیس هستند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-046-additional-2",
+      "de": "Zieh bitte die nasse Jacke aus.",
+      "fa": "لطفاً کاپشن خیس را دربیاور.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-047": [
+    {
+      "exampleId": "a1-l06-047-additional-1",
+      "de": "Mein Bruder trinkt nie Kaffee.",
+      "fa": "برادرم هرگز قهوه نمی‌نوشد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-047-additional-2",
+      "de": "Ich vergesse deinen Geburtstag nie.",
+      "fa": "هیچ‌وقت تولدت را فراموش نمی‌کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-048": [
+    {
+      "exampleId": "a1-l06-048-additional-1",
+      "de": "Öffnen Sie bitte das Fenster.",
+      "fa": "لطفاً پنجره را باز کنید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-048-additional-2",
+      "de": "Wann öffnet der Laden am Samstag?",
+      "fa": "مغازه شنبه چه ساعتی باز می‌کند؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-049": [
+    {
+      "exampleId": "a1-l06-049-additional-1",
+      "de": "Haben Sie ein Blatt Papier für mich?",
+      "fa": "یک برگ کاغذ به من می‌دهید؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-049-additional-2",
+      "de": "Bitte schreiben Sie die Antwort auf Papier.",
+      "fa": "لطفاً جواب را روی کاغذ بنویسید.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-050": [
+    {
+      "exampleId": "a1-l06-050-additional-1",
+      "de": "Das ist meine private Telefonnummer.",
+      "fa": "این شماره‌تلفن شخصی من است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-050-additional-2",
+      "de": "Privat lese ich gern Bücher und höre Musik.",
+      "fa": "در وقت شخصی‌ام دوست دارم کتاب بخوانم و موسیقی گوش کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-051": [
+    {
+      "exampleId": "a1-l06-051-additional-1",
+      "de": "Der Pullover ist mir zu warm.",
+      "fa": "این پلیور برایم زیادی گرم است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-051-additional-2",
+      "de": "Was kostet der grüne Pullover im Fenster?",
+      "fa": "پلیور سبز پشت ویترین چقدر قیمت دارد؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-052": [
+    {
+      "exampleId": "a1-l06-052-additional-1",
+      "de": "Das Baby ist heute ganz ruhig.",
+      "fa": "نوزاد امروز کاملاً آرام است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-052-additional-2",
+      "de": "Ich möchte in einem ruhigen Zimmer lernen.",
+      "fa": "می‌خواهم در یک اتاق آرام درس بخوانم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-053": [
+    {
+      "exampleId": "a1-l06-053-additional-1",
+      "de": "Die Küche ist wieder sauber.",
+      "fa": "آشپزخانه دوباره تمیز شده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-053-additional-2",
+      "de": "Bitte bring ein sauberes Glas mit.",
+      "fa": "لطفاً یک لیوان تمیز بیاور.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-054": [
+    {
+      "exampleId": "a1-l06-054-additional-1",
+      "de": "Ohne Schal ist es mir zu kalt.",
+      "fa": "بدون شال‌گردن سردم می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-054-additional-2",
+      "de": "Diesen Schal habe ich für meinen Vater gekauft.",
+      "fa": "این شال‌گردن را برای پدرم خریده‌ام.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-055": [
+    {
+      "exampleId": "a1-l06-055-additional-1",
+      "de": "Ich schicke dir morgen die Fotos.",
+      "fa": "فردا عکس‌ها را برایت می‌فرستم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-055-additional-2",
+      "de": "Kannst du den Brief heute noch schicken?",
+      "fa": "می‌توانی نامه را همین امروز بفرستی؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-056": [
+    {
+      "exampleId": "a1-l06-056-additional-1",
+      "de": "Schließ bitte die Tür.",
+      "fa": "لطفاً در را ببند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-056-additional-2",
+      "de": "Unser Laden schließt am Samstag schon um zwei.",
+      "fa": "مغازهٔ ما شنبه از ساعت دو بسته می‌شود.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-057": [
+    {
+      "exampleId": "a1-l06-057-additional-1",
+      "de": "Warte bitte eine Sekunde.",
+      "fa": "لطفاً یک ثانیه صبر کن.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-057-additional-2",
+      "de": "Der Film beginnt in zehn Sekunden.",
+      "fa": "فیلم ده ثانیهٔ دیگر شروع می‌شود.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-058": [
+    {
+      "exampleId": "a1-l06-058-additional-1",
+      "de": "Das Kind kann die Schuhe selbst putzen.",
+      "fa": "کودک می‌تواند خودش کفش‌ها را تمیز کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-058-additional-2",
+      "de": "Hast du den Kuchen selbst gebacken?",
+      "fa": "کیک را خودت پخته‌ای؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-059": [
+    {
+      "exampleId": "a1-l06-059-additional-1",
+      "de": "Ich entschuldige mich für meine späte Antwort.",
+      "fa": "برای پاسخ دیرهنگامم عذرخواهی می‌کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-059-additional-2",
+      "de": "Du musst dich bei der Lehrerin entschuldigen.",
+      "fa": "باید از معلم عذرخواهی کنی.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-060": [
+    {
+      "exampleId": "a1-l06-060-additional-1",
+      "de": "Eine Socke ist in der Waschmaschine geblieben.",
+      "fa": "یک جوراب داخل ماشین لباس‌شویی جا مانده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-060-additional-2",
+      "de": "Ich brauche noch ein Paar warme Socken.",
+      "fa": "هنوز به یک جفت جوراب گرم نیاز دارم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-061": [
+    {
+      "exampleId": "a1-l06-061-additional-1",
+      "de": "Was soll ich zur Party mitbringen?",
+      "fa": "برای مهمانی چه چیزی باید همراه بیاورم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-061-additional-2",
+      "de": "Der Arzt sagt, ich soll mehr Wasser trinken.",
+      "fa": "دکتر می‌گوید باید بیشتر آب بنوشم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-062": [
+    {
+      "exampleId": "a1-l06-062-additional-1",
+      "de": "Heute habe ich bei der Arbeit viel Stress.",
+      "fa": "امروز در محل کار فشار زیادی دارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-062-additional-2",
+      "de": "Nach dem Stress brauche ich eine Pause.",
+      "fa": "بعد از این فشار به یک استراحت نیاز دارم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-063": [
+    {
+      "exampleId": "a1-l06-063-additional-1",
+      "de": "Im Sommer trage ich gern ein T-Shirt.",
+      "fa": "تابستان‌ها دوست دارم تی‌شرت بپوشم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-063-additional-2",
+      "de": "Das gelbe T-Shirt ist in der Waschmaschine.",
+      "fa": "تی‌شرت زرد داخل ماشین لباس‌شویی است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-064": [
+    {
+      "exampleId": "a1-l06-064-additional-1",
+      "de": "Mein Handy ist in meiner Tasche.",
+      "fa": "موبایلم داخل کیفم است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-064-additional-2",
+      "de": "Dieser Mantel hat keine Taschen.",
+      "fa": "این پالتو جیب ندارد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-065": [
+    {
+      "exampleId": "a1-l06-065-additional-1",
+      "de": "Möchtest du einen Tee ohne Zucker?",
+      "fa": "یک چای بدون شکر می‌خواهی؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-065-additional-2",
+      "de": "Der Tee ist noch zu heiß.",
+      "fa": "چای هنوز زیادی داغ است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-066": [
+    {
+      "exampleId": "a1-l06-066-additional-1",
+      "de": "Die Jeans ist wieder trocken.",
+      "fa": "شلوار جین دوباره خشک شده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-066-additional-2",
+      "de": "Nimm bitte ein trockenes Blatt Papier.",
+      "fa": "لطفاً یک برگ کاغذ خشک بردار.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-067": [
+    {
+      "exampleId": "a1-l06-067-additional-1",
+      "de": "Die Tür zum Bad ist offen.",
+      "fa": "در حمام باز است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-067-additional-2",
+      "de": "Vor unserer Tür steht ein Fahrrad.",
+      "fa": "جلوی درِ خانه‌مان یک دوچرخه قرار دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-068": [
+    {
+      "exampleId": "a1-l06-068-additional-1",
+      "de": "Ich übe jeden Tag die neuen Wörter.",
+      "fa": "هر روز واژه‌های جدید را تمرین می‌کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-068-additional-2",
+      "de": "Können wir das Gespräch zusammen üben?",
+      "fa": "می‌توانیم این گفت‌وگو را با هم تمرین کنیم؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-069": [
+    {
+      "exampleId": "a1-l06-069-additional-1",
+      "de": "Bei dieser Antwort bin ich unsicher.",
+      "fa": "دربارهٔ این پاسخ مطمئن نیستم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-069-additional-2",
+      "de": "Der Junge fährt noch sehr unsicher Fahrrad.",
+      "fa": "این پسر هنوز با تسلط کمی دوچرخه‌سواری می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-070": [
+    {
+      "exampleId": "a1-l06-070-additional-1",
+      "de": "Die Küche ist unten, das Bad ist oben.",
+      "fa": "آشپزخانه پایین است و حمام بالاست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-070-additional-2",
+      "de": "Wir warten unten am Eingang auf dich.",
+      "fa": "پایین، جلوی ورودی، منتظرت هستیم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-071": [
+    {
+      "exampleId": "a1-l06-071-additional-1",
+      "de": "Ich versuche, jeden Tag Deutsch zu sprechen.",
+      "fa": "تلاش می‌کنم هر روز آلمانی صحبت کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-071-additional-2",
+      "de": "Versuch bitte noch einmal, den Satz zu lesen.",
+      "fa": "لطفاً یک بار دیگر سعی کن جمله را بخوانی.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-072": [
+    {
+      "exampleId": "a1-l06-072-additional-1",
+      "de": "Die Waschmaschine ist schon voll.",
+      "fa": "ماشین لباس‌شویی دیگر پر شده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-072-additional-2",
+      "de": "Mein Glas ist noch voll.",
+      "fa": "لیوانم هنوز پر است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-073": [
+    {
+      "exampleId": "a1-l06-073-additional-1",
+      "de": "Für das Fest wählen wir einen Freitag.",
+      "fa": "برای جشن یک جمعه را انتخاب می‌کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-073-additional-2",
+      "de": "Welches Bild möchtest du wählen?",
+      "fa": "می‌خواهی کدام تصویر را انتخاب کنی؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-074": [
+    {
+      "exampleId": "a1-l06-074-additional-1",
+      "de": "Wir gehen am Sonntag im Wald spazieren.",
+      "fa": "یکشنبه در جنگل قدم می‌زنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-074-additional-2",
+      "de": "Hinter unserem Haus ist ein großer Wald.",
+      "fa": "پشت خانهٔ ما یک جنگل بزرگ است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-075": [
+    {
+      "exampleId": "a1-l06-075-additional-1",
+      "de": "Das Wasser ist jetzt warm.",
+      "fa": "آب حالا گرم است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-075-additional-2",
+      "de": "Nimm bitte einen warmen Pullover mit.",
+      "fa": "لطفاً یک پلیور گرم همراهت ببر.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-076": [
+    {
+      "exampleId": "a1-l06-076-additional-1",
+      "de": "Ich warte seit einer Stunde auf dich.",
+      "fa": "یک ساعت است که منتظرت هستم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-076-additional-2",
+      "de": "Wartet bitte vor dem Eingang.",
+      "fa": "لطفاً جلوی ورودی منتظر بمانید.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-077": [
+    {
+      "exampleId": "a1-l06-077-additional-1",
+      "de": "Ich wasche heute meine Jeans.",
+      "fa": "امروز شلوار جینم را می‌شویم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-077-additional-2",
+      "de": "Wasch bitte das Obst vor dem Essen.",
+      "fa": "لطفاً میوه را قبل از خوردن بشوی.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-078": [
+    {
+      "exampleId": "a1-l06-078-additional-1",
+      "de": "Unsere Waschmaschine ist kaputt.",
+      "fa": "ماشین لباس‌شویی ما خراب است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-078-additional-2",
+      "de": "Kannst du die Waschmaschine reparieren?",
+      "fa": "می‌توانی ماشین لباس‌شویی را تعمیر کنی؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-079": [
+    {
+      "exampleId": "a1-l06-079-additional-1",
+      "de": "Die Adresse steht auf unserer Webseite.",
+      "fa": "آدرس در صفحهٔ وب ما نوشته شده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-079-additional-2",
+      "de": "Auf dieser Webseite finde ich einen Deutschkurs.",
+      "fa": "در این صفحهٔ وب یک دورهٔ آلمانی پیدا می‌کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l06-080": [
+    {
+      "exampleId": "a1-l06-080-additional-1",
+      "de": "Mach bitte die Tür zum Balkon zu.",
+      "fa": "لطفاً در بالکن را ببند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l06-080-additional-2",
+      "de": "Wann macht der Laden heute zu?",
+      "fa": "مغازه امروز چه ساعتی می‌بندد؟",
+      "origin": "authored"
+    }
   ]
 }

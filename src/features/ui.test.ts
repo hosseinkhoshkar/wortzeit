@@ -297,16 +297,17 @@ test('word details retain the original sentence and allow manual access to the t
   assert.equal((html.match(/<dialog/gu) ?? []).length, 2, 'examples and sources are separate dialogs')
 })
 
-test('the active catalog renders three real lesson cards with independent 20/84/76 counts and fifth-lesson selection', () => {
+test('the active catalog renders four lesson cards with independent counts and sixth-lesson selection', () => {
   const summaries = courseBundle.lessons!.map(lesson => ({ lesson,
     total: courseBundle.entries.filter(entry => entry.introducedInLessonId === lesson.lessonId).length,
     introduced: 0, due: 0, stabilized: 0,
   }))
-  const html = renderToStaticMarkup(createElement(view.LessonCards, { activeLessonId: 'lesson-05', disabled: false, onChoose: async () => {}, summaries }))
-  assert.equal((html.match(/data-lesson-id=/gu) ?? []).length, 3)
-  for (const count of [20, 84, 76]) assert.ok(html.includes(`aria-valuemax="${count}"`))
+  const html = renderToStaticMarkup(createElement(view.LessonCards, { activeLessonId: 'lesson-06', disabled: false, onChoose: async () => {}, summaries }))
+  assert.equal((html.match(/data-lesson-id=/gu) ?? []).length, 4)
+  for (const count of [20, 84, 76, 80]) assert.ok(html.includes(`aria-valuemax="${count}"`))
   assert.ok(html.includes('Endlich ein Zimmer!') && html.includes('بالاخره یک اتاق!'))
-  assert.match(html, /class="lesson-card lesson-current" data-lesson-id="lesson-05"/u)
+  assert.ok(html.includes('Kleider machen Freunde') && html.includes('لباس و دوستان تازه'))
+  assert.match(html, /class="lesson-card lesson-current" data-lesson-id="lesson-06"/u)
   assert.match(html, /ورود به درس پنجم/u)
 })
 

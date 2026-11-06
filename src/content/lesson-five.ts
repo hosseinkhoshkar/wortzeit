@@ -1,12 +1,11 @@
-import type { ContentBundle, Entry, SourceRef } from '../contracts/index.ts'
+import { buildExcerptLesson, type ExcerptPedagogy } from './excerpt-lesson.ts'
 import { lessonFiveSourceRows } from './lesson-five-source.ts'
 
 const lessonId = 'lesson-05'
-type Pedagogy = readonly [partOfSpeech: Entry['partOfSpeech'], exampleDe: string, exampleFa: string, cueFa: string]
 
 // Original authored learning sentences, not quotations from the source books.
 // Stable source-row IDs own the pedagogy; editing a headword never reallocates an ID.
-const pedagogy: Record<string, Pedagogy> = {
+const pedagogy: Record<string, ExcerptPedagogy> = {
   'a1-l05-001': ['verb', 'Ich möchte dich am Bahnhof abholen.', 'می‌خواهم در ایستگاه قطار بیایم دنبالت.', 'فعل جداشدنی برای رفتن دنبال کسی در محل قرار؛ مصدر کامل را بنویس.'],
   'a1-l05-002': ['noun', 'Das Adjektiv beschreibt das Zimmer.', 'صفت، اتاق را توصیف می‌کند.', 'اسم خنثی برای نقش دستوریِ بیان ویژگی؛ حالت پایه و بدون آرتیکل.'],
   'a1-l05-003': ['phrase', 'Alles Gute für deine Reise!', 'بهترین آرزوها را برای سفرت دارم!', 'عبارت دوواژه‌ایِ آرزوی همهٔ خوبی‌ها؛ همان صورتِ آغازشده با حرف بزرگ در درس.'],
@@ -91,61 +90,16 @@ const keyboardAlternatives: Record<string, string[]> = {
   Küche: ['Kueche'], Möbel: ['Moebel'], persönlich: ['persoenlich'], spät: ['spaet'], Überraschung: ['Ueberraschung'],
 }
 
-function sourceIdFor(locator: string): string {
-  if (locator.startsWith('کتاب درسی:')) return 'source-textbook'
-  if (locator.startsWith('کتاب تمرین:')) return 'source-workbook'
-  if (locator.startsWith('متن گفت‌وگوهای صوتی:')) return 'source-audio-transcript'
-  throw new Error(`Unknown lesson-five source: ${locator}`)
-}
-
-const sourceRefs: SourceRef[] = lessonFiveSourceRows.flatMap(row => row.refs.map((locator, index) => ({
-  sourceRefId: `${row.entryId}-ref-${index + 1}`, sourceId: sourceIdFor(locator), lessonId, locator,
-})))
-
-// Do not ask learners to distinguish near-equivalent bathroom/fetching meanings.
-const overlappingGroups = [['das Bad', 'das Badezimmer'], ['abholen', 'holen', 'bringen', 'mitbringen']]
-const entries: Entry[] = lessonFiveSourceRows.map((row, index) => {
-  const [partOfSpeech, exampleDe, exampleFa, cueFa] = pedagogy[row.entryId]
-  const nounMatch = row.headword.match(/^(der|die|das) (.+)$/)
-  const article = nounMatch?.[1] as 'der' | 'die' | 'das' | undefined
-  const lemma = nounMatch?.[2] ?? row.headword
-  const answers = [lemma, ...(keyboardAlternatives[lemma] ?? [])]
-  const sourceRefIds = sourceRefs.filter(ref => ref.sourceRefId.startsWith(`${row.entryId}-ref-`)).map(ref => ref.sourceRefId)
-  if (!exampleDe.includes(lemma)) throw new Error(`Example must contain canonical headword: ${row.entryId}`)
-  const excluded = overlappingGroups.find(group => group.includes(row.headword)) ?? []
-  const candidates = lessonFiveSourceRows.filter(other => other.entryId !== row.entryId && !excluded.includes(other.headword) && other.meaningFa !== row.meaningFa)
-  const sameRole = candidates.filter(other => pedagogy[other.entryId][0] === partOfSpeech)
-  const otherRole = candidates.filter(other => pedagogy[other.entryId][0] !== partOfSpeech)
-  const optionPool = [...new Map((sameRole.length >= 3 ? sameRole : [...sameRole, ...otherRole]).map(other => [other.meaningFa, other])).values()]
-  const options = [0, 1, 2].map(offset => optionPool[(index + offset) % optionPool.length].entryId)
-  return {
-    entryId: row.entryId, introducedInLessonId: lessonId, introductionOrder: index + 1,
-    lemma, partOfSpeech, meaningFa: row.meaningFa,
-    ...(article ? { nounData: { article, plural: null, pluralNote: lemma === 'Möbel'
-      ? 'این مدخل در فایل به‌صورت جمع آمده است؛ صورت مفرد ارائه نشده است.'
-      : 'جمع در فایل واژگان ارائه نشده است؛ صورت جمع حدس زده نشده است.' } } : {}),
-    sourceRefIds, occurrences: [{ lessonId, sourceRefIds: [...sourceRefIds] }],
-    examples: [{ exampleId: `${row.entryId}-example`, de: exampleDe, fa: exampleFa, origin: 'authored' }],
-    cloze: { sentence: exampleDe.replace(lemma, '___'), translationFa: exampleFa, acceptedAnswers: [...answers], exampleId: `${row.entryId}-example` },
-    writing: { promptFa: row.meaningFa, cueFa, acceptedAnswers: [...answers], caseSensitive: false },
-    meaningOptionEntryIds: [row.entryId, ...options],
-    enabledExercises: ['flashcard', 'choose-meaning', 'cloze', 'match', 'write-word', ...(article ? ['choose-article' as const] : [])],
-    reviewStatus: 'excerpt-checked',
-  }
-})
-
-export const lessonFiveBundle: ContentBundle = {
+export const lessonFiveBundle = buildExcerptLesson({
+  lesson: { lessonId, titleDe: 'Endlich ein Zimmer!', titleFa: 'بالاخره یک اتاق!', level: 'A1', coverage: 'partial' },
   contentVersion: 'lesson-05-excerpt-v1',
-  sources: [
-    { sourceId: 'source-textbook', kind: 'textbook', title: 'DaF kompakt A1–B1 — کتاب درسی', edition: null },
-    { sourceId: 'source-workbook', kind: 'workbook', title: 'DaF kompakt A1–B1 — کتاب تمرین', edition: null },
-    { sourceId: 'source-audio-transcript', kind: 'audioTranscript', title: 'DaF kompakt A1–B1 — متن گفت‌وگوهای صوتی', edition: null },
-  ],
-  sourceRefs,
-  lesson: { lessonId, titleDe: 'Endlich ein Zimmer!', titleFa: 'بالاخره یک اتاق!', level: 'A1', coverage: 'partial', introducedEntryIds: entries.map(entry => entry.entryId) },
-  entries,
+  rows: lessonFiveSourceRows,
+  pedagogy: entryId => pedagogy[entryId],
+  keyboardAlternatives,
+  overlappingGroups: [['das Bad', 'das Badezimmer'], ['abholen', 'holen', 'bringen', 'mitbringen']],
+  pluralNotes: { Möbel: 'این مدخل در فایل به‌صورت جمع آمده است؛ صورت مفرد ارائه نشده است.' },
   provenance: {
     file: 'reference/vocabulary/Lesson-05-A1.txt', reviewStatus: 'excerpt-checked',
     noteFa: 'هر ۷۶ مدخل فایل واژگان درس پنجم با معنی، آرتیکل و تمام ارجاع‌های درج‌شده حفظ شده‌اند. تطبیق این گزیده تأیید جامع اصل کتاب نیست. تمام مثال‌ها و جمله‌های تمرین تألیفی‌اند؛ صورت‌های ارائه‌نشده و ویرایش کتاب حدس زده نشده‌اند.',
   },
-}
+})
