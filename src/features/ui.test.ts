@@ -299,21 +299,23 @@ test('word details retain the original sentence and allow manual access to the t
   assert.equal((html.match(/<dialog/gu) ?? []).length, 2, 'examples and sources are separate dialogs')
 })
 
-test('the active catalog renders seven lesson cards with independent counts and ninth-lesson selection', () => {
+test('the active catalog renders eight lesson cards with independent counts and tenth-lesson selection', () => {
   const summaries = courseBundle.lessons!.map(lesson => ({ lesson,
     total: courseBundle.entries.filter(entry => entry.introducedInLessonId === lesson.lessonId).length,
     introduced: 0, due: 0, stabilized: 0,
   }))
-  const html = renderToStaticMarkup(createElement(view.LessonCards, { activeLessonId: 'lesson-09', disabled: false, onChoose: async () => {}, summaries }))
-  assert.equal((html.match(/data-lesson-id=/gu) ?? []).length, 7)
-  for (const count of [20, 84, 76, 80, 55, 52, 43]) assert.ok(html.includes(`aria-valuemax="${count}"`))
+  const html = renderToStaticMarkup(createElement(view.LessonCards, { activeLessonId: 'lesson-10', disabled: false, onChoose: async () => {}, summaries }))
+  assert.equal((html.match(/data-lesson-id=/gu) ?? []).length, 8)
+  for (const count of [20, 84, 76, 80, 55, 52, 43, 51]) assert.ok(html.includes(`aria-valuemax="${count}"`))
   assert.ok(html.includes('Endlich ein Zimmer!') && html.includes('بالاخره یک اتاق!'))
   assert.ok(html.includes('Kleider machen Freunde') && html.includes('لباس و دوستان تازه'))
   assert.ok(html.includes('Grüezi in der Schweiz') && html.includes('سلام از سوئیس'))
   assert.ok(html.includes('Mmh, das schmeckt!') && html.includes('چه خوشمزه!'))
   assert.ok(html.includes("Feste feiern, wie sie fallen") && html.includes("جشن‌ها و مناسبت‌ها"))
   assert.ok(html.includes('A2 · Lektion 09'))
-  assert.match(html, /class="lesson-card lesson-current" data-lesson-id="lesson-09"/u)
+  assert.ok(html.includes("Umziehen, ausziehen, einziehen") && html.includes("اسباب‌کشی و خانهٔ تازه"))
+  assert.ok(html.includes('A2 · Lektion 10'))
+  assert.match(html, /class="lesson-card lesson-current" data-lesson-id="lesson-10"/u)
   assert.match(html, /ورود به درس پنجم/u)
 })
 

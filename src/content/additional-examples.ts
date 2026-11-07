@@ -5741,5 +5741,719 @@ export const additionalExamplesByEntry: Record<string, Example[]> = {
       "fa": "ما همین حالا در قطار نشسته‌ایم.",
       "origin": "authored"
     }
+  ],
+  "a2-l10-001": [
+    {
+      "exampleId": "a2-l10-001-additional-1",
+      "de": "Der Abschied von meinen Freunden war schwer.",
+      "fa": "خداحافظی با دوستانم سخت بود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-001-additional-2",
+      "de": "Zum Abschied essen wir noch einmal zusammen.",
+      "fa": "برای خداحافظی یک بار دیگر با هم غذا می‌خوریم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-002": [
+    {
+      "exampleId": "a2-l10-002-additional-1",
+      "de": "Können wir die Uhrzeit noch ändern?",
+      "fa": "می‌توانیم ساعت را هنوز تغییر بدهیم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-002-additional-2",
+      "de": "Ich habe meine Adresse geändert.",
+      "fa": "من آدرسم را عوض کرده‌ام.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-003": [
+    {
+      "exampleId": "a2-l10-003-additional-1",
+      "de": "Der Aufzug fährt bis in den fünften Stock.",
+      "fa": "آسانسور تا طبقهٔ پنجم می‌رود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-003-additional-2",
+      "de": "Heute ist der Aufzug leider kaputt.",
+      "fa": "متأسفانه امروز آسانسور خراب است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-004": [
+    {
+      "exampleId": "a2-l10-004-additional-1",
+      "de": "Bitte füllen Sie dieses Formular aus.",
+      "fa": "لطفاً این فرم را پر کنید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-004-additional-2",
+      "de": "Wir füllen die Lücken im Text aus.",
+      "fa": "ما جاهای خالی متن را پر می‌کنیم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-005": [
+    {
+      "exampleId": "a2-l10-005-additional-1",
+      "de": "Die Bank öffnet erst um neun Uhr.",
+      "fa": "بانک تازه ساعت نه باز می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-005-additional-2",
+      "de": "Wir sitzen auf einer Bank im Park.",
+      "fa": "ما روی یک نیمکت در پارک نشسته‌ایم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-006": [
+    {
+      "exampleId": "a2-l10-006-additional-1",
+      "de": "Vom Berg aus sehen wir das Dorf.",
+      "fa": "از بالای کوه روستا را می‌بینیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-006-additional-2",
+      "de": "Dieser Berg ist über tausend Meter hoch.",
+      "fa": "ارتفاع این کوه بیش از هزار متر است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-007": [
+    {
+      "exampleId": "a2-l10-007-additional-1",
+      "de": "Auf dem Boden liegt ein Teppich.",
+      "fa": "روی زمین یک فرش هست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-007-additional-2",
+      "de": "Die Kinder sitzen auf dem Boden und spielen.",
+      "fa": "بچه‌ها روی زمین نشسته‌اند و بازی می‌کنند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-008": [
+    {
+      "exampleId": "a2-l10-008-additional-1",
+      "de": "Ich möchte diese Chance nutzen.",
+      "fa": "می‌خواهم از این فرصت استفاده کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-008-additional-2",
+      "de": "Bei der nächsten Prüfung hast du eine neue Chance.",
+      "fa": "در امتحان بعدی یک فرصت تازه داری.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-009": [
+    {
+      "exampleId": "a2-l10-009-additional-1",
+      "de": "Das Dach unseres Hauses ist rot.",
+      "fa": "سقف خانهٔ ما قرمز است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-009-additional-2",
+      "de": "Unser Dach ist nach dem Regen nass.",
+      "fa": "سقف خانه‌مان بعد از باران خیس است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-010": [
+    {
+      "exampleId": "a2-l10-010-additional-1",
+      "de": "Die Lampe hängt an der Decke.",
+      "fa": "چراغ از سقف آویزان است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-010-additional-2",
+      "de": "Kannst du mir eine warme Decke bringen?",
+      "fa": "می‌توانی یک پتو گرم برایم بیاوری؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-011": [
+    {
+      "exampleId": "a2-l10-011-additional-1",
+      "de": "Unsere Wohnung liegt im Erdgeschoss.",
+      "fa": "آپارتمان ما در طبقهٔ همکف است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-011-additional-2",
+      "de": "Im Erdgeschoss gibt es ein kleines Geschäft.",
+      "fa": "در طبقهٔ همکف یک مغازهٔ کوچک هست.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-012": [
+    {
+      "exampleId": "a2-l10-012-additional-1",
+      "de": "Meine Eltern sind seit zwei Jahren geschieden.",
+      "fa": "پدر و مادرم دو سال است که طلاق گرفته‌اند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-012-additional-2",
+      "de": "Im Formular steht: ledig, verheiratet oder geschieden.",
+      "fa": "در فرم نوشته شده: مجرد، متأهل یا طلاق‌گرفته.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-013": [
+    {
+      "exampleId": "a2-l10-013-additional-1",
+      "de": "Die nächste Haltestelle ist vor der Kirche.",
+      "fa": "ایستگاه بعدی جلوی کلیساست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-013-additional-2",
+      "de": "Wir warten an der Haltestelle auf den Bus.",
+      "fa": "ما در ایستگاه منتظر اتوبوس هستیم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-014": [
+    {
+      "exampleId": "a2-l10-014-additional-1",
+      "de": "Wie komme ich zum Hauptbahnhof?",
+      "fa": "چگونه به ایستگاه مرکزی قطار بروم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-014-additional-2",
+      "de": "Am Hauptbahnhof steigen wir aus.",
+      "fa": "ما در ایستگاه مرکزی قطار پیاده می‌شویم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-015": [
+    {
+      "exampleId": "a2-l10-015-additional-1",
+      "de": "Die Wohnung ist hell und gemütlich.",
+      "fa": "آپارتمان روشن و دنج است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-015-additional-2",
+      "de": "Im Sommer ist es abends noch lange hell.",
+      "fa": "تابستان شب‌ها هوا تا دیر وقت روشن است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-016": [
+    {
+      "exampleId": "a2-l10-016-additional-1",
+      "de": "Der Topf steht auf dem Herd.",
+      "fa": "قابلمه روی اجاق است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-016-additional-2",
+      "de": "Hast du den Herd ausgeschaltet?",
+      "fa": "اجاق را خاموش کرده‌ای؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-017": [
+    {
+      "exampleId": "a2-l10-017-additional-1",
+      "de": "Hinter dem Haus ist ein Garten.",
+      "fa": "پشت خانه یک باغ هست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-017-additional-2",
+      "de": "Stell den Stuhl bitte hinter den Tisch.",
+      "fa": "لطفاً صندلی را پشت میز بگذار.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-018": [
+    {
+      "exampleId": "a2-l10-018-additional-1",
+      "de": "Insgesamt bezahlen wir sechshundert Euro.",
+      "fa": "ما در مجموع ششصد یورو می‌پردازیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-018-additional-2",
+      "de": "In dem Haus wohnen insgesamt acht Personen.",
+      "fa": "در این خانه در مجموع هشت نفر زندگی می‌کنند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-019": [
+    {
+      "exampleId": "a2-l10-019-additional-1",
+      "de": "Die Kaltmiete beträgt fünfhundert Euro.",
+      "fa": "اجارهٔ پایه بدون هزینه‌های جانبی پانصد یورو است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-019-additional-2",
+      "de": "Zu der Kaltmiete kommen die Nebenkosten dazu.",
+      "fa": "هزینه‌های جانبی به اجارهٔ پایه اضافه می‌شوند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-020": [
+    {
+      "exampleId": "a2-l10-020-additional-1",
+      "de": "Unsere Katze schläft auf dem Sofa.",
+      "fa": "گربهٔ ما روی مبل خوابیده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-020-additional-2",
+      "de": "Wer gibt der Katze heute Futter?",
+      "fa": "امروز چه کسی به گربه غذا می‌دهد؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-021": [
+    {
+      "exampleId": "a2-l10-021-additional-1",
+      "de": "Im Kaufhaus suche ich eine neue Jacke.",
+      "fa": "در فروشگاه بزرگ دنبال یک کت تازه می‌گردم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-021-additional-2",
+      "de": "Dieses Kaufhaus hat fünf Stockwerke.",
+      "fa": "این فروشگاه بزرگ پنج طبقه دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-022": [
+    {
+      "exampleId": "a2-l10-022-additional-1",
+      "de": "Wann muss ich die Kaution bezahlen?",
+      "fa": "چه زمانی باید ودیعه را پرداخت کنم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-022-additional-2",
+      "de": "Die Kaution bekommst du später zurück.",
+      "fa": "ودیعه را بعداً پس می‌گیری.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-023": [
+    {
+      "exampleId": "a2-l10-023-additional-1",
+      "de": "Mein Fahrrad steht im Keller.",
+      "fa": "دوچرخه‌ام در زیرزمین است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-023-additional-2",
+      "de": "Im Keller gibt es kein Fenster.",
+      "fa": "در زیرزمین پنجره‌ای نیست.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-024": [
+    {
+      "exampleId": "a2-l10-024-additional-1",
+      "de": "Das Kinderzimmer liegt neben dem Schlafzimmer.",
+      "fa": "اتاق کودک کنار اتاق خواب است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-024-additional-2",
+      "de": "Für das Kinderzimmer brauchen wir noch einen Teppich.",
+      "fa": "برای اتاق کودک هنوز به یک فرش نیاز داریم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-025": [
+    {
+      "exampleId": "a2-l10-025-additional-1",
+      "de": "Bitte kontrollieren Sie Ihre Adresse.",
+      "fa": "لطفاً آدرستان را بررسی کنید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-025-additional-2",
+      "de": "Vor der Fahrt kontrolliere ich noch die Türen.",
+      "fa": "پیش از حرکت یک بار دیگر درها را بررسی می‌کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-026": [
+    {
+      "exampleId": "a2-l10-026-additional-1",
+      "de": "Die Milch steht im Kühlschrank.",
+      "fa": "شیر در یخچال است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-026-additional-2",
+      "de": "Unser Kühlschrank ist fast leer.",
+      "fa": "یخچالمان تقریباً خالی است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-027": [
+    {
+      "exampleId": "a2-l10-027-additional-1",
+      "de": "Ich bin ledig und wohne allein.",
+      "fa": "من مجردم و تنها زندگی می‌کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-027-additional-2",
+      "de": "Muss ich hier ankreuzen, dass ich ledig bin?",
+      "fa": "باید اینجا علامت بزنم که مجردم؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-028": [
+    {
+      "exampleId": "a2-l10-028-additional-1",
+      "de": "Bitte bring den Müll nach draußen.",
+      "fa": "لطفاً زباله را بیرون ببر.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-028-additional-2",
+      "de": "Wir trennen unseren Müll.",
+      "fa": "ما زباله‌هایمان را جدا می‌کنیم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-029": [
+    {
+      "exampleId": "a2-l10-029-additional-1",
+      "de": "Ein Nachteil ist die hohe Miete.",
+      "fa": "یکی از معایب، اجارهٔ بالاست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-029-additional-2",
+      "de": "Welche Nachteile hat die Wohnung?",
+      "fa": "این آپارتمان چه معایبی دارد؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-030": [
+    {
+      "exampleId": "a2-l10-030-additional-1",
+      "de": "Neben der Bank ist ein Café.",
+      "fa": "کنار بانک یک کافه هست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-030-additional-2",
+      "de": "Setz dich doch neben mich.",
+      "fa": "بیا کنار من بنشین.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-031": [
+    {
+      "exampleId": "a2-l10-031-additional-1",
+      "de": "Sind die Nebenkosten schon in der Miete enthalten?",
+      "fa": "آیا هزینه‌های جانبی در مبلغ اجاره حساب شده‌اند؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-031-additional-2",
+      "de": "Die Nebenkosten sind dieses Jahr höher.",
+      "fa": "هزینه‌های جانبی امسال بیشتر شده‌اند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-032": [
+    {
+      "exampleId": "a2-l10-032-additional-1",
+      "de": "Vor dem Haus ist ein freier Parkplatz.",
+      "fa": "جلوی خانه یک جای پارک خالی هست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-032-additional-2",
+      "de": "Der Parkplatz kostet fünf Euro am Tag.",
+      "fa": "پارکینگ روزی پنج یورو هزینه دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-033": [
+    {
+      "exampleId": "a2-l10-033-additional-1",
+      "de": "Meine Probezeit dauert sechs Monate.",
+      "fa": "دورهٔ آزمایشی من شش ماه طول می‌کشد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-033-additional-2",
+      "de": "In der Probezeit stelle ich viele Fragen.",
+      "fa": "در دورهٔ آزمایشی سؤال‌های زیادی می‌پرسم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-034": [
+    {
+      "exampleId": "a2-l10-034-additional-1",
+      "de": "Im Schlafzimmer steht nur ein großes Bett.",
+      "fa": "در اتاق خواب فقط یک تخت بزرگ هست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-034-additional-2",
+      "de": "Die Fenster im Schlafzimmer sind offen.",
+      "fa": "پنجره‌های اتاق خواب باز هستند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-035": [
+    {
+      "exampleId": "a2-l10-035-additional-1",
+      "de": "Ich finde meinen Schlüssel nicht.",
+      "fa": "کلیدم را پیدا نمی‌کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-035-additional-2",
+      "de": "Gibst du mir bitte den Schlüssel zur Wohnung?",
+      "fa": "لطفاً کلید آپارتمان را به من می‌دهی؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-036": [
+    {
+      "exampleId": "a2-l10-036-additional-1",
+      "de": "Die Sicherheit der Kinder ist uns wichtig.",
+      "fa": "ایمنی بچه‌ها برای ما مهم است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-036-additional-2",
+      "de": "Diese Tür sorgt für mehr Sicherheit.",
+      "fa": "این در امنیت بیشتری فراهم می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-037": [
+    {
+      "exampleId": "a2-l10-037-additional-1",
+      "de": "Im Bad hängt ein großer Spiegel.",
+      "fa": "در حمام یک آینهٔ بزرگ آویزان است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-037-additional-2",
+      "de": "Sie sieht kurz in den Spiegel.",
+      "fa": "او نگاهی کوتاه به آینه می‌اندازد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-038": [
+    {
+      "exampleId": "a2-l10-038-additional-1",
+      "de": "Ich fahre täglich mit dem Bus zur Arbeit.",
+      "fa": "من هر روز با اتوبوس به محل کار می‌روم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-038-additional-2",
+      "de": "Die Küche wird täglich sauber gemacht.",
+      "fa": "آشپزخانه روزانه تمیز می‌شود.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-039": [
+    {
+      "exampleId": "a2-l10-039-additional-1",
+      "de": "Der Teppich passt gut zum Sofa.",
+      "fa": "این فرش به مبل خوب می‌آید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-039-additional-2",
+      "de": "Auf dem Teppich spielen die Kinder.",
+      "fa": "بچه‌ها روی فرش بازی می‌کنند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-040": [
+    {
+      "exampleId": "a2-l10-040-additional-1",
+      "de": "Im Sommer frühstücken wir auf der Terrasse.",
+      "fa": "تابستان روی تراس صبحانه می‌خوریم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-040-additional-2",
+      "de": "Die Terrasse ist direkt vor dem Wohnzimmer.",
+      "fa": "تراس درست جلوی اتاق نشیمن است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-041": [
+    {
+      "exampleId": "a2-l10-041-additional-1",
+      "de": "Hier müssen wir Papier und Glas trennen.",
+      "fa": "اینجا باید کاغذ و شیشه را جدا کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-041-additional-2",
+      "de": "Eine Wand trennt die Küche vom Wohnzimmer.",
+      "fa": "یک دیوار آشپزخانه را از اتاق نشیمن جدا می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-042": [
+    {
+      "exampleId": "a2-l10-042-additional-1",
+      "de": "Die Wohnung liegt oben an der Treppe.",
+      "fa": "آپارتمان بالای راه‌پله قرار دارد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-042-additional-2",
+      "de": "Wir gehen die Treppe hinunter.",
+      "fa": "ما از پله‌ها پایین می‌رویم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-043": [
+    {
+      "exampleId": "a2-l10-043-additional-1",
+      "de": "Nächsten Monat ziehen wir nach Hamburg um.",
+      "fa": "ماه آینده به هامبورگ اسباب‌کشی می‌کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-043-additional-2",
+      "de": "Nach der Arbeit zieht sie sich um.",
+      "fa": "او بعد از کار لباسش را عوض می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-044": [
+    {
+      "exampleId": "a2-l10-044-additional-1",
+      "de": "Bitte unterschreiben Sie unten auf der Seite.",
+      "fa": "لطفاً پایین صفحه را امضا کنید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-044-additional-2",
+      "de": "Ich habe den Vertrag gestern unterschrieben.",
+      "fa": "من دیروز قرارداد را امضا کردم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-045": [
+    {
+      "exampleId": "a2-l10-045-additional-1",
+      "de": "Sie ist verheiratet und hat zwei Kinder.",
+      "fa": "او متأهل است و دو فرزند دارد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-045-additional-2",
+      "de": "Seit wann seid ihr verheiratet?",
+      "fa": "از چه زمانی ازدواج کرده‌اید؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-046": [
+    {
+      "exampleId": "a2-l10-046-additional-1",
+      "de": "Morgens gibt es hier viel Verkehr.",
+      "fa": "صبح‌ها اینجا رفت‌وآمد زیادی هست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-046-additional-2",
+      "de": "Wegen des Verkehrs komme ich heute später.",
+      "fa": "امروز به‌خاطر ترافیک دیرتر می‌رسم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-047": [
+    {
+      "exampleId": "a2-l10-047-additional-1",
+      "de": "Wir vermieten ein Zimmer in unserer Wohnung.",
+      "fa": "ما یک اتاق در آپارتمانمان اجاره می‌دهیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-047-additional-2",
+      "de": "Ist dieses Haus schon vermietet?",
+      "fa": "این خانه قبلاً اجاره داده شده است؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-048": [
+    {
+      "exampleId": "a2-l10-048-additional-1",
+      "de": "Lies den Vertrag bitte genau durch.",
+      "fa": "لطفاً قرارداد را با دقت کامل بخوان.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-048-additional-2",
+      "de": "Mein Vertrag beginnt am ersten April.",
+      "fa": "قرارداد من از اول آوریل شروع می‌شود.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-049": [
+    {
+      "exampleId": "a2-l10-049-additional-1",
+      "de": "Mein Großvater ist seit drei Jahren verwitwet.",
+      "fa": "پدربزرگم سه سال است که همسرش را از دست داده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-049-additional-2",
+      "de": "Sie ist verwitwet und lebt bei ihrer Tochter.",
+      "fa": "او همسرش را از دست داده و پیش دخترش زندگی می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-050": [
+    {
+      "exampleId": "a2-l10-050-additional-1",
+      "de": "Ein Vorteil ist der kurze Weg zur Arbeit.",
+      "fa": "یکی از مزایا کوتاهی مسیر تا محل کار است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-050-additional-2",
+      "de": "Diese Wohnung hat viele Vorteile.",
+      "fa": "این آپارتمان مزایای زیادی دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l10-051": [
+    {
+      "exampleId": "a2-l10-051-additional-1",
+      "de": "An der Wand hängen zwei Bilder.",
+      "fa": "روی دیوار دو تابلو آویزان هستند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l10-051-additional-2",
+      "de": "Wir möchten die Wand hell streichen.",
+      "fa": "ما می‌خواهیم دیوار را رنگ روشن بزنیم.",
+      "origin": "authored"
+    }
   ]
 }
