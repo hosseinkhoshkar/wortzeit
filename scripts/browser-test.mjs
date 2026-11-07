@@ -585,7 +585,7 @@ try {
     assert.deepEqual(migrated.attempts, old.attempts)
     assert.equal(migrated.session.draft, old.session.draft)
     await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
-    assert.equal(await lessonPage.locator('.lesson-card').count(), 5)
+    assert.equal(await lessonPage.locator('.lesson-card').count(), 6)
     for (const width of [320, 360, 430, 1280]) {
       await lessonPage.setViewportSize({ width, height: 850 })
       assert.equal(await lessonPage.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), true)
@@ -648,8 +648,8 @@ try {
     assert.deepEqual(selected.savedSessions['a1-lesson-01'], old.savedSessions['a1-lesson-01'])
     assert.ok((await lessonPage.locator('.hero-panel').innerText()).includes('Endlich ein Zimmer!'))
     await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
-    assert.equal(await lessonPage.locator('.lesson-card').count(), 5)
-    for (const [id, count] of [['a1-lesson-01', 20], ['lesson-04', 84], ['lesson-05', 76], ['lesson-06', 80], ['lesson-07', 55]]) {
+    assert.equal(await lessonPage.locator('.lesson-card').count(), 6)
+    for (const [id, count] of [['a1-lesson-01', 20], ['lesson-04', 84], ['lesson-05', 76], ['lesson-06', 80], ['lesson-07', 55], ['lesson-08', 52]]) {
       assert.equal(await lessonPage.locator(`[data-lesson-id="${id}"] [role=progressbar]`).getAttribute('aria-valuemax'), String(count))
     }
     await saveScreenshot(lessonPage, 'lesson-five-catalog-360.png')
@@ -953,6 +953,7 @@ try {
   for (const [label, lessonId, title, count, firstWord] of [
     ['lesson-six', 'lesson-06', 'Kleider machen Freunde', 80, 'freundlich'],
     ['lesson-seven', 'lesson-07', 'Grüezi in der Schweiz', 55, 'der Bahnhof'],
+    ['lesson-eight', 'lesson-08', 'Mmh, das schmeckt!', 52, 'geschlossen'],
   ]) {
     await checkpoint(label + ' deep link, printed page order, offline and pronunciation', async () => {
       const context = await browser.newContext({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true, locale: 'fa-IR' })

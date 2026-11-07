@@ -4411,5 +4411,733 @@ export const additionalExamplesByEntry: Record<string, Example[]> = {
       "fa": "اغلب به آینده‌ام فکر می‌کنم.",
       "origin": "authored"
     }
+  ],
+  "a1-l08-001": [
+    {
+      "exampleId": "a1-l08-001-additional-1",
+      "de": "Ich muss den Termin leider absagen.",
+      "fa": "متأسفانه باید قرار را لغو کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-001-additional-2",
+      "de": "Anna sagt das Essen am Freitag ab.",
+      "fa": "آنا برنامهٔ شام جمعه را لغو می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-002": [
+    {
+      "exampleId": "a1-l08-002-additional-1",
+      "de": "Am liebsten esse ich Reis mit Gemüse.",
+      "fa": "بیشتر از همه برنج با سبزیجات دوست دارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-002-additional-2",
+      "de": "Was trinkst du am liebsten?",
+      "fa": "چه نوشیدنی‌ای را بیشتر از همه دوست داری؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-003": [
+    {
+      "exampleId": "a1-l08-003-additional-1",
+      "de": "Zieh bitte eine warme Jacke an.",
+      "fa": "لطفاً یک کت گرم بپوش.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-003-additional-2",
+      "de": "Heute zieht sie ihr neues Kleid an.",
+      "fa": "امروز او پیراهن تازه‌اش را می‌پوشد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-004": [
+    {
+      "exampleId": "a1-l08-004-additional-1",
+      "de": "Das Besteck liegt auf dem Tisch.",
+      "fa": "قاشق و چنگال و کارد روی میز هستند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-004-additional-2",
+      "de": "Wir brauchen noch Besteck für zwei Personen.",
+      "fa": "هنوز برای دو نفر قاشق و چنگال و کارد لازم داریم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-005": [
+    {
+      "exampleId": "a1-l08-005-additional-1",
+      "de": "Sie besteht die Prüfung beim ersten Mal.",
+      "fa": "او بار اول در امتحان قبول می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-005-additional-2",
+      "de": "Die Gruppe besteht aus fünf Personen.",
+      "fa": "این گروه از پنج نفر تشکیل شده است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-006": [
+    {
+      "exampleId": "a1-l08-006-additional-1",
+      "de": "Ich bestelle eine Suppe und Wasser.",
+      "fa": "من یک سوپ و آب سفارش می‌دهم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-006-additional-2",
+      "de": "Möchten Sie schon bestellen?",
+      "fa": "مایل هستید همین حالا سفارش بدهید؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-007": [
+    {
+      "exampleId": "a1-l08-007-additional-1",
+      "de": "Hör bitte auf die Betonung des Wortes.",
+      "fa": "لطفاً به تکیهٔ این واژه گوش بده.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-007-additional-2",
+      "de": "Bei diesem Wort ist die Betonung am Anfang.",
+      "fa": "تکیهٔ این واژه در ابتدای آن است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-008": [
+    {
+      "exampleId": "a1-l08-008-additional-1",
+      "de": "Mein Vater trinkt abends manchmal ein Bier.",
+      "fa": "پدرم بعضی شب‌ها یک آبجو می‌نوشد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-008-additional-2",
+      "de": "Für mich bitte ein Bier ohne Alkohol.",
+      "fa": "برای من لطفاً یک آبجوی بدون الکل بیاورید.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-009": [
+    {
+      "exampleId": "a1-l08-009-additional-1",
+      "de": "Die Birne ist noch nicht weich.",
+      "fa": "این گلابی هنوز نرم نشده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-009-additional-2",
+      "de": "Ich schneide eine Birne für das Kind.",
+      "fa": "من یک گلابی برای کودک خرد می‌کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-010": [
+    {
+      "exampleId": "a1-l08-010-additional-1",
+      "de": "Ohne Zucker schmeckt der Kaffee bitter.",
+      "fa": "قهوه بدون شکر تلخ است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-010-additional-2",
+      "de": "Diese Schokolade ist mir zu bitter.",
+      "fa": "این شکلات برای من زیادی تلخ است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-011": [
+    {
+      "exampleId": "a1-l08-011-additional-1",
+      "de": "Das ist ein alter Brauch in unserer Familie.",
+      "fa": "این یک رسم قدیمی در خانوادهٔ ماست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-011-additional-2",
+      "de": "Welchen Brauch gibt es bei euch zu Hause?",
+      "fa": "شما در خانه چه رسمی دارید؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-012": [
+    {
+      "exampleId": "a1-l08-012-additional-1",
+      "de": "Die Dame am Fenster möchte bezahlen.",
+      "fa": "آن خانمی که کنار پنجره است می‌خواهد حساب کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-012-additional-2",
+      "de": "Eine ältere Dame fragt nach dem Weg.",
+      "fa": "خانمی مسن آدرس می‌پرسد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-013": [
+    {
+      "exampleId": "a1-l08-013-additional-1",
+      "de": "Zum Dessert nehme ich ein Eis.",
+      "fa": "برای دسر یک بستنی می‌خواهم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-013-additional-2",
+      "de": "Heute gibt es Obst als Dessert.",
+      "fa": "امروز برای دسر میوه داریم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-014": [
+    {
+      "exampleId": "a1-l08-014-additional-1",
+      "de": "Wir essen heute draußen.",
+      "fa": "ما امروز بیرون غذا می‌خوریم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-014-additional-2",
+      "de": "Draußen wartet schon mein Bruder.",
+      "fa": "برادرم همین حالا بیرون منتظر است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-015": [
+    {
+      "exampleId": "a1-l08-015-additional-1",
+      "de": "Drinnen ist es schön warm.",
+      "fa": "داخل حسابی گرم است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-015-additional-2",
+      "de": "Bei Regen spielen die Kinder drinnen.",
+      "fa": "وقتی باران می‌آید بچه‌ها داخل بازی می‌کنند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-016": [
+    {
+      "exampleId": "a1-l08-016-additional-1",
+      "de": "Kannst du mir eine Gabel geben?",
+      "fa": "می‌توانی یک چنگال به من بدهی؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-016-additional-2",
+      "de": "Die kleine Gabel ist für den Kuchen.",
+      "fa": "چنگال کوچک برای کیک است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-017": [
+    {
+      "exampleId": "a1-l08-017-additional-1",
+      "de": "Welches Gericht möchten Sie bestellen?",
+      "fa": "مایل هستید کدام غذا را سفارش بدهید؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-017-additional-2",
+      "de": "Dieses Gericht gibt es auch ohne Fleisch.",
+      "fa": "این غذا بدون گوشت هم موجود است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-018": [
+    {
+      "exampleId": "a1-l08-018-additional-1",
+      "de": "Das Geschirr ist noch schmutzig.",
+      "fa": "ظرف‌ها هنوز کثیف هستند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-018-additional-2",
+      "de": "Nach dem Essen spülen wir das Geschirr.",
+      "fa": "بعد از غذا ظرف‌ها را می‌شوییم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-019": [
+    {
+      "exampleId": "a1-l08-019-additional-1",
+      "de": "Das Restaurant ist am Montag geschlossen.",
+      "fa": "رستوران دوشنبه‌ها بسته است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-019-additional-2",
+      "de": "Die Tür bleibt heute geschlossen.",
+      "fa": "در امروز بسته می‌ماند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-020": [
+    {
+      "exampleId": "a1-l08-020-additional-1",
+      "de": "Welches Getränk möchtest du zum Essen?",
+      "fa": "همراه غذا چه نوشیدنی‌ای می‌خواهی؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-020-additional-2",
+      "de": "Ein kaltes Getränk kostet hier drei Euro.",
+      "fa": "یک نوشیدنی سرد اینجا سه یورو قیمت دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-021": [
+    {
+      "exampleId": "a1-l08-021-additional-1",
+      "de": "Wir gratulieren dir zum Geburtstag!",
+      "fa": "تولدت را تبریک می‌گوییم!",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-021-additional-2",
+      "de": "Ich möchte Ihnen zur Prüfung gratulieren.",
+      "fa": "می‌خواهم قبولی در امتحان را به شما تبریک بگویم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-022": [
+    {
+      "exampleId": "a1-l08-022-additional-1",
+      "de": "Als Hauptgericht nehme ich Fisch.",
+      "fa": "برای غذای اصلی ماهی می‌خواهم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-022-additional-2",
+      "de": "Das Hauptgericht kommt nach der Suppe.",
+      "fa": "غذای اصلی بعد از سوپ می‌آید.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-023": [
+    {
+      "exampleId": "a1-l08-023-additional-1",
+      "de": "Der Kellner bringt die Rechnung.",
+      "fa": "پیشخدمت صورتحساب را می‌آورد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-023-additional-2",
+      "de": "Wir fragen den Kellner nach einem freien Tisch.",
+      "fa": "از پیشخدمت سراغ یک میز خالی را می‌گیریم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-024": [
+    {
+      "exampleId": "a1-l08-024-additional-1",
+      "de": "Die Kellnerin empfiehlt uns die Suppe.",
+      "fa": "پیشخدمت زن سوپ را به ما پیشنهاد می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-024-additional-2",
+      "de": "Eine Kellnerin arbeitet heute draußen.",
+      "fa": "امروز یک پیشخدمت زن در فضای بیرون کار می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-025": [
+    {
+      "exampleId": "a1-l08-025-additional-1",
+      "de": "In dieser Suppe ist viel Knoblauch.",
+      "fa": "در این سوپ سیر زیادی هست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-025-additional-2",
+      "de": "Ich koche gern mit frischem Knoblauch.",
+      "fa": "دوست دارم با سیر تازه آشپزی کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-026": [
+    {
+      "exampleId": "a1-l08-026-additional-1",
+      "de": "Der Koch bereitet das Essen vor.",
+      "fa": "آشپز غذا را آماده می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-026-additional-2",
+      "de": "Mein Onkel ist Koch in einem Hotel.",
+      "fa": "عموی من در یک هتل آشپز است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-027": [
+    {
+      "exampleId": "a1-l08-027-additional-1",
+      "de": "Ich liebe meine Familie.",
+      "fa": "من عاشق خانواده‌ام هستم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-027-additional-2",
+      "de": "Sie liebt italienisches Essen.",
+      "fa": "او غذای ایتالیایی را بسیار دوست دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-028": [
+    {
+      "exampleId": "a1-l08-028-additional-1",
+      "de": "Für die Suppe brauche ich einen Löffel.",
+      "fa": "برای سوپ به یک قاشق نیاز دارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-028-additional-2",
+      "de": "Der Löffel ist noch in der Suppe.",
+      "fa": "قاشق هنوز داخل سوپ است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-029": [
+    {
+      "exampleId": "a1-l08-029-additional-1",
+      "de": "Was meinst du mit dieser Frage?",
+      "fa": "منظورت از این سؤال چیست؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-029-additional-2",
+      "de": "Ich meine, das Essen ist zu teuer.",
+      "fa": "به نظر من این غذا زیادی گران است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-030": [
+    {
+      "exampleId": "a1-l08-030-additional-1",
+      "de": "Das Messer ist sehr scharf.",
+      "fa": "این چاقو خیلی تیز است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-030-additional-2",
+      "de": "Mit diesem Messer schneide ich Brot.",
+      "fa": "من با این چاقو نان می‌برم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-031": [
+    {
+      "exampleId": "a1-l08-031-additional-1",
+      "de": "Unsere Nachbarin kommt heute zum Essen.",
+      "fa": "همسایهٔ زن ما امروز برای غذا می‌آید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-031-additional-2",
+      "de": "Ich gebe meiner Nachbarin ein Stück Kuchen.",
+      "fa": "من یک تکه کیک به همسایهٔ زنم می‌دهم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-032": [
+    {
+      "exampleId": "a1-l08-032-additional-1",
+      "de": "Möchtest du noch eine Nachspeise?",
+      "fa": "هنوز دسر هم میل داری؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-032-additional-2",
+      "de": "Die Nachspeise schmeckt nach Zitrone.",
+      "fa": "این دسر مزهٔ لیمو می‌دهد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-033": [
+    {
+      "exampleId": "a1-l08-033-additional-1",
+      "de": "Auf der Rechnung stehen zwei Getränke.",
+      "fa": "در صورتحساب دو نوشیدنی نوشته شده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-033-additional-2",
+      "de": "Können wir bitte die Rechnung bekommen?",
+      "fa": "ممکن است لطفاً صورتحساب را بیاورید؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-034": [
+    {
+      "exampleId": "a1-l08-034-additional-1",
+      "de": "Ich reserviere einen Tisch für vier Personen.",
+      "fa": "من برای چهار نفر میز رزرو می‌کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-034-additional-2",
+      "de": "Kann man hier telefonisch reservieren?",
+      "fa": "می‌شود اینجا تلفنی رزرو کرد؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-035": [
+    {
+      "exampleId": "a1-l08-035-additional-1",
+      "de": "Dieses Rezept habe ich von meiner Mutter.",
+      "fa": "این دستور پخت را از مادرم گرفته‌ام.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-035-additional-2",
+      "de": "Für den Kuchen brauche ich ein einfaches Rezept.",
+      "fa": "برای کیک به یک دستور پخت ساده نیاز دارم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-036": [
+    {
+      "exampleId": "a1-l08-036-additional-1",
+      "de": "Die Suppe ist heute etwas salzig.",
+      "fa": "سوپ امروز کمی شور است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-036-additional-2",
+      "de": "Diese Soße schmeckt mir zu salzig.",
+      "fa": "این سس برای ذائقهٔ من زیادی شور است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-037": [
+    {
+      "exampleId": "a1-l08-037-additional-1",
+      "de": "Danke, ich bin schon satt.",
+      "fa": "ممنون، من دیگر سیر شده‌ام.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-037-additional-2",
+      "de": "Nach zwei Tellern ist er endlich satt.",
+      "fa": "او بعد از دو بشقاب بالاخره سیر می‌شود.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-038": [
+    {
+      "exampleId": "a1-l08-038-additional-1",
+      "de": "Die Zitrone ist sehr sauer.",
+      "fa": "این لیمو خیلی ترش است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-038-additional-2",
+      "de": "Dieser Apfel schmeckt etwas sauer.",
+      "fa": "این سیب کمی ترش است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-039": [
+    {
+      "exampleId": "a1-l08-039-additional-1",
+      "de": "Ist das Gericht scharf?",
+      "fa": "این غذا تند است؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-039-additional-2",
+      "de": "Bitte nicht so scharf, ich esse das nicht gern.",
+      "fa": "لطفاً زیاد تند نباشد، من غذای تند دوست ندارم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-040": [
+    {
+      "exampleId": "a1-l08-040-additional-1",
+      "de": "Dein Teller ist noch schmutzig.",
+      "fa": "بشقاب تو هنوز کثیف است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-040-additional-2",
+      "de": "Die Kinder kommen mit schmutzigen Händen zum Tisch.",
+      "fa": "بچه‌ها با دست‌های کثیف سر میز می‌آیند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-041": [
+    {
+      "exampleId": "a1-l08-041-additional-1",
+      "de": "Hier ist eine Serviette für dich.",
+      "fa": "این هم یک دستمال سفره برای تو.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-041-additional-2",
+      "de": "Die Serviette liegt unter der Gabel.",
+      "fa": "دستمال سفره زیر چنگال است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-042": [
+    {
+      "exampleId": "a1-l08-042-additional-1",
+      "de": "Bitte setzen Sie sich an diesen Tisch.",
+      "fa": "لطفاً پشت این میز بنشینید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-042-additional-2",
+      "de": "Die Mutter setzt das Kind auf den Stuhl.",
+      "fa": "مادر کودک را روی صندلی می‌نشاند.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-043": [
+    {
+      "exampleId": "a1-l08-043-additional-1",
+      "de": "Kann ich bitte die Speisekarte sehen?",
+      "fa": "ممکن است لطفاً منو را ببینم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-043-additional-2",
+      "de": "Die Speisekarte gibt es auch auf Englisch.",
+      "fa": "منو به زبان انگلیسی هم موجود است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-044": [
+    {
+      "exampleId": "a1-l08-044-additional-1",
+      "de": "Die Suppe ist noch zu heiß.",
+      "fa": "سوپ هنوز زیادی داغ است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-044-additional-2",
+      "de": "Zum Mittagessen koche ich eine Suppe.",
+      "fa": "برای ناهار سوپ می‌پزم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-045": [
+    {
+      "exampleId": "a1-l08-045-additional-1",
+      "de": "Möchtest du eine Tasse Tee?",
+      "fa": "یک فنجان چای می‌خواهی؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-045-additional-2",
+      "de": "Meine Tasse steht auf dem Tisch.",
+      "fa": "فنجان من روی میز است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-046": [
+    {
+      "exampleId": "a1-l08-046-additional-1",
+      "de": "Auf dem Teller liegt ein Stück Brot.",
+      "fa": "روی بشقاب یک تکه نان هست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-046-additional-2",
+      "de": "Kannst du mir einen sauberen Teller bringen?",
+      "fa": "می‌توانی یک بشقاب تمیز برایم بیاوری؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-047": [
+    {
+      "exampleId": "a1-l08-047-additional-1",
+      "de": "Zum Geburtstag gibt es eine große Torte.",
+      "fa": "برای تولد یک کیک بزرگ داریم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-047-additional-2",
+      "de": "Sie nimmt ein kleines Stück von der Torte.",
+      "fa": "او یک تکهٔ کوچک از کیک برمی‌دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-048": [
+    {
+      "exampleId": "a1-l08-048-additional-1",
+      "de": "Das Trinkgeld ist für die Kellnerin.",
+      "fa": "این انعام برای پیشخدمت زن است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-048-additional-2",
+      "de": "Wir geben dem Kellner drei Euro Trinkgeld.",
+      "fa": "ما سه یورو به پیشخدمت انعام می‌دهیم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-049": [
+    {
+      "exampleId": "a1-l08-049-additional-1",
+      "de": "Ich esse heute vegetarisch.",
+      "fa": "من امروز غذای بدون گوشت می‌خورم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-049-additional-2",
+      "de": "Haben Sie auch ein vegetarisches Gericht?",
+      "fa": "غذای گیاهی هم دارید؟",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-050": [
+    {
+      "exampleId": "a1-l08-050-additional-1",
+      "de": "Als Vorspeise bestellen wir einen Salat.",
+      "fa": "برای پیش‌غذا یک سالاد سفارش می‌دهیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-050-additional-2",
+      "de": "Die Vorspeise ist klein, aber sehr gut.",
+      "fa": "پیش‌غذا کوچک است، اما خیلی خوشمزه است.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-051": [
+    {
+      "exampleId": "a1-l08-051-additional-1",
+      "de": "Ich möchte Tee mit Zitrone.",
+      "fa": "من چای با لیمو می‌خواهم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-051-additional-2",
+      "de": "Für den Fisch brauchen wir eine Zitrone.",
+      "fa": "برای ماهی به یک لیمو نیاز داریم.",
+      "origin": "authored"
+    }
+  ],
+  "a1-l08-052": [
+    {
+      "exampleId": "a1-l08-052-additional-1",
+      "de": "Welche Zutaten brauchen wir für die Suppe?",
+      "fa": "برای سوپ به چه موادی نیاز داریم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a1-l08-052-additional-2",
+      "de": "Eine wichtige Zutat fehlt noch.",
+      "fa": "هنوز یکی از مواد اولیهٔ مهم را نداریم.",
+      "origin": "authored"
+    }
   ]
 }
