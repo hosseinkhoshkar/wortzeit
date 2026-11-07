@@ -94,7 +94,7 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     const examples = dialog.locator('.example-block')
     assert.equal(await examples.count(), 2)
     for (let index = 0; index < 2; index++) {
-      await examples.nth(index).locator('.speaker-button').click()
+      await examples.nth(index).locator('.speech-text').click()
       assert.equal((await lastSpeech(page)).text, entry.examples[index + 1].de)
       assert.equal((await lastSpeech(page)).rate, 1)
     }
@@ -122,13 +122,27 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     await clickAndSave(page, page.getByRole('button', { name: 'توقف و بازگشت', exact: true }))
     assert.ok(await cancellations(page) > beforePause)
     await page.getByRole('button', { name: 'واژه‌ها', exact: true }).click()
-    const firstRow = page.locator('.word-list-row').first()
+    const firstRow = page.locator('.word-item').first()
     const firstEntryId = bundle.lessons.find(lesson => lesson.lessonId === lessonId).introducedEntryIds[0]
     const firstEntry = bundle.entries.find(entry => entry.entryId === firstEntryId)
     const beforeListPlayback = learningSnapshot(await readState(page))
-    await firstRow.locator(':scope > .speaker-button').click()
+    const wordText = firstRow.locator('.word-item-main .speech-text')
+    await wordText.click()
     assert.equal((await lastSpeech(page)).text, wordPronunciation(firstEntry))
-    assert.equal(await firstRow.locator('details').getAttribute('open'), null, 'playback keeps details closed')
+    assert.equal(await firstRow.getAttribute('open'), null, 'playback keeps details closed')
+    await wordText.press('Enter')
+    assert.equal(await wordText.getAttribute('aria-pressed'), 'false')
+    await wordText.press('Space')
+    assert.equal(await firstRow.getAttribute('open'), null, 'keyboard playback also keeps details closed')
+    assert.equal(await firstRow.locator('.speaker-button').count(), 0)
+    assert.equal(learningSnapshot(await readState(page)), beforeListPlayback)
+    await firstRow.locator('.details-chevron').click()
+    const exampleText = firstRow.locator('.word-item-details > .example-block .speech-text')
+    await exampleText.click()
+    assert.equal((await lastSpeech(page)).text, firstEntry.examples[0].de)
+    const beforeCollapse = await cancellations(page)
+    await firstRow.locator('.details-chevron').click()
+    await page.waitForFunction(count => window.__speech.cancellations > count, beforeCollapse)
     assert.equal(learningSnapshot(await readState(page)), beforeListPlayback)
   } finally { await context.close() }
 
@@ -172,7 +186,7 @@ export async function checkPronunciation({ browser, origin, bundle, observeConte
     await saveScreenshot(page, `pronunciation-${lessonId}-reverse-320.png`)
     await page.getByRole('button', { name: 'مثال‌های بیشتر', exact: true }).click()
     const dialog = page.getByRole('dialog', { name: 'مثال‌های بیشتر', exact: true })
-    await dialog.locator('.speaker-button').first().click()
+    await dialog.locator('.speech-text').first().click()
     const beforeEscape = await cancellations(page)
     await page.keyboard.press('Escape')
     await page.waitForFunction(count => window.__speech.cancellations > count, beforeEscape)
@@ -212,7 +226,7 @@ export async function checkExercisePronunciation({ browser, origin, bundle, obse
   const scenarios = [
     [{ taskId: 'speech-meaning', kind: 'choose-meaning', entryId: noun.entryId, optionIds: noun.meaningOptionEntryIds }, '.question-word .speaker-button', wordPronunciation(noun)],
     [{ taskId: 'speech-article', kind: 'choose-article', entryId: noun.entryId, options: ['der', 'die', 'das'] }, '.question-word .speaker-button', noun.lemma],
-    [{ taskId: 'speech-cloze', kind: 'cloze', entryId: noun.entryId, cycleKind: 'scheduled' }, '.cloze-question .speaker-button', noun.cloze.sentence.replace('___', '…')],
+    [{ taskId: 'speech-cloze', kind: 'cloze', entryId: noun.entryId, cycleKind: 'scheduled' }, '.cloze-question .speech-text', noun.cloze.sentence.replace('___', '…')],
     [{ taskId: 'speech-match', kind: 'match', entryIds: matchIds, leftOrder: matchIds, rightOrder: [...matchIds].reverse(), matchedEntryIds: [] }, '.match-word-tile .speaker-button', wordPronunciation(learned[0])],
   ]
   const context = await browser.newContext({ viewport: { width: 320, height: 568 }, isMobile: true, hasTouch: true, locale: 'fa-IR', reducedMotion: 'reduce' })
@@ -237,6 +251,16 @@ export async function checkExercisePronunciation({ browser, origin, bundle, obse
       assert.equal(learningSnapshot(await readState(page)), before)
       if (task.kind === 'match') assert.equal(await page.locator('.word-tile.is-selected').count(), 0)
       await assertViewport(page, `speech on ${task.kind}`, selector)
+      if (task.kind === 'choose-meaning') {
+        const correctIndex = task.optionIds.indexOf(noun.entryId)
+        await clickAndSave(page, page.locator('.meaning-options .meaning-option').nth(correctIndex))
+        const answered = learningSnapshot(await readState(page))
+        await page.locator('.feedback-word .speech-text').click()
+        assert.equal((await lastSpeech(page)).text, wordPronunciation(noun))
+        assert.equal(await page.locator('.feedback .speaker-button').count(), 0)
+        assert.equal(learningSnapshot(await readState(page)), answered)
+        await assertViewport(page, 'text pronunciation in feedback', '.feedback .speech-text, .feedback-next')
+      }
     }
   } finally { await context.close() }
 }

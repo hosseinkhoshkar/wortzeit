@@ -930,7 +930,7 @@ try {
       await cuePage.goto(`${origin}/?lesson=lesson-05`)
       await clickAndSave(cuePage, cuePage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }), true)
       assert.equal(await cuePage.locator('.cloze-question .writing-cue').innerText(), entry.writing.cueFa)
-      assert.equal(await cuePage.locator('.cloze-question .speaker-button').count(), 1)
+      assert.equal(await cuePage.locator('.cloze-question .speech-text').count(), 1)
       await assertViewport(cuePage, `lesson-five ${lemma} cloze cue`, '.answer-form input, .answer-form button')
       await cuePage.getByLabel('پاسخ تو', { exact: true }).fill(entry.lemma)
       await waitState(cuePage, value => value.session.draft === entry.lemma)

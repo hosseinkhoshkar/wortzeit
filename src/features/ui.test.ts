@@ -157,7 +157,8 @@ test('fourth lesson vocabulary renders only that lesson and keeps unrelated entr
   assert.ok(html.includes('دورهٔ آزمایشی چهارم') && html.includes('Kurs'))
   const main = [...html.matchAll(/class="word-item-main">([\s\S]*?)<\/span><span class="word-status/gu)]
   assert.equal(main.length, 1)
-  assert.match(html, /<\/details><button type="button" class="speaker-button"/u)
+  assert.match(html, /class="speech-text"/u)
+  assert.ok(!html.includes('speaker-button'), 'vocabulary uses its German text instead of a speaker icon')
   assert.ok(main[0][1].includes('Kurs') && main[0][1].includes('دورهٔ آزمایشی چهارم'))
   assert.ok(!main[0][1].includes('Hallo') && !main[0][1].includes('Familienname'))
   assert.match(html, /lang="de" dir="ltr"/u)
@@ -341,6 +342,6 @@ test('real lesson-five clozes show Persian cues to distinguish Bad/Badezimmer an
     const html = renderTask(task, props)
     assert.ok(html.includes(entry.cloze.translationFa))
     assert.ok(html.includes(`<p class="writing-cue">${entry.writing.cueFa}</p>`))
-    assert.equal((html.match(/class="speaker-button"/gu) ?? []).length, 1, 'only the visible sentence has a playback control')
+    assert.equal((html.match(/class="speech-text"/gu) ?? []).length, 1, 'only the visible sentence has a playback control')
   }
 })

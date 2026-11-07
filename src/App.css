@@ -106,11 +106,12 @@
 .speaker-button{display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;min-height:44px;padding:10px;border:1px solid #d9c9e9;border-radius:14px;background:#f4eef9;color:#67478c;touch-action:manipulation}
 .speaker-button svg{width:22px;height:22px}
 .speaker-button[aria-pressed=true]{background:#dfd1ee;border-color:#9a77bc}
-.cloze-question .speaker-button{vertical-align:middle;margin-inline-start:6px}
+.speech-text{display:inline-block;max-width:100%;min-height:44px;padding:2px 0;border:0;border-radius:5px;background:transparent;color:inherit;font:inherit;line-height:inherit;text-align:inherit;overflow-wrap:anywhere;cursor:pointer;text-decoration:underline dotted #b3a1c8;text-underline-offset:4px;touch-action:manipulation}
+.speech-text:focus-visible{outline:3px solid #9169ba;outline-offset:3px}
+.speech-text[aria-pressed=true]{background:#eee4fa;color:#67478c}
+.word-item-main>.speech-text{align-self:flex-start}
+.word-item-main>.speech-text .german-word{font-size:21px}
 .match-word-tile{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:4px;align-items:center;min-width:0}
-.word-list-row{position:relative;min-width:0}
-.word-list-row>.speaker-button{position:absolute;inset-inline-start:12px;inset-block-start:13px}
-.word-list-row .word-item>summary{padding-inline-start:64px}
 .pronunciation-status{font-size:11px;line-height:1.7;color:#81553f;overflow-wrap:anywhere}
 .pronunciation-status:empty{display:none}
 .detail-sheet-body>.pronunciation-status{margin-top:12px}
