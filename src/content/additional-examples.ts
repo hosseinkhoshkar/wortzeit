@@ -5139,5 +5139,607 @@ export const additionalExamplesByEntry: Record<string, Example[]> = {
       "fa": "هنوز یکی از مواد اولیهٔ مهم را نداریم.",
       "origin": "authored"
     }
+  ],
+  "a2-l09-001": [
+    {
+      "exampleId": "a2-l09-001-additional-1",
+      "de": "Normalerweise arbeite ich montags, aber heute mache ich eine Ausnahme.",
+      "fa": "معمولاً دوشنبه‌ها کار می‌کنم، ولی امروز استثنا قائل می‌شوم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-001-additional-2",
+      "de": "Alle kommen mit, mit einer Ausnahme: Paul bleibt zu Hause.",
+      "fa": "همه همراه می‌آیند، به‌جز یک نفر: پاول در خانه می‌ماند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-002": [
+    {
+      "exampleId": "a2-l09-002-additional-1",
+      "de": "Vor unserem Haus steht ein großer Baum.",
+      "fa": "جلوی خانهٔ ما یک درخت بزرگ هست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-002-additional-2",
+      "de": "Im Sommer sitzen wir gern unter diesem Baum.",
+      "fa": "ما تابستان دوست داریم زیر این درخت بنشینیم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-003": [
+    {
+      "exampleId": "a2-l09-003-additional-1",
+      "de": "Ich schreibe einen kurzen Bericht über die Feier.",
+      "fa": "من یک گزارش کوتاه دربارهٔ جشن می‌نویسم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-003-additional-2",
+      "de": "Hast du den Bericht in der Zeitung gelesen?",
+      "fa": "گزارش روزنامه را خوانده‌ای؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-004": [
+    {
+      "exampleId": "a2-l09-004-additional-1",
+      "de": "Wir buchen ein Zimmer für zwei Nächte.",
+      "fa": "ما برای دو شب اتاق رزرو می‌کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-004-additional-2",
+      "de": "Den Flug kannst du auch im Internet buchen.",
+      "fa": "پرواز را می‌توانی اینترنتی هم رزرو کنی.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-005": [
+    {
+      "exampleId": "a2-l09-005-additional-1",
+      "de": "Meine Großeltern leben in einem kleinen Dorf.",
+      "fa": "پدربزرگ و مادربزرگم در یک روستای کوچک زندگی می‌کنند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-005-additional-2",
+      "de": "Im Dorf kennen sich fast alle.",
+      "fa": "در روستا تقریباً همه همدیگر را می‌شناسند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-006": [
+    {
+      "exampleId": "a2-l09-006-additional-1",
+      "de": "Die Feier beginnt am Samstag um sechs.",
+      "fa": "جشن شنبه ساعت شش شروع می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-006-additional-2",
+      "de": "Für die Feier bringen wir einen Kuchen mit.",
+      "fa": "برای جشن یک کیک همراه می‌آوریم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-007": [
+    {
+      "exampleId": "a2-l09-007-additional-1",
+      "de": "Darf ich euch zusammen fotografieren?",
+      "fa": "اجازه دارم از شما با هم عکس بگیرم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-007-additional-2",
+      "de": "Sie fotografiert gern alte Häuser.",
+      "fa": "او دوست دارد از خانه‌های قدیمی عکس بگیرد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-008": [
+    {
+      "exampleId": "a2-l09-008-additional-1",
+      "de": "Wir freuen uns über die Geburt eurer Tochter.",
+      "fa": "از تولد دخترتان خوشحالیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-008-additional-2",
+      "de": "Seit der Geburt ihres Sohnes ist vieles anders.",
+      "fa": "از زمان تولد پسرش خیلی چیزها تغییر کرده است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-009": [
+    {
+      "exampleId": "a2-l09-009-additional-1",
+      "de": "Wir treffen uns gegen acht Uhr.",
+      "fa": "ما حدود ساعت هشت همدیگر را می‌بینیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-009-additional-2",
+      "de": "Hast du etwas gegen diesen Vorschlag?",
+      "fa": "با این پیشنهاد مخالفتی داری؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-010": [
+    {
+      "exampleId": "a2-l09-010-additional-1",
+      "de": "Wir bereiten das Essen gemeinsam vor.",
+      "fa": "ما غذا را با هم آماده می‌کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-010-additional-2",
+      "de": "Die beiden haben ein gemeinsames Hobby.",
+      "fa": "آن دو یک سرگرمی مشترک دارند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-011": [
+    {
+      "exampleId": "a2-l09-011-additional-1",
+      "de": "Das kleine Café ist sehr gemütlich.",
+      "fa": "این کافهٔ کوچک خیلی دنج است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-011-additional-2",
+      "de": "Abends machen wir es uns zu Hause gemütlich.",
+      "fa": "شب‌ها در خانه فضایی راحت و دلپذیر برای خودمان فراهم می‌کنیم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-012": [
+    {
+      "exampleId": "a2-l09-012-additional-1",
+      "de": "Das Geschäft öffnet um neun Uhr.",
+      "fa": "مغازه ساعت نه باز می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-012-additional-2",
+      "de": "Meine Eltern haben ein kleines Geschäft.",
+      "fa": "پدر و مادرم یک مغازهٔ کوچک دارند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-013": [
+    {
+      "exampleId": "a2-l09-013-additional-1",
+      "de": "Sie hat lange dunkle Haare.",
+      "fa": "او موهای بلند و تیره دارد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-013-additional-2",
+      "de": "Nach dem Duschen trockne ich meine Haare.",
+      "fa": "بعد از دوش گرفتن موهایم را خشک می‌کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-014": [
+    {
+      "exampleId": "a2-l09-014-additional-1",
+      "de": "Beim Sport schlägt mein Herz schneller.",
+      "fa": "هنگام ورزش قلبم تندتر می‌زند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-014-additional-2",
+      "de": "Dieses Geschenk kommt von Herzen.",
+      "fa": "این هدیه از صمیم قلب است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-015": [
+    {
+      "exampleId": "a2-l09-015-additional-1",
+      "de": "Heute ist der Himmel ganz blau.",
+      "fa": "امروز آسمان کاملاً آبی است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-015-additional-2",
+      "de": "Am Abend stehen viele Sterne am Himmel.",
+      "fa": "شب ستاره‌های زیادی در آسمان هستند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-016": [
+    {
+      "exampleId": "a2-l09-016-additional-1",
+      "de": "Ich hoffe, dass du bald wieder gesund bist.",
+      "fa": "امیدوارم به‌زودی دوباره خوب شوی.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-016-additional-2",
+      "de": "Wir hoffen auf gutes Wetter für die Feier.",
+      "fa": "برای جشن امیدواریم هوا خوب باشد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-017": [
+    {
+      "exampleId": "a2-l09-017-additional-1",
+      "de": "Ich habe noch Hoffnung.",
+      "fa": "من هنوز امید دارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-017-additional-2",
+      "de": "Die gute Nachricht gibt uns neue Hoffnung.",
+      "fa": "این خبر خوب امید تازه‌ای به ما می‌دهد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-018": [
+    {
+      "exampleId": "a2-l09-018-additional-1",
+      "de": "Mein Bruder arbeitet als Ingenieur.",
+      "fa": "برادرم به‌عنوان مهندس کار می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-018-additional-2",
+      "de": "Der Ingenieur erklärt uns den Plan.",
+      "fa": "مهندس نقشه را برایمان توضیح می‌دهد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-019": [
+    {
+      "exampleId": "a2-l09-019-additional-1",
+      "de": "Die Kirche steht mitten im Dorf.",
+      "fa": "کلیسا وسط روستا قرار دارد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-019-additional-2",
+      "de": "Am Sonntag gehen sie in die Kirche.",
+      "fa": "آن‌ها یکشنبه به کلیسا می‌روند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-020": [
+    {
+      "exampleId": "a2-l09-020-additional-1",
+      "de": "Wegen seiner Krankheit bleibt er zu Hause.",
+      "fa": "او به‌دلیل بیماری‌اش در خانه می‌ماند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-020-additional-2",
+      "de": "Die Krankheit dauert schon eine Woche.",
+      "fa": "این بیماری یک هفته است که ادامه دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-021": [
+    {
+      "exampleId": "a2-l09-021-additional-1",
+      "de": "Unser Nachbar hilft uns im Garten.",
+      "fa": "همسایه‌مان در باغ به ما کمک می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-021-additional-2",
+      "de": "Ich lade meinen Nachbarn zum Essen ein.",
+      "fa": "همسایه‌ام را برای غذا دعوت می‌کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-022": [
+    {
+      "exampleId": "a2-l09-022-additional-1",
+      "de": "An Ostern besuchen wir unsere Familie.",
+      "fa": "در عید پاک به دیدن خانواده‌مان می‌رویم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-022-additional-2",
+      "de": "Dieses Jahr feiern wir Ostern bei meinen Eltern.",
+      "fa": "امسال عید پاک را در خانهٔ پدر و مادرم جشن می‌گیریم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-023": [
+    {
+      "exampleId": "a2-l09-023-additional-1",
+      "de": "Welche Religion hat er?",
+      "fa": "دین او چیست؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-023-additional-2",
+      "de": "In unserer Gruppe sprechen wir über verschiedene Religionen.",
+      "fa": "ما در گروهمان دربارهٔ دین‌های مختلف صحبت می‌کنیم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-024": [
+    {
+      "exampleId": "a2-l09-024-additional-1",
+      "de": "Ich schenke meiner Schwester ein Buch.",
+      "fa": "من به خواهرم یک کتاب هدیه می‌دهم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-024-additional-2",
+      "de": "Was möchtest du ihm zum Geburtstag schenken?",
+      "fa": "می‌خواهی برای تولدش چه هدیه‌ای به او بدهی؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-025": [
+    {
+      "exampleId": "a2-l09-025-additional-1",
+      "de": "Ich bekomme die Antwort schriftlich.",
+      "fa": "من پاسخ را به‌صورت کتبی دریافت می‌کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-025-additional-2",
+      "de": "Die Einladung ist schriftlich gekommen.",
+      "fa": "دعوت‌نامه به‌صورت کتبی رسیده است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-026": [
+    {
+      "exampleId": "a2-l09-026-additional-1",
+      "de": "Erinnerst du dich an unseren ersten Deutschkurs?",
+      "fa": "اولین کلاس آلمانی‌مان را به یاد می‌آوری؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-026-additional-2",
+      "de": "Ich erinnere mich gern an die Reise.",
+      "fa": "من با خوشحالی از آن سفر یاد می‌کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-027": [
+    {
+      "exampleId": "a2-l09-027-additional-1",
+      "de": "Ich freue mich auf deinen Besuch.",
+      "fa": "من مشتاق دیدارت هستم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-027-additional-2",
+      "de": "Sie freut sich über das Geschenk.",
+      "fa": "او از هدیه خوشحال است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-028": [
+    {
+      "exampleId": "a2-l09-028-additional-1",
+      "de": "An Silvester feiern wir mit Freunden.",
+      "fa": "شب سال نو را با دوستان جشن می‌گیریم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-028-additional-2",
+      "de": "Wo möchtest du dieses Jahr Silvester verbringen?",
+      "fa": "امسال می‌خواهی شب سال نو را کجا بگذرانی؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-029": [
+    {
+      "exampleId": "a2-l09-029-additional-1",
+      "de": "Das ist kein Tee, sondern Kaffee.",
+      "fa": "این چای نیست، بلکه قهوه است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-029-additional-2",
+      "de": "Er kommt nicht heute, sondern morgen.",
+      "fa": "او امروز نمی‌آید، بلکه فردا می‌آید.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-030": [
+    {
+      "exampleId": "a2-l09-030-additional-1",
+      "de": "Der Staat bezahlt einen Teil der Kosten.",
+      "fa": "دولت بخشی از هزینه‌ها را پرداخت می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-030-additional-2",
+      "de": "Viele Staaten arbeiten zusammen.",
+      "fa": "کشورهای زیادی با هم همکاری می‌کنند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-031": [
+    {
+      "exampleId": "a2-l09-031-additional-1",
+      "de": "Heute trinken wir Tee statt Kaffee.",
+      "fa": "امروز به‌جای قهوه چای می‌نوشیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-031-additional-2",
+      "de": "Wir fahren mit dem Zug statt mit dem Auto.",
+      "fa": "ما به‌جای ماشین با قطار می‌رویم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-032": [
+    {
+      "exampleId": "a2-l09-032-additional-1",
+      "de": "Dieses Fest hat in unserer Familie Tradition.",
+      "fa": "این جشن در خانوادهٔ ما یک سنت است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-032-additional-2",
+      "de": "Wir möchten diese Tradition weiterführen.",
+      "fa": "ما می‌خواهیم این سنت را ادامه بدهیم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-033": [
+    {
+      "exampleId": "a2-l09-033-additional-1",
+      "de": "Dieses Essen ist typisch für unsere Stadt.",
+      "fa": "این غذا مخصوص شهر ماست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-033-additional-2",
+      "de": "Das ist typisch für ihn: Er kommt immer zu spät.",
+      "fa": "این کار همیشگی اوست: همیشه دیر می‌آید.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-034": [
+    {
+      "exampleId": "a2-l09-034-additional-1",
+      "de": "Die Fahrt dauert ungefähr eine Stunde.",
+      "fa": "مسیر تقریباً یک ساعت طول می‌کشد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-034-additional-2",
+      "de": "Es waren ungefähr zwanzig Personen auf der Feier.",
+      "fa": "تقریباً بیست نفر در جشن حضور داشتند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-035": [
+    {
+      "exampleId": "a2-l09-035-additional-1",
+      "de": "Ich möchte mein Deutsch verbessern.",
+      "fa": "می‌خواهم آلمانی‌ام را بهتر کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-035-additional-2",
+      "de": "Kannst du diesen Satz noch verbessern?",
+      "fa": "می‌توانی این جمله را بهتر کنی؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-036": [
+    {
+      "exampleId": "a2-l09-036-additional-1",
+      "de": "Wir haben verschiedene Hobbys.",
+      "fa": "ما سرگرمی‌های متفاوتی داریم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-036-additional-2",
+      "de": "In diesem Geschäft gibt es verschiedene Teesorten.",
+      "fa": "در این مغازه انواع مختلف چای وجود دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-037": [
+    {
+      "exampleId": "a2-l09-037-additional-1",
+      "de": "Ich schlage vor, dass wir zusammen kochen.",
+      "fa": "پیشنهاد می‌کنم با هم آشپزی کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-037-additional-2",
+      "de": "Was schlägst du für den Abend vor?",
+      "fa": "برای امشب چه پیشنهادی داری؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-038": [
+    {
+      "exampleId": "a2-l09-038-additional-1",
+      "de": "Wahrscheinlich kommt sie erst morgen.",
+      "fa": "احتمالاً او تازه فردا می‌آید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-038-additional-2",
+      "de": "Wahrscheinlich müssen wir noch auf den Zug warten.",
+      "fa": "احتمالاً هنوز باید منتظر قطار بمانیم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-039": [
+    {
+      "exampleId": "a2-l09-039-additional-1",
+      "de": "Zu Weihnachten schenken wir uns kleine Geschenke.",
+      "fa": "در کریسمس به هم هدیه‌های کوچک می‌دهیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-039-additional-2",
+      "de": "Verbringst du Weihnachten bei deiner Familie?",
+      "fa": "کریسمس را پیش خانواده‌ات می‌گذرانی؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-040": [
+    {
+      "exampleId": "a2-l09-040-additional-1",
+      "de": "Ich bleibe zu Hause, weil ich krank bin.",
+      "fa": "در خانه می‌مانم، چون بیمارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-040-additional-2",
+      "de": "Sie lernt Deutsch, weil sie in Berlin arbeiten möchte.",
+      "fa": "او آلمانی می‌خواند، چون می‌خواهد در برلین کار کند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-041": [
+    {
+      "exampleId": "a2-l09-041-additional-1",
+      "de": "Wir trinken den Kaffee im Wohnzimmer.",
+      "fa": "ما قهوه را در اتاق نشیمن می‌نوشیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-041-additional-2",
+      "de": "Unser Wohnzimmer ist klein, aber gemütlich.",
+      "fa": "اتاق نشیمن ما کوچک است، اما دنج است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-042": [
+    {
+      "exampleId": "a2-l09-042-additional-1",
+      "de": "Mein Zahn tut seit gestern weh.",
+      "fa": "دندانم از دیروز درد می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-042-additional-2",
+      "de": "Das Kind hat seinen ersten Zahn.",
+      "fa": "اولین دندان کودک درآمده است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l09-043": [
+    {
+      "exampleId": "a2-l09-043-additional-1",
+      "de": "Der Zug nach Berlin fährt um zehn.",
+      "fa": "قطار برلین ساعت ده حرکت می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l09-043-additional-2",
+      "de": "Wir sitzen schon im Zug.",
+      "fa": "ما همین حالا در قطار نشسته‌ایم.",
+      "origin": "authored"
+    }
   ]
 }

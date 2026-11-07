@@ -1,6 +1,7 @@
 import { POLICY_VERSION, SCHEMA_VERSION, TARGET_ACTIVE_MS } from '../contracts/legacy-v3.ts'
 import type { AppState, ContentBundle, Session, SkillProgress } from '../contracts/legacy-v3.ts'
 import type { ContentBundle as LegacyBundle } from '../contracts/legacy-v1.ts'
+import type { ContentBundle as CurrentContentBundle } from '../contracts/index.ts'
 import { validateLegacyState } from './legacy-v1.ts'
 import { emptySkill } from '../learning/schedule.ts'
 import { validateVersionTwoState } from './legacy-v2.ts'
@@ -19,7 +20,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 /** Keep the version-two evidence checks and validate each lesson session independently. */
-export function validateVersionThreeState(value: unknown, bundle: ContentBundle): asserts value is AppState {
+export function validateVersionThreeState(value: unknown, bundle: ContentBundle | CurrentContentBundle): asserts value is AppState {
   const fail = (): never => { throw new StorageError('اطلاعات ذخیره‌شده ناقص یا ناسازگار است. داده‌های قبلی حفظ شده‌اند؛ حافظهٔ سایت را پاک نکنید.') }
   const lessons = bundle.lessons ?? [bundle.lesson]
   const lessonIds = new Set(lessons.map(lesson => lesson.lessonId))
@@ -54,15 +55,15 @@ export function validateVersionThreeState(value: unknown, bundle: ContentBundle)
   }
 }
 
-function lessonOneBundle(bundle: ContentBundle): ContentBundle {
+function lessonOneBundle(bundle: ContentBundle | CurrentContentBundle): ContentBundle {
   const lesson = (bundle.lessons ?? [bundle.lesson]).find(item => item.lessonId === 'a1-lesson-01')
-  if (!lesson) throw new StorageError('نسخهٔ قدیمی به درس اول نیاز دارد؛ اطلاعات قبلی حفظ شده‌اند.')
+  if (!lesson || lesson.level !== 'A1') throw new StorageError('نسخهٔ قدیمی به درس اول نیاز دارد؛ اطلاعات قبلی حفظ شده‌اند.')
   const entries = bundle.entries.filter(entry => entry.introducedInLessonId === lesson.lessonId)
-  return { ...bundle, lessons: undefined, lesson, entries,
+  return { ...bundle, lessons: undefined, lesson: { ...lesson, level: 'A1' }, entries,
     sourceRefs: bundle.sourceRefs.filter(ref => ref.lessonId === lesson.lessonId), contentVersion: 'lesson-01-excerpt-v2' }
 }
 
-export function migrateVersionThreeState(value: unknown, bundle: ContentBundle): AppState {
+export function migrateVersionThreeState(value: unknown, bundle: ContentBundle | CurrentContentBundle): AppState {
   if (isRecord(value) && value.schemaVersion === SCHEMA_VERSION) {
     if (value.contentVersion === bundle.contentVersion) {
       validateVersionThreeState(value, bundle)

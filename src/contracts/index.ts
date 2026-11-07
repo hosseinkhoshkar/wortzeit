@@ -44,7 +44,7 @@ export interface LessonDefinition {
   lessonId: string
   titleDe: string
   titleFa: string
-  level: 'A1'
+  level: 'A1' | 'A2'
   coverage: 'partial'
   introducedEntryIds: string[]
 }

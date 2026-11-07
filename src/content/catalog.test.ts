@@ -5,7 +5,7 @@ import { withTextbookStudyOrder } from './textbook-study-order.ts'
 import { validateContent } from './validate.ts'
 import { createInitialState, transition } from '../learning/engine.ts'
 
-const [lessonOneBundle, lessonFourBundle, lessonFiveBundle, lessonSixBundle, lessonSevenBundle, lessonEightBundle] = lessonBundles
+const [lessonOneBundle, lessonFourBundle, lessonFiveBundle] = lessonBundles
 
 test('lessons one and four use printed textbook page order for new flashcards', () => {
   const now = '2026-11-06T12:00:00.000Z'
@@ -49,17 +49,17 @@ test('a later lesson uses printed pages even when textbook locators include note
   assert.deepEqual(ordered.entries.map(entry => entry.entryId), bundle.entries.map(entry => entry.entryId))
 })
 
-test('the catalog exposes lessons 1, 4, 5, 6, 7 and 8 with 367 entries and unchanged existing identities', () => {
+test('the catalog preserves existing identities and validates each active lesson', () => {
   assert.deepEqual(validateContent(courseBundle), [])
-  assert.equal(courseBundle.entries.length, 367)
-  assert.deepEqual(courseBundle.lessons?.map(lesson => lesson.lessonId), [lessonOneBundle.lesson.lessonId, 'lesson-04', 'lesson-05', 'lesson-06', 'lesson-07', 'lesson-08'])
-  assert.deepEqual(courseBundle.entries.slice(0, 20).map(entry => ({ ...entry, examples: entry.examples.slice(0, 1) })), lessonOneBundle.entries)
-  assert.deepEqual(courseBundle.entries.slice(20, 104).map(entry => ({ ...entry, examples: entry.examples.slice(0, 1) })), lessonFourBundle.entries)
-  assert.deepEqual(courseBundle.entries.slice(104, 180).map(entry => ({ ...entry, examples: entry.examples.slice(0, 1) })), lessonFiveBundle.entries)
-  assert.deepEqual(courseBundle.entries.slice(180, 260).map(entry => ({ ...entry, examples: entry.examples.slice(0, 1) })), lessonSixBundle.entries)
-  assert.deepEqual(courseBundle.entries.slice(260, 315).map(entry => ({ ...entry, examples: entry.examples.slice(0, 1) })), lessonSevenBundle.entries)
-  assert.deepEqual(courseBundle.entries.slice(315).map(entry => ({ ...entry, examples: entry.examples.slice(0, 1) })), lessonEightBundle.entries)
-  assert.equal(new Set(courseBundle.entries.map(entry => entry.entryId)).size, 367)
+  assert.equal(courseBundle.entries.length, 410)
+  assert.deepEqual(courseBundle.lessons?.map(lesson => lesson.lessonId), lessonBundles.map(bundle => bundle.lesson.lessonId))
+  let offset = 0
+  for (const bundle of lessonBundles) {
+    assert.deepEqual(courseBundle.entries.slice(offset, offset + bundle.entries.length)
+      .map(entry => ({ ...entry, examples: entry.examples.slice(0, 1) })), bundle.entries)
+    offset += bundle.entries.length
+  }
+  assert.equal(new Set(courseBundle.entries.map(entry => entry.entryId)).size, 410)
   assert.equal(new Set(courseBundle.sourceRefs.map(ref => ref.sourceRefId)).size, courseBundle.sourceRefs.length)
 })
 

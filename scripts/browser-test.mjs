@@ -585,7 +585,7 @@ try {
     assert.deepEqual(migrated.attempts, old.attempts)
     assert.equal(migrated.session.draft, old.session.draft)
     await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
-    assert.equal(await lessonPage.locator('.lesson-card').count(), 6)
+    assert.equal(await lessonPage.locator('.lesson-card').count(), 7)
     for (const width of [320, 360, 430, 1280]) {
       await lessonPage.setViewportSize({ width, height: 850 })
       assert.equal(await lessonPage.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), true)
@@ -648,8 +648,8 @@ try {
     assert.deepEqual(selected.savedSessions['a1-lesson-01'], old.savedSessions['a1-lesson-01'])
     assert.ok((await lessonPage.locator('.hero-panel').innerText()).includes('Endlich ein Zimmer!'))
     await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
-    assert.equal(await lessonPage.locator('.lesson-card').count(), 6)
-    for (const [id, count] of [['a1-lesson-01', 20], ['lesson-04', 84], ['lesson-05', 76], ['lesson-06', 80], ['lesson-07', 55], ['lesson-08', 52]]) {
+    assert.equal(await lessonPage.locator('.lesson-card').count(), 7)
+    for (const [id, count] of [['a1-lesson-01', 20], ['lesson-04', 84], ['lesson-05', 76], ['lesson-06', 80], ['lesson-07', 55], ['lesson-08', 52], ['lesson-09', 43]]) {
       assert.equal(await lessonPage.locator(`[data-lesson-id="${id}"] [role=progressbar]`).getAttribute('aria-valuemax'), String(count))
     }
     await saveScreenshot(lessonPage, 'lesson-five-catalog-360.png')
@@ -953,6 +953,7 @@ try {
   for (const [label, lessonId, title, count, firstWord] of [
     ['lesson-six', 'lesson-06', 'Kleider machen Freunde', 80, 'freundlich'],
     ['lesson-seven', 'lesson-07', 'Grüezi in der Schweiz', 55, 'der Bahnhof'],
+    ['lesson-nine', 'lesson-09', "Feste feiern, wie sie fallen", 43, "die Ausnahme"],
     ['lesson-eight', 'lesson-08', 'Mmh, das schmeckt!', 52, 'geschlossen'],
   ]) {
     await checkpoint(label + ' deep link, printed page order, offline and pronunciation', async () => {
@@ -964,6 +965,7 @@ try {
         await page.getByRole('heading', { name: title }).waitFor()
         await page.getByRole('button', { name: 'واژه‌ها', exact: true }).click()
         assert.equal(await page.locator('.word-item').count(), count)
+        assert.equal(await page.locator('.page-intro .level-pill').innerText(), lessonId === 'lesson-09' || lessonId === 'lesson-10' ? 'A2' : 'A1')
         assert.equal(await page.locator('.word-item').first().locator('.german-word').first().innerText(), firstWord)
         await page.locator('.offline-pill').filter({ hasText: 'آمادهٔ آفلاین' }).waitFor()
         await context.setOffline(true)

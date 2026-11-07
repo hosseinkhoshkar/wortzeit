@@ -1,5 +1,6 @@
 import { NORMALIZATION_VERSION, POLICY_VERSION, SCHEMA_VERSION, TARGET_ACTIVE_MS } from '../contracts/legacy-v2.ts'
 import type { AppState, ContentBundle } from '../contracts/legacy-v2.ts'
+import type { ContentBundle as CurrentContentBundle } from '../contracts/index.ts'
 
 
 export class StorageError extends Error {
@@ -27,7 +28,7 @@ function uniqueStrings(value: unknown): value is string[] {
 }
 
 /** Reject damaged/unknown snapshots without resetting or overwriting them. */
-export function validateVersionTwoState(value: unknown, bundle: ContentBundle): asserts value is AppState {
+export function validateVersionTwoState(value: unknown, bundle: ContentBundle | CurrentContentBundle): asserts value is AppState {
   const fail = (): never => { throw new StorageError('اطلاعات ذخیره‌شده ناقص یا ناسازگار است. داده‌های قبلی حفظ شده‌اند؛ حافظهٔ سایت را پاک نکنید.') }
   const known = new Set(bundle.entries.map(entry => entry.entryId))
   if (!isRecord(value) || value.schemaVersion !== SCHEMA_VERSION
