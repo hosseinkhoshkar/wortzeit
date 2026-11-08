@@ -299,14 +299,14 @@ test('word details retain the original sentence and allow manual access to the t
   assert.equal((html.match(/<dialog/gu) ?? []).length, 2, 'examples and sources are separate dialogs')
 })
 
-test('the active catalog renders eight lesson cards with independent counts and tenth-lesson selection', () => {
+test('the active catalog renders nine lesson cards with independent counts and thirtieth-lesson selection', () => {
   const summaries = courseBundle.lessons!.map(lesson => ({ lesson,
     total: courseBundle.entries.filter(entry => entry.introducedInLessonId === lesson.lessonId).length,
     introduced: 0, due: 0, stabilized: 0,
   }))
-  const html = renderToStaticMarkup(createElement(view.LessonCards, { activeLessonId: 'lesson-10', disabled: false, onChoose: async () => {}, summaries }))
-  assert.equal((html.match(/data-lesson-id=/gu) ?? []).length, 8)
-  for (const count of [20, 84, 76, 80, 55, 52, 43, 51]) assert.ok(html.includes(`aria-valuemax="${count}"`))
+  const html = renderToStaticMarkup(createElement(view.LessonCards, { activeLessonId: 'lesson-30', disabled: false, onChoose: async () => {}, summaries }))
+  assert.equal((html.match(/data-lesson-id=/gu) ?? []).length, 9)
+  for (const count of [20, 84, 76, 80, 55, 52, 43, 51, 5]) assert.ok(html.includes(`aria-valuemax="${count}"`))
   assert.ok(html.includes('Endlich ein Zimmer!') && html.includes('بالاخره یک اتاق!'))
   assert.ok(html.includes('Kleider machen Freunde') && html.includes('لباس و دوستان تازه'))
   assert.ok(html.includes('Grüezi in der Schweiz') && html.includes('سلام از سوئیس'))
@@ -315,16 +315,19 @@ test('the active catalog renders eight lesson cards with independent counts and 
   assert.ok(html.includes('A2 · Lektion 09'))
   assert.ok(html.includes("Umziehen, ausziehen, einziehen") && html.includes("اسباب‌کشی و خانهٔ تازه"))
   assert.ok(html.includes('A2 · Lektion 10'))
-  assert.match(html, /class="lesson-card lesson-current" data-lesson-id="lesson-10"/u)
+  assert.ok(html.includes('Hauptperson Deutsch') && html.includes('زبان آلمانی در کانون توجه'))
+  assert.ok(html.includes('B1 · Lektion 30'))
+  assert.match(html, /class="lesson-card lesson-current" data-lesson-id="lesson-30"/u)
   assert.match(html, /ورود به درس پنجم/u)
 })
 
-test('all 76 real lesson-five reverse answers stay hidden until reveal, then expose bilingual examples and pronunciation', () => {
-  for (const entry of courseBundle.entries.filter(entry => entry.introducedInLessonId === 'lesson-05')) {
+for (const lessonId of ['lesson-05', 'lesson-30']) {
+test(`all real ${lessonId} reverse answers stay hidden until reveal, then expose bilingual examples and pronunciation`, () => {
+  for (const entry of courseBundle.entries.filter(entry => entry.introducedInLessonId === lessonId)) {
     const task: SessionTask = { taskId: 'fifth-reverse-ui', kind: 'reverse-card', entryId: entry.entryId, revealed: false }
     const props = propsFor(task)
     props.bundle = courseBundle
-    props.state.activeLessonId = 'lesson-05'
+    props.state.activeLessonId = lessonId
     const hidden = renderTask(task, props)
     assert.ok(!hidden.includes(entry.lemma))
     assert.ok(!hidden.includes('speaker-button') && !hidden.includes('مثال‌های بیشتر'))
@@ -337,6 +340,8 @@ test('all 76 real lesson-five reverse answers stay hidden until reveal, then exp
     assert.match(revealed, /مثال‌های بیشتر/u)
   }
 })
+
+}
 
 test('real lesson-five clozes show Persian cues to distinguish Bad/Badezimmer and overlapping fetching verbs', () => {
   for (const lemma of ['Bad', 'Badezimmer', 'abholen', 'holen', 'bringen', 'mitbringen']) {

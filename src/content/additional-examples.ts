@@ -6455,5 +6455,75 @@ export const additionalExamplesByEntry: Record<string, Example[]> = {
       "fa": "ما می‌خواهیم دیوار را رنگ روشن بزنیم.",
       "origin": "authored"
     }
+  ],
+  "b1-l30-001": [
+    {
+      "exampleId": "b1-l30-001-additional-1",
+      "de": "Der Austausch mit meinen Kollegen hilft mir, neue Ideen zu entwickeln.",
+      "fa": "تبادل نظر با همکارانم کمکم می‌کند ایده‌های تازه‌ای پرورش دهم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "b1-l30-001-additional-2",
+      "de": "Während eines Austauschs habe ich ein Semester an einer anderen Hochschule studiert.",
+      "fa": "در یک دورهٔ تبادل دانشجو، یک نیمسال در مؤسسهٔ آموزش عالی دیگری تحصیل کردم.",
+      "origin": "authored"
+    }
+  ],
+  "b1-l30-002": [
+    {
+      "exampleId": "b1-l30-002-additional-1",
+      "de": "Seit dem Beginn des Kurses habe ich große Fortschritte gemacht.",
+      "fa": "از شروع دوره تا حالا پیشرفت زیادی کرده‌ام.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "b1-l30-002-additional-2",
+      "de": "Den Fortschritt bei der Arbeit können wir jede Woche gemeinsam besprechen.",
+      "fa": "می‌توانیم هر هفته با هم دربارهٔ پیشرفت کار صحبت کنیم.",
+      "origin": "authored"
+    }
+  ],
+  "b1-l30-003": [
+    {
+      "exampleId": "b1-l30-003-additional-1",
+      "de": "Die Wohnung gefällt mir, sie ist jedoch zu teuer.",
+      "fa": "از آن خانه خوشم می‌آید، اما بیش از حد گران است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "b1-l30-003-additional-2",
+      "de": "Ich habe mich gut vorbereitet, bei der Prüfung war ich jedoch sehr nervös.",
+      "fa": "خوب آماده شده بودم، با این حال هنگام امتحان خیلی مضطرب بودم.",
+      "origin": "authored"
+    }
+  ],
+  "b1-l30-004": [
+    {
+      "exampleId": "b1-l30-004-additional-1",
+      "de": "Nur eine Minderheit der Teilnehmer war gegen den neuen Plan.",
+      "fa": "فقط اقلیتی از شرکت‌کنندگان مخالف طرح جدید بودند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "b1-l30-004-additional-2",
+      "de": "Auch die Meinung einer Minderheit sollte in der Diskussion gehört werden.",
+      "fa": "در بحث باید به نظر اقلیت هم گوش داده شود.",
+      "origin": "authored"
+    }
+  ],
+  "b1-l30-005": [
+    {
+      "exampleId": "b1-l30-005-additional-1",
+      "de": "Zum Frühstück esse ich gern frische Trauben mit Joghurt.",
+      "fa": "دوست دارم برای صبحانه انگور تازه با ماست بخورم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "b1-l30-005-additional-2",
+      "de": "Die Trauben vom Markt sind süßer als die aus dem Supermarkt.",
+      "fa": "انگورهای بازار از انگورهای سوپرمارکت شیرین‌ترند.",
+      "origin": "authored"
+    }
   ]
 }
