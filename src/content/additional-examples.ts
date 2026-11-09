@@ -6988,6 +6988,566 @@ export const additionalExamplesByEntry: Record<string, Example[]> = {
       "origin": "authored"
     }
   ],
+  "a2-l12-001": [
+    {
+      "exampleId": "a2-l12-001-additional-1",
+      "de": "Ich möchte fünfzig Euro abheben.",
+      "fa": "می‌خواهم پنجاه یورو پول برداشت کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-001-additional-2",
+      "de": "Unser Flugzeug hebt um zehn Uhr ab.",
+      "fa": "هواپیمای ما ساعت ده از زمین بلند می‌شود.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-002": [
+    {
+      "exampleId": "a2-l12-002-additional-1",
+      "de": "Die Firma hat einen neuen Auftrag bekommen.",
+      "fa": "شرکت یک سفارش تازه گرفته است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-002-additional-2",
+      "de": "Wir müssen den Auftrag bis Freitag erledigen.",
+      "fa": "باید این مأموریت کاری را تا جمعه انجام بدهیم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-003": [
+    {
+      "exampleId": "a2-l12-003-additional-1",
+      "de": "Wo ist bitte der Ausgang?",
+      "fa": "ببخشید، خروجی کجاست؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-003-additional-2",
+      "de": "Am Ausgang wartet meine Schwester auf mich.",
+      "fa": "خواهرم کنار خروجی منتظرم است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-004": [
+    {
+      "exampleId": "a2-l12-004-additional-1",
+      "de": "Darf ich bitte Ihren Ausweis sehen?",
+      "fa": "ممکن است لطفاً کارت شناسایی‌تان را ببینم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-004-additional-2",
+      "de": "Ich habe meinen Ausweis zu Hause vergessen.",
+      "fa": "کارت شناسایی‌ام را در خانه جا گذاشته‌ام.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-005": [
+    {
+      "exampleId": "a2-l12-005-additional-1",
+      "de": "Ich habe heute kein Bargeld dabei.",
+      "fa": "امروز پول نقد همراهم نیست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-005-additional-2",
+      "de": "Kann ich hier mit Bargeld bezahlen?",
+      "fa": "می‌توانم اینجا نقدی پرداخت کنم؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-006": [
+    {
+      "exampleId": "a2-l12-006-additional-1",
+      "de": "Welche Bedingungen muss ich für den Kurs erfüllen?",
+      "fa": "برای این دوره باید چه شرایطی داشته باشم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-006-additional-2",
+      "de": "Unter dieser Bedingung bin ich einverstanden.",
+      "fa": "با این شرط موافقم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-007": [
+    {
+      "exampleId": "a2-l12-007-additional-1",
+      "de": "Können Sie mich zu Ihren Konten beraten?",
+      "fa": "می‌توانید دربارهٔ حساب‌هایتان به من مشاوره بدهید؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-007-additional-2",
+      "de": "Bei der Bank hat man uns gut beraten.",
+      "fa": "در بانک به ما خوب مشاوره دادند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-008": [
+    {
+      "exampleId": "a2-l12-008-additional-1",
+      "de": "Für eine Beratung brauche ich einen Termin.",
+      "fa": "برای مشاوره به وقت قبلی نیاز دارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-008-additional-2",
+      "de": "Die Beratung bei der Bank ist kostenlos.",
+      "fa": "مشاوره در بانک رایگان است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-009": [
+    {
+      "exampleId": "a2-l12-009-additional-1",
+      "de": "Ich möchte Geld auf mein Konto einzahlen.",
+      "fa": "می‌خواهم به حسابم پول واریز کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-009-additional-2",
+      "de": "Kann ich hier auch Münzen einzahlen?",
+      "fa": "اینجا می‌توانم سکه هم به حساب واریز کنم؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-010": [
+    {
+      "exampleId": "a2-l12-010-additional-1",
+      "de": "Der Name des Empfängers steht oben.",
+      "fa": "نام گیرنده بالا نوشته شده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-010-additional-2",
+      "de": "Bitte kontrollieren Sie die Adresse des Empfängers.",
+      "fa": "لطفاً آدرس گیرنده را بررسی کنید.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-011": [
+    {
+      "exampleId": "a2-l12-011-additional-1",
+      "de": "Meine Firma hat ein Büro in Berlin.",
+      "fa": "شرکت من در برلین یک دفتر دارد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-011-additional-2",
+      "de": "Bei welcher Firma arbeiten Sie?",
+      "fa": "در کدام شرکت کار می‌کنید؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-012": [
+    {
+      "exampleId": "a2-l12-012-additional-1",
+      "de": "Wir reisen diesmal mit dem Flugzeug.",
+      "fa": "این بار با هواپیما سفر می‌کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-012-additional-2",
+      "de": "Das Flugzeug nach Hamburg ist schon voll.",
+      "fa": "هواپیمای هامبورگ از قبل پر شده است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-013": [
+    {
+      "exampleId": "a2-l12-013-additional-1",
+      "de": "Die Freiheit ist ihm sehr wichtig.",
+      "fa": "آزادی برای او خیلی مهم است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-013-additional-2",
+      "de": "In meiner Freizeit genieße ich die Freiheit, nichts zu planen.",
+      "fa": "در وقت آزادم از آزادیِ برنامه‌ریزی نکردن لذت می‌برم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-014": [
+    {
+      "exampleId": "a2-l12-014-additional-1",
+      "de": "Bitte tragen Sie hier Ihr Geburtsdatum ein.",
+      "fa": "لطفاً تاریخ تولدتان را اینجا وارد کنید.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-014-additional-2",
+      "de": "Mein Geburtsdatum steht auf dem Ausweis.",
+      "fa": "تاریخ تولدم روی کارت شناسایی نوشته شده است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-015": [
+    {
+      "exampleId": "a2-l12-015-additional-1",
+      "de": "Was ist Ihr Geburtsort?",
+      "fa": "محل تولد شما کجاست؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-015-additional-2",
+      "de": "Als Geburtsort habe ich Hamburg angegeben.",
+      "fa": "من هامبورگ را به‌عنوان محل تولدم نوشته‌ام.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-016": [
+    {
+      "exampleId": "a2-l12-016-additional-1",
+      "de": "Mein Gehalt kommt am Ende des Monats.",
+      "fa": "حقوقم آخر ماه واریز می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-016-additional-2",
+      "de": "Wie hoch ist das Gehalt für diese Arbeit?",
+      "fa": "حقوق این کار چقدر است؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-017": [
+    {
+      "exampleId": "a2-l12-017-additional-1",
+      "de": "Der Geldautomat steht neben der Bank.",
+      "fa": "دستگاه خودپرداز کنار بانک است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-017-additional-2",
+      "de": "An diesem Geldautomaten kann man kostenlos Geld abheben.",
+      "fa": "در این دستگاه خودپرداز می‌شود بدون کارمزد پول برداشت کرد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-018": [
+    {
+      "exampleId": "a2-l12-018-additional-1",
+      "de": "Ich möchte ein Konto eröffnen.",
+      "fa": "می‌خواهم یک حساب بانکی باز کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-018-additional-2",
+      "de": "Auf meinem Konto sind noch hundert Euro.",
+      "fa": "هنوز صد یورو در حسابم هست.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-019": [
+    {
+      "exampleId": "a2-l12-019-additional-1",
+      "de": "Kinder fahren mit diesem Bus kostenlos.",
+      "fa": "کودکان با این اتوبوس رایگان سفر می‌کنند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-019-additional-2",
+      "de": "Sie können kostenlos anrufen.",
+      "fa": "می‌توانید رایگان تماس بگیرید.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-020": [
+    {
+      "exampleId": "a2-l12-020-additional-1",
+      "de": "Für das Haus brauchen wir einen Kredit.",
+      "fa": "برای خانه به وام نیاز داریم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-020-additional-2",
+      "de": "Ich frage die Bank nach einem Kredit.",
+      "fa": "از بانک دربارهٔ وام می‌پرسم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-021": [
+    {
+      "exampleId": "a2-l12-021-additional-1",
+      "de": "Kann ich mit Kreditkarte bezahlen?",
+      "fa": "می‌توانم با کارت اعتباری پرداخت کنم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-021-additional-2",
+      "de": "Meine Kreditkarte ist noch bis Dezember gültig.",
+      "fa": "کارت اعتباری من تا دسامبر اعتبار دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-022": [
+    {
+      "exampleId": "a2-l12-022-additional-1",
+      "de": "Die Prüfung findet mündlich statt.",
+      "fa": "امتحان به‌صورت شفاهی برگزار می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-022-additional-2",
+      "de": "Ich habe die Antwort nur mündlich bekommen.",
+      "fa": "من پاسخ را فقط شفاهی دریافت کرده‌ام.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-023": [
+    {
+      "exampleId": "a2-l12-023-additional-1",
+      "de": "Meine Nase ist seit gestern zu.",
+      "fa": "بینی‌ام از دیروز گرفته است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-023-additional-2",
+      "de": "Das Kind hat eine kleine rote Nase.",
+      "fa": "این کودک یک بینی کوچک و قرمز دارد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-024": [
+    {
+      "exampleId": "a2-l12-024-additional-1",
+      "de": "Heute ist niemand im Büro.",
+      "fa": "امروز هیچ‌کس در دفتر نیست.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-024-additional-2",
+      "de": "Niemand hat mir auf meine Frage geantwortet.",
+      "fa": "هیچ‌کس به سؤالم جواب نداده است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-025": [
+    {
+      "exampleId": "a2-l12-025-additional-1",
+      "de": "Wir rufen die Polizei, weil unser Auto weg ist.",
+      "fa": "چون ماشینمان نیست، به پلیس زنگ می‌زنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-025-additional-2",
+      "de": "Die Polizei kontrolliert die Ausweise.",
+      "fa": "پلیس کارت‌های شناسایی را بررسی می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-026": [
+    {
+      "exampleId": "a2-l12-026-additional-1",
+      "de": "Der Polizist zeigt uns den Weg.",
+      "fa": "پلیس مسیر را به ما نشان می‌دهد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-026-additional-2",
+      "de": "Ich frage einen Polizisten nach der Adresse.",
+      "fa": "من آدرس را از یک پلیس می‌پرسم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-027": [
+    {
+      "exampleId": "a2-l12-027-additional-1",
+      "de": "Kann ich bitte eine Quittung bekommen?",
+      "fa": "ممکن است لطفاً یک رسید بدهید؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-027-additional-2",
+      "de": "Bewahren Sie die Quittung gut auf.",
+      "fa": "رسید را خوب نگه دارید.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-028": [
+    {
+      "exampleId": "a2-l12-028-additional-1",
+      "de": "Wir fahren mit dem Schiff über den See.",
+      "fa": "ما با کشتی از دریاچه عبور می‌کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-028-additional-2",
+      "de": "Das Schiff kommt erst am Abend an.",
+      "fa": "کشتی تازه شب می‌رسد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-029": [
+    {
+      "exampleId": "a2-l12-029-additional-1",
+      "de": "Ich habe Schnupfen, aber kein Fieber.",
+      "fa": "آبریزش بینی دارم، ولی تب ندارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-029-additional-2",
+      "de": "Wegen des Schnupfens kann ich schlecht schlafen.",
+      "fa": "به‌خاطر گرفتگی و آبریزش بینی بد می‌خوابم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-030": [
+    {
+      "exampleId": "a2-l12-030-additional-1",
+      "de": "Ich möchte mich für den Deutschkurs anmelden.",
+      "fa": "می‌خواهم در کلاس آلمانی ثبت‌نام کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-030-additional-2",
+      "de": "Hast du dich schon bei der Schule angemeldet?",
+      "fa": "قبلاً در مدرسه ثبت‌نام کرده‌ای؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-031": [
+    {
+      "exampleId": "a2-l12-031-additional-1",
+      "de": "Wir sparen für eine Reise.",
+      "fa": "ما برای یک سفر پس‌انداز می‌کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-031-additional-2",
+      "de": "Mit dem Fahrrad spare ich jeden Monat Geld.",
+      "fa": "با دوچرخه رفتن هر ماه در هزینه‌ها صرفه‌جویی می‌کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-032": [
+    {
+      "exampleId": "a2-l12-032-additional-1",
+      "de": "Die Temperatur liegt heute bei zwanzig Grad.",
+      "fa": "دما امروز حدود بیست درجه است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-032-additional-2",
+      "de": "Im Zimmer ist die Temperatur angenehm.",
+      "fa": "دمای اتاق مطبوع است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-033": [
+    {
+      "exampleId": "a2-l12-033-additional-1",
+      "de": "Ich überweise die Miete jeden Monat.",
+      "fa": "من اجاره را هر ماه انتقال بانکی می‌دهم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-033-additional-2",
+      "de": "Bitte überweisen Sie den Betrag bis Freitag.",
+      "fa": "لطفاً مبلغ را تا جمعه واریز کنید.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-034": [
+    {
+      "exampleId": "a2-l12-034-additional-1",
+      "de": "Die Überweisung dauert einen Tag.",
+      "fa": "انتقال بانکی یک روز طول می‌کشد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-034-additional-2",
+      "de": "Für diese Überweisung brauche ich die Kontonummer.",
+      "fa": "برای این انتقال بانکی به شمارهٔ حساب نیاز دارم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-035": [
+    {
+      "exampleId": "a2-l12-035-additional-1",
+      "de": "Der Arzt untersucht meinen Rücken.",
+      "fa": "پزشک کمرم را معاینه می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-035-additional-2",
+      "de": "Vor dem Flug hat sie ein Arzt untersucht.",
+      "fa": "پیش از پرواز یک پزشک او را معاینه کرده است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-036": [
+    {
+      "exampleId": "a2-l12-036-additional-1",
+      "de": "Wir vereinbaren einen Termin für Montag.",
+      "fa": "ما برای دوشنبه وقت تعیین می‌کنیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-036-additional-2",
+      "de": "Welche Uhrzeit haben wir vereinbart?",
+      "fa": "چه ساعتی را با هم توافق کرده بودیم؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-037": [
+    {
+      "exampleId": "a2-l12-037-additional-1",
+      "de": "Ich habe meinen Schlüssel verloren.",
+      "fa": "من کلیدم را گم کرده‌ام.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-037-additional-2",
+      "de": "Unsere Mannschaft hat das Spiel verloren.",
+      "fa": "تیم ما بازی را باخته است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-038": [
+    {
+      "exampleId": "a2-l12-038-additional-1",
+      "de": "Welche Versicherung brauche ich für mein Auto?",
+      "fa": "برای ماشینم به چه بیمه‌ای نیاز دارم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-038-additional-2",
+      "de": "Die Versicherung bezahlt einen Teil der Kosten.",
+      "fa": "بیمه بخشی از هزینه‌ها را پرداخت می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-039": [
+    {
+      "exampleId": "a2-l12-039-additional-1",
+      "de": "Wann muss ich das Buch zurückgeben?",
+      "fa": "چه زمانی باید کتاب را پس بدهم؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-039-additional-2",
+      "de": "Sie gibt mir das Geld morgen zurück.",
+      "fa": "او فردا پول را به من پس می‌دهد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l12-040": [
+    {
+      "exampleId": "a2-l12-040-additional-1",
+      "de": "Kannst du den Text kurz zusammenfassen?",
+      "fa": "می‌توانی متن را کوتاه خلاصه کنی؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l12-040-additional-2",
+      "de": "Am Ende fassen wir die wichtigsten Punkte zusammen.",
+      "fa": "در پایان مهم‌ترین نکته‌ها را خلاصه می‌کنیم.",
+      "origin": "authored"
+    }
+  ],
   "b1-l30-001": [
     {
       "exampleId": "b1-l30-001-additional-1",

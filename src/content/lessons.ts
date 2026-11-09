@@ -7,8 +7,9 @@ import { lessonEightBundle } from './lesson-eight.ts'
 import { lessonNineBundle } from './lesson-nine.ts'
 import { lessonTenBundle } from './lesson-ten.ts'
 import { lessonElevenBundle } from './lesson-eleven.ts'
+import { lessonTwelveBundle } from './lesson-twelve.ts'
 import { lessonThirtyBundle } from './lesson-thirty.ts'
 import { withTextbookStudyOrder } from './textbook-study-order.ts'
 
 /** One registry for enabled lessons; source-only lesson catalogs remain independent. */
-export const lessonBundles = [lessonOneBundle, lessonFourBundle, lessonFiveBundle, lessonSixBundle, lessonSevenBundle, lessonEightBundle, lessonNineBundle, lessonTenBundle, lessonElevenBundle, lessonThirtyBundle].map(withTextbookStudyOrder)
+export const lessonBundles = [lessonOneBundle, lessonFourBundle, lessonFiveBundle, lessonSixBundle, lessonSevenBundle, lessonEightBundle, lessonNineBundle, lessonTenBundle, lessonElevenBundle, lessonTwelveBundle, lessonThirtyBundle].map(withTextbookStudyOrder)

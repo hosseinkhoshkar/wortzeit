@@ -51,7 +51,7 @@ test('a later lesson uses printed pages even when textbook locators include note
 
 test('the catalog preserves existing identities and validates each active lesson', () => {
   assert.deepEqual(validateContent(courseBundle), [])
-  assert.equal(courseBundle.entries.length, 504)
+  assert.equal(courseBundle.entries.length, 544)
   assert.deepEqual(courseBundle.lessons?.map(lesson => lesson.lessonId), lessonBundles.map(bundle => bundle.lesson.lessonId))
   let offset = 0
   for (const bundle of lessonBundles) {
@@ -59,7 +59,7 @@ test('the catalog preserves existing identities and validates each active lesson
       .map(entry => ({ ...entry, examples: entry.examples.slice(0, 1) })), bundle.entries)
     offset += bundle.entries.length
   }
-  assert.equal(new Set(courseBundle.entries.map(entry => entry.entryId)).size, 504)
+  assert.equal(new Set(courseBundle.entries.map(entry => entry.entryId)).size, 544)
   assert.equal(new Set(courseBundle.sourceRefs.map(ref => ref.sourceRefId)).size, courseBundle.sourceRefs.length)
 })
 

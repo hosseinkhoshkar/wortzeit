@@ -1,0 +1,65 @@
+import { buildExcerptLesson, type ExcerptPedagogy } from './excerpt-lesson.ts'
+import { lessonTwelveSourceRows } from './lesson-twelve-source.ts'
+
+// Authored examples and cues keyed by the fixed source row ID.
+const pedagogy: Record<number, ExcerptPedagogy> = {
+  1: ['verb', 'Ich kann am Bahnhof Geld abheben.', 'می‌توانم در ایستگاه قطار پول برداشت کنم.', 'مصدر فعل جداشدنیِ برداشت پول که برای بلندشدن هواپیما هم به کار می‌رود.'],
+  2: ['noun', 'Wir nehmen den Auftrag heute an.', 'امروز سفارش را می‌پذیریم.', 'اسمِ سفارش انجام کار یا مأموریتی که به کسی می‌سپارند، بدون آرتیکل.'],
+  3: ['noun', 'Der Ausgang ist hinter der Treppe.', 'خروجی پشت راه‌پله است.', 'اسمِ راه خروج از یک مکان، بدون آرتیکل.'],
+  4: ['noun', 'Bitte bringen Sie morgen Ihren Ausweis mit.', 'لطفاً فردا کارت شناسایی‌تان را همراه بیاورید.', 'اسمِ مدرکی برای اثبات هویت، بدون آرتیکل.'],
+  5: ['noun', 'Ich nehme etwas Bargeld für den Markt mit.', 'برای خرید از بازار کمی پول نقد می‌برم.', 'اسمِ پول به شکل اسکناس و سکه، بدون آرتیکل.'],
+  6: ['noun', 'Pünktlichkeit ist eine wichtige Bedingung für die Teilnahme.', 'وقت‌شناسی شرط مهمی برای شرکت است.', 'اسمِ شرطی که برای پذیرفتن یا انجام کاری باید برآورده شود، بدون آرتیکل.'],
+  7: ['verb', 'Die Mitarbeiterin kann uns bei der Auswahl beraten.', 'کارمند می‌تواند برای انتخاب به ما مشاوره بدهد.', 'مصدر فعلِ مشاوره‌دادن به کسی برای تصمیم‌گیری.'],
+  8: ['noun', 'Die Beratung hat mir bei der Entscheidung geholfen.', 'مشاوره به من کمک کرد تصمیم بگیرم.', 'اسمِ مشاوره یا راهنمایی برای تصمیم‌گیری، بدون آرتیکل.'],
+  9: ['verb', 'Ich kann das Geld erst morgen einzahlen.', 'تازه فردا می‌توانم پول را به حساب واریز کنم.', 'مصدر فعل جداشدنیِ واریز پول به حساب.'],
+  10: ['noun', 'Der Empfänger hat das Paket am Dienstag bekommen.', 'گیرنده بسته را سه‌شنبه دریافت کرد.', 'اسمِ گیرندهٔ نامه، بسته یا وجه، بدون آرتیکل.'],
+  11: ['noun', 'In dieser Firma arbeiten zwanzig Menschen.', 'بیست نفر در این شرکت کار می‌کنند.', 'اسمِ شرکت یا بنگاه تجاری، بدون آرتیکل.'],
+  12: ['noun', 'Das Flugzeug ist gerade gelandet.', 'هواپیما همین حالا فرود آمد.', 'اسمِ وسیلهٔ پرواز مسافری یا باری، بدون آرتیکل.'],
+  13: ['noun', 'Für sie bedeutet Freiheit, selbst entscheiden zu können.', 'برای او آزادی یعنی بتواند خودش تصمیم بگیرد.', 'اسمِ آزادی و اختیار، بدون آرتیکل.'],
+  14: ['noun', 'Das Geburtsdatum fehlt auf dem Formular.', 'تاریخ تولد در فرم درج نشده است.', 'اسم مرکبِ تاریخ تولد شامل روز، ماه و سال، بدون آرتیکل.'],
+  15: ['noun', 'Im Formular fragt man auch nach dem Geburtsort.', 'در فرم محل تولد را هم می‌پرسند.', 'اسم مرکبِ مکانی که فرد در آن به دنیا آمده است، بدون آرتیکل.'],
+  16: ['noun', 'Mit dem neuen Job bekomme ich ein höheres Gehalt.', 'با شغل جدید حقوق بیشتری می‌گیرم.', 'اسمِ مبلغی که کارمند برای کارش دریافت می‌کند، بدون آرتیکل.'],
+  17: ['noun', 'Der Geldautomat vor dem Supermarkt ist kaputt.', 'دستگاه خودپرداز جلوی سوپرمارکت خراب است.', 'اسم مرکبِ دستگاه برداشت پول نقد، بدون آرتیکل.'],
+  18: ['noun', 'Für die Miete nutzen wir ein gemeinsames Konto.', 'برای پرداخت اجاره از حساب مشترک استفاده می‌کنیم.', 'اسمِ حساب بانکی، مفرد و بدون آرتیکل.'],
+  19: ['adjective', 'Der Eintritt ist heute kostenlos.', 'ورود امروز رایگان است.', 'صفتِ چیزی که بابتش هزینه‌ای نمی‌پردازیم.'],
+  20: ['noun', 'Den Kredit zahlen wir in kleinen Raten zurück.', 'وام را در قسط‌های کوچک بازپرداخت می‌کنیم.', 'اسمِ وام یا اعتبار بانکی، بدون آرتیکل.'],
+  21: ['noun', 'Meine Kreditkarte liegt in der Schublade.', 'کارت اعتباری‌ام در کشوست.', 'اسم مرکبِ کارت پرداخت اعتباری، بدون آرتیکل.'],
+  22: ['adjective', 'Wir besprechen die Details mündlich.', 'جزئیات را شفاهی مطرح می‌کنیم.', 'صفتِ شفاهی در برابر کتبی.'],
+  23: ['noun', 'Nach dem Spaziergang war meine Nase ganz kalt.', 'بعد از پیاده‌روی بینی‌ام خیلی سرد بود.', 'اسمِ عضو بویایی، بدون آرتیکل.'],
+  24: ['pronoun', 'In diesem Raum ist gerade niemand.', 'در حال حاضر هیچ‌کس در این اتاق نیست.', 'ضمیر نامعین به معنی هیچ‌کس، در صورت پایه.'],
+  25: ['noun', 'Die Polizei ist schon vor Ort.', 'پلیس از قبل در محل حاضر است.', 'اسمِ نهاد پلیس، بدون آرتیکل.'],
+  26: ['noun', 'Ein Polizist steht am Eingang.', 'یک مأمور پلیس مرد کنار ورودی ایستاده است.', 'اسمِ مأمور پلیس مرد، مفرد و بدون آرتیکل.'],
+  27: ['noun', 'Die Quittung liegt in meiner Tasche.', 'رسید در کیفم است.', 'اسمِ برگه‌ای که انجام پرداخت را تأیید می‌کند، بدون آرتیکل.'],
+  28: ['noun', 'Das Schiff verlässt am Morgen den Hafen.', 'کشتی صبح بندر را ترک می‌کند.', 'اسمِ وسیلهٔ بزرگ حمل‌ونقل روی آب، بدون آرتیکل.'],
+  29: ['noun', 'Der Schnupfen ist fast weg.', 'آبریزش و گرفتگی بینی تقریباً برطرف شده است.', 'اسمِ آبریزش و گرفتگی بینی، بدون آرتیکل.'],
+  30: ['verb', 'Für den Ausflug muss man sich anmelden.', 'برای گردش باید ثبت‌نام کرد.', 'مصدر فعل جداشدنیِ ثبت‌نام‌کردن، همراه با ضمیر انعکاسی سوم‌شخص.'],
+  31: ['verb', 'Wir möchten beim Einkaufen Geld sparen.', 'می‌خواهیم هنگام خرید در هزینه‌ها صرفه‌جویی کنیم.', 'مصدر فعلِ پس‌انداز یا صرفه‌جویی.'],
+  32: ['noun', 'Nachts sinkt die Temperatur deutlich.', 'شب‌ها دما به‌وضوح پایین می‌آید.', 'اسمِ میزان گرمی یا سردی، بدون آرتیکل.'],
+  33: ['verb', 'Morgen kann ich dir das Geld überweisen.', 'فردا می‌توانم پول را برایت انتقال بدهم.', 'مصدر فعلِ انتقال وجه به حساب دیگر که معنی ارجاع‌دادن هم دارد.'],
+  34: ['noun', 'Die Überweisung ist auf dem Kontoauszug zu sehen.', 'انتقال وجه در صورت‌حساب بانکی دیده می‌شود.', 'اسمِ انتقال وجه بانکی یا ارجاع پزشکی، بدون آرتیکل.'],
+  35: ['verb', 'Die Ärztin möchte das Kind gründlich untersuchen.', 'پزشک می‌خواهد کودک را به‌دقت معاینه کند.', 'مصدر فعلِ معاینه یا بررسی دقیق.'],
+  36: ['verb', 'Wir müssen noch einen Termin vereinbaren.', 'هنوز باید برای قرار زمانی تعیین کنیم.', 'مصدر فعلِ توافق بر سر زمان یا گذاشتن قرار.'],
+  37: ['verb', 'Den Schlüssel darfst du nicht verlieren.', 'نباید کلید را گم کنی.', 'مصدر فعلِ گم‌کردن چیزی یا باختن.'],
+  38: ['noun', 'Die Versicherung für das Fahrrad ist noch gültig.', 'بیمهٔ دوچرخه هنوز اعتبار دارد.', 'اسمِ بیمه یا قرارداد پوشش خسارت، بدون آرتیکل.'],
+  39: ['verb', 'Ich möchte dir das geliehene Buch zurückgeben.', 'می‌خواهم کتابی را که قرض گرفته‌ام به تو پس بدهم.', 'مصدر فعل جداشدنیِ پس‌دادن چیزی به صاحب آن.'],
+  40: ['verb', 'Sie soll den Artikel in zwei Sätzen zusammenfassen.', 'قرار است او مقاله را در دو جمله خلاصه کند.', 'مصدر فعل جداشدنیِ خلاصه‌کردن نکات اصلی.'],
+}
+
+export const lessonTwelveBundle = buildExcerptLesson({
+  lesson: { lessonId: 'lesson-12', titleDe: 'Bankgeschichten und andere', titleFa: 'داستان‌های بانک و زندگی', level: 'A2', coverage: 'partial' },
+  contentVersion: 'lesson-12-excerpt-v1',
+  rows: lessonTwelveSourceRows,
+  pedagogy: entryId => pedagogy[Number(entryId.slice(-3))],
+  keyboardAlternatives: {
+    Empfänger: ['Empfaenger'], mündlich: ['muendlich'], überweisen: ['ueberweisen'],
+    Überweisung: ['Ueberweisung'], zurückgeben: ['zurueckgeben'],
+  },
+  overlappingGroups: [
+    ['beraten', 'die Beratung'], ['überweisen', 'die Überweisung'], ['die Polizei', 'der Polizist'],
+    ['das Geburtsdatum', 'der Geburtsort'], ['der Kredit', 'die Kreditkarte'], ['abheben', 'einzahlen', 'sparen'],
+  ],
+  provenance: {
+    file: 'reference/vocabulary/Lesson-12-A2.txt', reviewStatus: 'excerpt-checked',
+    noteFa: '۴۰ مدخل گزیدهٔ درس دوازدهم با معنی، آرتیکل و تمام ارجاع‌های ثبت‌شده آمده‌اند. سطح A2 از فایل مرجع است. مثال‌ها و جمله‌های تمرین تألیفی‌اند.',
+  },
+})
