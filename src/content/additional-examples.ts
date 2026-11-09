@@ -6456,6 +6456,538 @@ export const additionalExamplesByEntry: Record<string, Example[]> = {
       "origin": "authored"
     }
   ],
+  "a2-l11-001": [
+    {
+      "exampleId": "a2-l11-001-additional-1",
+      "de": "Ist diese Adresse noch aktuell?",
+      "fa": "آیا این آدرس هنوز معتبر و به‌روز است؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-001-additional-2",
+      "de": "Die aktuellen Informationen stehen auf unserer Webseite.",
+      "fa": "اطلاعات به‌روز در وب‌سایت ما قرار دارند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-002": [
+    {
+      "exampleId": "a2-l11-002-additional-1",
+      "de": "Die Schule bietet auch Abendkurse an.",
+      "fa": "این مدرسه کلاس شبانه هم ارائه می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-002-additional-2",
+      "de": "Kann ich dir einen Tee anbieten?",
+      "fa": "می‌توانم به تو چای تعارف کنم؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-003": [
+    {
+      "exampleId": "a2-l11-003-additional-1",
+      "de": "Nach der Ankunft rufe ich dich an.",
+      "fa": "بعد از رسیدن به تو زنگ می‌زنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-003-additional-2",
+      "de": "Die Ankunft des Zuges ist um zehn Uhr.",
+      "fa": "زمان رسیدن قطار ساعت ده است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-004": [
+    {
+      "exampleId": "a2-l11-004-additional-1",
+      "de": "Am Samstag räume ich mein Zimmer auf.",
+      "fa": "شنبه اتاقم را مرتب می‌کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-004-additional-2",
+      "de": "Hast du die Küche schon aufgeräumt?",
+      "fa": "آشپزخانه را قبلاً مرتب کرده‌ای؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-005": [
+    {
+      "exampleId": "a2-l11-005-additional-1",
+      "de": "Mein rechtes Auge tut weh.",
+      "fa": "چشم راستم درد می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-005-additional-2",
+      "de": "Mach bitte die Augen zu.",
+      "fa": "لطفاً چشم‌هایت را ببند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-006": [
+    {
+      "exampleId": "a2-l11-006-additional-1",
+      "de": "Meine Schwester lebt im Ausland.",
+      "fa": "خواهرم در خارج از کشور زندگی می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-006-additional-2",
+      "de": "Möchtest du später im Ausland arbeiten?",
+      "fa": "دوست داری در آینده در خارج از کشور کار کنی؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-007": [
+    {
+      "exampleId": "a2-l11-007-additional-1",
+      "de": "Kannst du mir bei der Aussprache dieses Namens helfen?",
+      "fa": "می‌توانی در تلفظ این نام به من کمک کنی؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-007-additional-2",
+      "de": "Wir üben jeden Tag unsere Aussprache.",
+      "fa": "ما هر روز تلفظمان را تمرین می‌کنیم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-008": [
+    {
+      "exampleId": "a2-l11-008-additional-1",
+      "de": "Dieses Restaurant ist in der Stadt sehr bekannt.",
+      "fa": "این رستوران در شهر خیلی شناخته‌شده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-008-additional-2",
+      "de": "Ist dir dieser Name bekannt?",
+      "fa": "این نام برایت آشناست؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-009": [
+    {
+      "exampleId": "a2-l11-009-additional-1",
+      "de": "Der Lehrer ist bei den Schülern beliebt.",
+      "fa": "این معلم در میان دانش‌آموزان محبوب است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-009-additional-2",
+      "de": "Im Sommer ist der Park besonders beliebt.",
+      "fa": "این پارک در تابستان به‌ویژه محبوب است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-010": [
+    {
+      "exampleId": "a2-l11-010-additional-1",
+      "de": "In der Bibliothek kann man in Ruhe lesen.",
+      "fa": "در کتابخانه می‌شود در آرامش مطالعه کرد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-010-additional-2",
+      "de": "Ich hole morgen ein Buch aus der Bibliothek.",
+      "fa": "فردا یک کتاب از کتابخانه می‌گیرم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-011": [
+    {
+      "exampleId": "a2-l11-011-additional-1",
+      "de": "Jeder Bürger kann seine Meinung sagen.",
+      "fa": "هر شهروندی می‌تواند نظرش را بیان کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-011-additional-2",
+      "de": "Der Bürger fragt im Rathaus nach einem Formular.",
+      "fa": "آن شهروند در ساختمان شهرداری سراغ یک فرم را می‌گیرد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-012": [
+    {
+      "exampleId": "a2-l11-012-additional-1",
+      "de": "Sie ist Bürgerin dieser Stadt.",
+      "fa": "او شهروند این شهر است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-012-additional-2",
+      "de": "Eine Bürgerin spricht mit dem Bürgermeister.",
+      "fa": "یک شهروند زن با شهردار صحبت می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-013": [
+    {
+      "exampleId": "a2-l11-013-additional-1",
+      "de": "Hast du schon Erfahrung mit dieser Arbeit?",
+      "fa": "آیا در این کار از قبل تجربه داری؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-013-additional-2",
+      "de": "Die Reise war eine schöne Erfahrung für mich.",
+      "fa": "این سفر برای من تجربهٔ خوبی بود.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-014": [
+    {
+      "exampleId": "a2-l11-014-additional-1",
+      "de": "Auf der Reise haben wir viel erlebt.",
+      "fa": "در سفر تجربه‌های زیادی داشتیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-014-additional-2",
+      "de": "Ich möchte einmal Weihnachten in Deutschland erleben.",
+      "fa": "دوست دارم یک بار کریسمس را در آلمان تجربه کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-015": [
+    {
+      "exampleId": "a2-l11-015-additional-1",
+      "de": "Welches Fach magst du in der Schule am liebsten?",
+      "fa": "در مدرسه کدام درس را بیشتر از همه دوست داری؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-015-additional-2",
+      "de": "Meine Tasche liegt im oberen Fach.",
+      "fa": "کیفم در محفظهٔ بالایی است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-016": [
+    {
+      "exampleId": "a2-l11-016-additional-1",
+      "de": "Die Stadt war mir am Anfang fremd.",
+      "fa": "این شهر در ابتدا برایم ناآشنا بود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-016-additional-2",
+      "de": "Sprichst du gern mit fremden Menschen?",
+      "fa": "دوست داری با آدم‌های ناآشنا صحبت کنی؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-017": [
+    {
+      "exampleId": "a2-l11-017-additional-1",
+      "de": "Welche Fremdsprachen lernst du?",
+      "fa": "چه زبان‌های خارجی‌ای یاد می‌گیری؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-017-additional-2",
+      "de": "Englisch war meine erste Fremdsprache.",
+      "fa": "انگلیسی اولین زبان خارجی من بود.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-018": [
+    {
+      "exampleId": "a2-l11-018-additional-1",
+      "de": "Die Kinder lachen vor Freude.",
+      "fa": "بچه‌ها از خوشحالی می‌خندند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-018-additional-2",
+      "de": "Du hast mir mit deinem Besuch eine Freude gemacht.",
+      "fa": "با آمدنت خوشحالم کردی.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-019": [
+    {
+      "exampleId": "a2-l11-019-additional-1",
+      "de": "Für diesen Kurs muss man eine Gebühr bezahlen.",
+      "fa": "برای این دوره باید هزینه پرداخت کرد.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-019-additional-2",
+      "de": "Wie hoch ist die monatliche Gebühr?",
+      "fa": "هزینهٔ ماهانه چقدر است؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-020": [
+    {
+      "exampleId": "a2-l11-020-additional-1",
+      "de": "Das schmutzige Geschirr kommt in den Geschirrspüler.",
+      "fa": "ظرف‌های کثیف را در ماشین ظرف‌شویی می‌گذاریم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-020-additional-2",
+      "de": "Der Geschirrspüler läuft jeden Abend.",
+      "fa": "ماشین ظرف‌شویی هر شب کار می‌کند.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-021": [
+    {
+      "exampleId": "a2-l11-021-additional-1",
+      "de": "Wenn ich niese, sagt meine Nachbarin: „Gesundheit!“",
+      "fa": "وقتی عطسه می‌کنم، همسایه‌ام می‌گوید: «عافیت باشد!»",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-021-additional-2",
+      "de": "Nach dem Niesen sagt man oft „Gesundheit!“.",
+      "fa": "بعد از عطسه معمولاً می‌گویند «عافیت باشد!».",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-022": [
+    {
+      "exampleId": "a2-l11-022-additional-1",
+      "de": "Sport ist gut für die Gesundheit.",
+      "fa": "ورزش برای سلامتی خوب است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-022-additional-2",
+      "de": "Die Gesundheit meiner Familie ist mir wichtig.",
+      "fa": "سلامتی خانواده‌ام برایم مهم است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-023": [
+    {
+      "exampleId": "a2-l11-023-additional-1",
+      "de": "Ich glaube, der Kurs beginnt um neun.",
+      "fa": "فکر می‌کنم کلاس ساعت نه شروع می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-023-additional-2",
+      "de": "Glaubst du mir diese Geschichte?",
+      "fa": "این داستان را از من باور می‌کنی؟",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-024": [
+    {
+      "exampleId": "a2-l11-024-additional-1",
+      "de": "Wir lesen einen Text über das Grundgesetz.",
+      "fa": "ما متنی دربارهٔ قانون اساسی آلمان می‌خوانیم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-024-additional-2",
+      "de": "Das Grundgesetz ist für alle Menschen in Deutschland wichtig.",
+      "fa": "قانون اساسی آلمان برای همهٔ مردم این کشور مهم است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-025": [
+    {
+      "exampleId": "a2-l11-025-additional-1",
+      "de": "Sie studiert an einer Hochschule in Hamburg.",
+      "fa": "او در یک مؤسسهٔ آموزش عالی در هامبورگ تحصیل می‌کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-025-additional-2",
+      "de": "Die Hochschule bietet einen Deutschkurs an.",
+      "fa": "این مؤسسهٔ آموزش عالی یک دورهٔ آلمانی ارائه می‌دهد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-026": [
+    {
+      "exampleId": "a2-l11-026-additional-1",
+      "de": "Wegen des Hustens konnte ich nicht schlafen.",
+      "fa": "به‌خاطر سرفه نتوانستم بخوابم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-026-additional-2",
+      "de": "Nachts wird der Husten besonders stark.",
+      "fa": "سرفه شب‌ها به‌ویژه شدید می‌شود.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-027": [
+    {
+      "exampleId": "a2-l11-027-additional-1",
+      "de": "Was ist deine Meinung zu diesem Vorschlag?",
+      "fa": "نظرت دربارهٔ این پیشنهاد چیست؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-027-additional-2",
+      "de": "Wir haben nicht immer die gleiche Meinung.",
+      "fa": "ما همیشه هم‌نظر نیستیم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-028": [
+    {
+      "exampleId": "a2-l11-028-additional-1",
+      "de": "Du musst mindestens achtzehn Jahre alt sein.",
+      "fa": "باید دست‌کم هجده سال داشته باشی.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-028-additional-2",
+      "de": "Die Fahrt dauert mindestens zwei Stunden.",
+      "fa": "این مسیر دست‌کم دو ساعت طول می‌کشد.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-029": [
+    {
+      "exampleId": "a2-l11-029-additional-1",
+      "de": "Ich brauche jetzt etwas Ruhe.",
+      "fa": "الان کمی آرامش لازم دارم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-029-additional-2",
+      "de": "Lass mich bitte in Ruhe arbeiten.",
+      "fa": "لطفاً بگذار در آرامش کار کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-030": [
+    {
+      "exampleId": "a2-l11-030-additional-1",
+      "de": "Das neue Semester beginnt im April.",
+      "fa": "نیمسال جدید در آوریل شروع می‌شود.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-030-additional-2",
+      "de": "In diesem Semester habe ich vier Kurse.",
+      "fa": "این نیمسال چهار درس دارم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-031": [
+    {
+      "exampleId": "a2-l11-031-additional-1",
+      "de": "Am Wochenende möchte ich mich erholen.",
+      "fa": "می‌خواهم آخر هفته تجدید قوا کنم.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-031-additional-2",
+      "de": "Sie hat sich nach der Krankheit gut erholt.",
+      "fa": "او بعد از بیماری به‌خوبی بهبود یافته است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-032": [
+    {
+      "exampleId": "a2-l11-032-additional-1",
+      "de": "Wie fühlst du dich heute?",
+      "fa": "امروز حالت چطور است؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-032-additional-2",
+      "de": "Nach dem Spaziergang fühle ich mich besser.",
+      "fa": "بعد از پیاده‌روی حالم بهتر است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-033": [
+    {
+      "exampleId": "a2-l11-033-additional-1",
+      "de": "Wer kümmert sich im Urlaub um die Katze?",
+      "fa": "در تعطیلات چه کسی از گربه مراقبت می‌کند؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-033-additional-2",
+      "de": "Ich kümmere mich heute um das Essen.",
+      "fa": "امروز من به کار غذا رسیدگی می‌کنم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-034": [
+    {
+      "exampleId": "a2-l11-034-additional-1",
+      "de": "Nach dem Studium möchte sie arbeiten.",
+      "fa": "او می‌خواهد بعد از تحصیل دانشگاهی کار کند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-034-additional-2",
+      "de": "Mein Studium dauert noch zwei Jahre.",
+      "fa": "از تحصیل دانشگاهی من هنوز دو سال باقی مانده است.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-035": [
+    {
+      "exampleId": "a2-l11-035-additional-1",
+      "de": "Beim Umzug helfen uns die Nachbarn.",
+      "fa": "همسایه‌ها در اسباب‌کشی به ما کمک می‌کنند.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-035-additional-2",
+      "de": "Der Umzug in die neue Wohnung war anstrengend.",
+      "fa": "اسباب‌کشی به آپارتمان جدید خسته‌کننده بود.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-036": [
+    {
+      "exampleId": "a2-l11-036-additional-1",
+      "de": "Was ist der Unterschied zwischen diesen Wörtern?",
+      "fa": "تفاوت این واژه‌ها چیست؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-036-additional-2",
+      "de": "Zwischen den beiden Wohnungen gibt es große Unterschiede.",
+      "fa": "بین این دو آپارتمان تفاوت‌های زیادی هست.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-037": [
+    {
+      "exampleId": "a2-l11-037-additional-1",
+      "de": "Die neue Arbeit hat meinen Alltag verändert.",
+      "fa": "کار جدید زندگی روزمره‌ام را تغییر داده است.",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-037-additional-2",
+      "de": "Wir wollen an diesem Plan nichts verändern.",
+      "fa": "نمی‌خواهیم چیزی را در این برنامه تغییر بدهیم.",
+      "origin": "authored"
+    }
+  ],
+  "a2-l11-038": [
+    {
+      "exampleId": "a2-l11-038-additional-1",
+      "de": "Bist du schon wach?",
+      "fa": "بیدار شده‌ای؟",
+      "origin": "authored"
+    },
+    {
+      "exampleId": "a2-l11-038-additional-2",
+      "de": "Der Kaffee hält mich abends lange wach.",
+      "fa": "قهوه شب‌ها مدت زیادی بیدار نگهم می‌دارد.",
+      "origin": "authored"
+    }
+  ],
   "b1-l30-001": [
     {
       "exampleId": "b1-l30-001-additional-1",

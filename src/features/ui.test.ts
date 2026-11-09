@@ -299,14 +299,14 @@ test('word details retain the original sentence and allow manual access to the t
   assert.equal((html.match(/<dialog/gu) ?? []).length, 2, 'examples and sources are separate dialogs')
 })
 
-test('the active catalog renders nine lesson cards with independent counts and thirtieth-lesson selection', () => {
+test('the active catalog renders ten lesson cards with independent counts and eleventh-lesson selection', () => {
   const summaries = courseBundle.lessons!.map(lesson => ({ lesson,
     total: courseBundle.entries.filter(entry => entry.introducedInLessonId === lesson.lessonId).length,
     introduced: 0, due: 0, stabilized: 0,
   }))
-  const html = renderToStaticMarkup(createElement(view.LessonCards, { activeLessonId: 'lesson-30', disabled: false, onChoose: async () => {}, summaries }))
-  assert.equal((html.match(/data-lesson-id=/gu) ?? []).length, 9)
-  for (const count of [20, 84, 76, 80, 55, 52, 43, 51, 5]) assert.ok(html.includes(`aria-valuemax="${count}"`))
+  const html = renderToStaticMarkup(createElement(view.LessonCards, { activeLessonId: 'lesson-11', disabled: false, onChoose: async () => {}, summaries }))
+  assert.equal((html.match(/data-lesson-id=/gu) ?? []).length, 10)
+  for (const count of [20, 84, 76, 80, 55, 52, 43, 51, 38, 5]) assert.ok(html.includes(`aria-valuemax="${count}"`))
   assert.ok(html.includes('Endlich ein Zimmer!') && html.includes('بالاخره یک اتاق!'))
   assert.ok(html.includes('Kleider machen Freunde') && html.includes('لباس و دوستان تازه'))
   assert.ok(html.includes('Grüezi in der Schweiz') && html.includes('سلام از سوئیس'))
@@ -317,7 +317,9 @@ test('the active catalog renders nine lesson cards with independent counts and t
   assert.ok(html.includes('A2 · Lektion 10'))
   assert.ok(html.includes('Hauptperson Deutsch') && html.includes('زبان آلمانی در کانون توجه'))
   assert.ok(html.includes('B1 · Lektion 30'))
-  assert.match(html, /class="lesson-card lesson-current" data-lesson-id="lesson-30"/u)
+  assert.ok(html.includes('Neu in Köln') && html.includes('تازه‌وارد در کلن'))
+  assert.ok(html.includes('A2 · Lektion 11'))
+  assert.match(html, /class="lesson-card lesson-current" data-lesson-id="lesson-11"/u)
   assert.match(html, /ورود به درس پنجم/u)
 })
 
