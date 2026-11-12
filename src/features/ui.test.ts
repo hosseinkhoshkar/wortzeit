@@ -22,6 +22,7 @@ const javascript = ts.transpileModule(`${source}\nexport { TaskPanel, SkillDetai
   .replace(/from (['"])(react(?:\/jsx-runtime)?)\1/gu,
     (_match, _quote: string, specifier: string) => `from '${pathToFileURL(require.resolve(specifier)).href}'`)
   .replace("from '../learning/examples.ts'", `from '${new URL('../learning/examples.ts', import.meta.url).href}'`)
+  .replace("from '../content/lesson-vocabulary.ts'", `from '${new URL('../content/lesson-vocabulary.ts', import.meta.url).href}'`)
   .replace("from './pronunciation.ts'", `from '${new URL('./pronunciation.ts', import.meta.url).href}'`)
 const view = await import(`data:text/javascript;base64,${Buffer.from(javascript).toString('base64')}`)
 function renderToStaticMarkup(element: ReactNode) {
@@ -306,7 +307,7 @@ test('the active catalog renders eleven lesson cards with independent counts and
   }))
   const html = renderToStaticMarkup(createElement(view.LessonCards, { activeLessonId: 'lesson-12', disabled: false, onChoose: async () => {}, summaries }))
   assert.equal((html.match(/data-lesson-id=/gu) ?? []).length, 11)
-  for (const count of [20, 84, 76, 80, 55, 52, 43, 51, 38, 40, 5]) assert.ok(html.includes(`aria-valuemax="${count}"`))
+  for (const count of [20, 84, 76, 224, 55, 52, 43, 51, 38, 40, 5]) assert.ok(html.includes(`aria-valuemax="${count}"`))
   assert.ok(html.includes('Endlich ein Zimmer!') && html.includes('بالاخره یک اتاق!'))
   assert.ok(html.includes('Kleider machen Freunde') && html.includes('لباس و دوستان تازه'))
   assert.ok(html.includes('Grüezi in der Schweiz') && html.includes('سلام از سوئیس'))
@@ -358,4 +359,18 @@ test('real lesson-five clozes show Persian cues to distinguish Bad/Badezimmer an
     assert.ok(html.includes(`<p class="writing-cue">${entry.writing.cueFa}</p>`))
     assert.equal((html.match(/class="speech-text"/gu) ?? []).length, 1, 'only the visible sentence has a playback control')
   }
+})
+
+test('shared lesson-six vocabulary displays the same word, examples and progress identity', () => {
+  const task: SessionTask = { taskId: 'shared', kind: 'flashcard', entryId: 'a1-l04-053', revealed: true }
+  const props = expandedProps(task)
+  props.bundle = courseBundle
+  props.state.activeLessonId = 'lesson-06'
+  const entry = courseBundle.entries.find(entry => entry.entryId === 'a1-l04-053')!
+  const before = structuredClone(props.state)
+  const html = renderToStaticMarkup(createElement(view.LessonWordList, { entries: [entry], props }))
+  assert.ok(html.includes('Rock'))
+  assert.ok(html.includes('واژهٔ مشترک با درس دیگر'))
+  assert.ok(html.includes(entry.examples[0].de))
+  assert.deepEqual(props.state, before)
 })

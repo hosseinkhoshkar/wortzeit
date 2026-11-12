@@ -23,7 +23,7 @@ test('lesson ten preserves all 51 source rows and includes three distinct biling
     assert.equal(entry.entryId, `a2-l10-${row.padStart(3, '0')}`)
     assert.equal(entry.nounData ? `${entry.nounData.article} ${entry.lemma}` : entry.lemma, headword)
     assert.equal(entry.meaningFa, meaningFa)
-    assert.deepEqual(entry.sourceRefIds.map(id => lesson.sourceRefs.find(ref => ref.sourceRefId === id)?.locator), locators.split('؛ '))
+    assert.deepEqual(entry.sourceRefIds.filter(id => !id.endsWith('-occurrence-lesson-06')).map(id => lesson.sourceRefs.find(ref => ref.sourceRefId === id)?.locator), locators.split('؛ '))
     assert.equal(entry.enabledExercises.includes('choose-article'), Boolean(entry.nounData))
     assert.ok(!entry.writing.cueFa.includes(entry.lemma))
     assert.equal(entry.examples.length, 3)

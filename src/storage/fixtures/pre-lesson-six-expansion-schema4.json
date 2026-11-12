@@ -1,0 +1,287 @@
+{
+  "schemaVersion": 4,
+  "learningPolicyVersion": "learning-policy-v2",
+  "contentVersion": "course-a1-lessons-01-04-v1",
+  "revision": 4,
+  "settings": {
+    "studyTimeZone": "Europe/Berlin",
+    "maxNewPerSession": 5,
+    "targetActiveMs": 1200000
+  },
+  "progress": {
+    "a1-l06-025": {
+      "entryId": "a1-l06-025",
+      "introducedAt": "2026-11-12T10:00:00.000Z",
+      "initialRecallPending": true,
+      "nextDueAt": null,
+      "intervalIndex": 0,
+      "lastSuccessDate": null,
+      "scheduledReviewDates": [],
+      "correctCount": 0,
+      "wrongCount": 0,
+      "pendingError": null,
+      "skills": {
+        "meaning": {
+          "correct": 0,
+          "wrong": 0,
+          "assisted": 0,
+          "unassistedCorrect": 0,
+          "lastAttemptAt": null
+        },
+        "writing": {
+          "correct": 0,
+          "wrong": 0,
+          "assisted": 0,
+          "unassistedCorrect": 0,
+          "lastAttemptAt": null
+        },
+        "article": null
+      }
+    },
+    "a1-l06-055": {
+      "entryId": "a1-l06-055",
+      "introducedAt": "2026-11-12T10:00:00.000Z",
+      "initialRecallPending": true,
+      "nextDueAt": null,
+      "intervalIndex": 0,
+      "lastSuccessDate": null,
+      "scheduledReviewDates": [],
+      "correctCount": 0,
+      "wrongCount": 0,
+      "pendingError": null,
+      "skills": {
+        "meaning": {
+          "correct": 0,
+          "wrong": 0,
+          "assisted": 0,
+          "unassistedCorrect": 0,
+          "lastAttemptAt": null
+        },
+        "writing": {
+          "correct": 0,
+          "wrong": 0,
+          "assisted": 0,
+          "unassistedCorrect": 0,
+          "lastAttemptAt": null
+        },
+        "article": null
+      }
+    }
+  },
+  "reverseProgress": {},
+  "reverseReviews": [],
+  "attempts": [],
+  "session": {
+    "sessionId": "before-six-expansion",
+    "contentVersion": "course-a1-lessons-01-04-v1",
+    "state": "active",
+    "lessonId": "lesson-06",
+    "startedAt": "2026-11-12T10:00:00.000Z",
+    "endedAt": null,
+    "queue": [
+      {
+        "taskId": "before-six-expansion:new:a1-l06-025:card",
+        "kind": "flashcard",
+        "entryId": "a1-l06-025",
+        "revealed": true
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-055:card",
+        "kind": "flashcard",
+        "entryId": "a1-l06-055",
+        "revealed": false
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-065:card",
+        "kind": "flashcard",
+        "entryId": "a1-l06-065",
+        "revealed": false
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-074:card",
+        "kind": "flashcard",
+        "entryId": "a1-l06-074",
+        "revealed": false
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-077:card",
+        "kind": "flashcard",
+        "entryId": "a1-l06-077",
+        "revealed": false
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-025:meaning",
+        "kind": "choose-meaning",
+        "entryId": "a1-l06-025",
+        "optionIds": [
+          "a1-l06-016",
+          "a1-l06-027",
+          "a1-l06-025",
+          "a1-l06-011"
+        ]
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-025:cloze",
+        "kind": "cloze",
+        "entryId": "a1-l06-025",
+        "cycleKind": "initial"
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-025:write",
+        "kind": "write-word",
+        "entryId": "a1-l06-025",
+        "cycleKind": "initial"
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-055:meaning",
+        "kind": "choose-meaning",
+        "entryId": "a1-l06-055",
+        "optionIds": [
+          "a1-l06-071",
+          "a1-l06-055",
+          "a1-l06-061",
+          "a1-l06-068"
+        ]
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-055:write",
+        "kind": "write-word",
+        "entryId": "a1-l06-055",
+        "cycleKind": "initial"
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-055:cloze",
+        "kind": "cloze",
+        "entryId": "a1-l06-055",
+        "cycleKind": "initial"
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-065:meaning",
+        "kind": "choose-meaning",
+        "entryId": "a1-l06-065",
+        "optionIds": [
+          "a1-l06-065",
+          "a1-l06-040",
+          "a1-l06-041",
+          "a1-l06-039"
+        ]
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-065:cloze",
+        "kind": "cloze",
+        "entryId": "a1-l06-065",
+        "cycleKind": "initial"
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-065:write",
+        "kind": "write-word",
+        "entryId": "a1-l06-065",
+        "cycleKind": "initial"
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-065:article",
+        "kind": "choose-article",
+        "entryId": "a1-l06-065",
+        "options": [
+          "die",
+          "das",
+          "der"
+        ]
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-074:meaning",
+        "kind": "choose-meaning",
+        "entryId": "a1-l06-074",
+        "optionIds": [
+          "a1-l06-060",
+          "a1-l06-062",
+          "a1-l06-057",
+          "a1-l06-074"
+        ]
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-074:write",
+        "kind": "write-word",
+        "entryId": "a1-l06-074",
+        "cycleKind": "initial"
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-074:cloze",
+        "kind": "cloze",
+        "entryId": "a1-l06-074",
+        "cycleKind": "initial"
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-074:article",
+        "kind": "choose-article",
+        "entryId": "a1-l06-074",
+        "options": [
+          "das",
+          "der",
+          "die"
+        ]
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-077:meaning",
+        "kind": "choose-meaning",
+        "entryId": "a1-l06-077",
+        "optionIds": [
+          "a1-l06-008",
+          "a1-l06-003",
+          "a1-l06-077",
+          "a1-l06-006"
+        ]
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-077:cloze",
+        "kind": "cloze",
+        "entryId": "a1-l06-077",
+        "cycleKind": "initial"
+      },
+      {
+        "taskId": "before-six-expansion:new:a1-l06-077:write",
+        "kind": "write-word",
+        "entryId": "a1-l06-077",
+        "cycleKind": "initial"
+      },
+      {
+        "taskId": "before-six-expansion:match",
+        "kind": "match",
+        "entryIds": [
+          "a1-l06-025",
+          "a1-l06-055",
+          "a1-l06-065",
+          "a1-l06-074"
+        ],
+        "leftOrder": [
+          "a1-l06-065",
+          "a1-l06-025",
+          "a1-l06-074",
+          "a1-l06-055"
+        ],
+        "rightOrder": [
+          "a1-l06-065",
+          "a1-l06-025",
+          "a1-l06-055",
+          "a1-l06-074"
+        ],
+        "matchedEntryIds": []
+      }
+    ],
+    "cursor": 1,
+    "introducedEntryIds": [
+      "a1-l06-025",
+      "a1-l06-055"
+    ],
+    "draft": "",
+    "feedback": null,
+    "activeMs": 0,
+    "targetAcknowledged": false,
+    "targetAcknowledgedDate": null
+  },
+  "assistanceEvents": [],
+  "dailyActivity": {},
+  "activityEventIds": [],
+  "activeLessonId": "lesson-06",
+  "savedSessions": {}
+}

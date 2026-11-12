@@ -12,4 +12,4 @@ import { lessonThirtyBundle } from './lesson-thirty.ts'
 import { withTextbookStudyOrder } from './textbook-study-order.ts'
 
 /** One registry for enabled lessons; source-only lesson catalogs remain independent. */
-export const lessonBundles = [lessonOneBundle, lessonFourBundle, lessonFiveBundle, lessonSixBundle, lessonSevenBundle, lessonEightBundle, lessonNineBundle, lessonTenBundle, lessonElevenBundle, lessonTwelveBundle, lessonThirtyBundle].map(withTextbookStudyOrder)
+export const lessonBundles = [lessonOneBundle, lessonFourBundle, lessonFiveBundle, lessonSixBundle, lessonSevenBundle, lessonEightBundle, lessonNineBundle, lessonTenBundle, lessonElevenBundle, lessonTwelveBundle, lessonThirtyBundle].map(bundle => withTextbookStudyOrder(bundle, bundle.lesson.lessonId === 'lesson-06' ? 80 : undefined))

@@ -653,7 +653,7 @@ try {
     assert.ok((await lessonPage.locator('.hero-panel').innerText()).includes('Endlich ein Zimmer!'))
     await lessonPage.getByRole('button', { name: 'درس‌ها', exact: true }).click()
     assert.equal(await lessonPage.locator('.lesson-card').count(), 11)
-    for (const [id, count] of [['a1-lesson-01', 20], ['lesson-04', 84], ['lesson-05', 76], ['lesson-06', 80], ['lesson-07', 55], ['lesson-08', 52], ['lesson-09', 43], ['lesson-10', 51], ['lesson-11', 38], ['lesson-12', 40], ['lesson-30', 5]]) {
+    for (const [id, count] of [['a1-lesson-01', 20], ['lesson-04', 84], ['lesson-05', 76], ['lesson-06', 224], ['lesson-07', 55], ['lesson-08', 52], ['lesson-09', 43], ['lesson-10', 51], ['lesson-11', 38], ['lesson-12', 40], ['lesson-30', 5]]) {
       assert.equal(await lessonPage.locator(`[data-lesson-id="${id}"] [role=progressbar]`).getAttribute('aria-valuemax'), String(count))
     }
     await saveScreenshot(lessonPage, 'lesson-five-catalog-360.png')
@@ -955,7 +955,7 @@ try {
       completedReverseFixture: () => completedReverseFixture('lesson-05'), installClock, lessonId: 'lesson-05' })
   })
   for (const [label, lessonId, title, count, firstWord] of [
-    ['lesson-six', 'lesson-06', 'Kleider machen Freunde', 80, 'freundlich'],
+    ['lesson-six', 'lesson-06', 'Kleider machen Freunde', 224, 'freundlich'],
     ['lesson-seven', 'lesson-07', 'Grüezi in der Schweiz', 55, 'der Bahnhof'],
     ['lesson-twelve', 'lesson-12', 'Bankgeschichten und andere', 40, 'abheben'],
     ['lesson-eleven', 'lesson-11', 'Neu in Köln', 38, 'das Ausland'],
@@ -972,7 +972,15 @@ try {
         await page.goto(`${origin}/?lesson=${lessonId}`)
         await page.getByRole('heading', { name: title }).waitFor()
         await page.getByRole('button', { name: 'واژه‌ها', exact: true }).click()
-        assert.equal(await page.locator('.word-item').count(), count)
+        assert.equal(await page.locator('.word-item').count(), lessonId === 'lesson-06' ? count + 12 : count)
+        if (lessonId === 'lesson-06') {
+          const search = page.getByRole('searchbox')
+          for (const word of ['Kleidungsstück', 'Waschsalon', 'Baumwolle', 'Rock', 'natürlich']) {
+            await search.fill(word)
+            assert.ok(await page.locator('.word-item').count() >= 1, word + ' is present')
+          }
+          await search.fill('')
+        }
         assert.equal(await page.locator('.page-intro .level-pill').innerText(), lessonId === 'lesson-30' ? 'B1' : ['lesson-09', 'lesson-10', 'lesson-11', 'lesson-12'].includes(lessonId) ? 'A2' : 'A1')
         assert.equal(await page.locator('.word-item').first().locator('.german-word').first().innerText(), firstWord)
         await page.locator('.offline-pill').filter({ hasText: 'آمادهٔ آفلاین' }).waitFor()

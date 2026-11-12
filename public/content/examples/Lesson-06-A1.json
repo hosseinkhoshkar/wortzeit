@@ -1443,6 +1443,2598 @@
           "origin": "authored"
         }
       ]
+    },
+    {
+      "row": 81,
+      "sourceKey": "Lesson-06-A1:081",
+      "word": "das Kleidungsstück",
+      "meaningFa": "تکهٔ لباس",
+      "additionalExamples": [
+        {
+          "de": "Welches Kleidungsstück möchtest du waschen?",
+          "fa": "کدام تکهٔ لباس را می‌خواهی بشویی؟",
+          "origin": "authored"
+        },
+        {
+          "de": "Ein Kleidungsstück liegt noch im Korb.",
+          "fa": "یک تکهٔ لباس هنوز در سبد است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 82,
+      "sourceKey": "Lesson-06-A1:082",
+      "word": "das Sweatshirt",
+      "meaningFa": "سویشرت",
+      "additionalExamples": [
+        {
+          "de": "Das grüne Sweatshirt passt dir gut.",
+          "fa": "سویشرت سبز به تو می‌آید.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich wasche das Sweatshirt heute.",
+          "fa": "امروز سویشرت را می‌شویم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 83,
+      "sourceKey": "Lesson-06-A1:083",
+      "word": "die Weste",
+      "meaningFa": "جلیقه",
+      "additionalExamples": [
+        {
+          "de": "Diese Weste ist sehr warm.",
+          "fa": "این جلیقه خیلی گرم است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Meine Weste hängt neben der Jacke.",
+          "fa": "جلیقه‌ام کنار کاپشن آویزان است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 84,
+      "sourceKey": "Lesson-06-A1:084",
+      "word": "der Jogginganzug",
+      "meaningFa": "گرمکن ورزشی",
+      "additionalExamples": [
+        {
+          "de": "Der Jogginganzug liegt im Schrank.",
+          "fa": "گرمکن ورزشی داخل کمد است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich brauche einen neuen Jogginganzug.",
+          "fa": "به یک گرمکن ورزشی جدید نیاز دارم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 85,
+      "sourceKey": "Lesson-06-A1:085",
+      "word": "der Badeanzug",
+      "meaningFa": "مایوی یک‌تکهٔ زنانه",
+      "additionalExamples": [
+        {
+          "de": "Dieser Badeanzug ist mir zu klein.",
+          "fa": "این مایوی زنانه برایم خیلی کوچک است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Mein Badeanzug ist schwarz und weiß.",
+          "fa": "مایوی من سیاه و سفید است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 86,
+      "sourceKey": "Lesson-06-A1:086",
+      "word": "die Badehose",
+      "meaningFa": "مایوی مردانه",
+      "additionalExamples": [
+        {
+          "de": "Meine Badehose liegt in der Tasche.",
+          "fa": "مایوی من داخل کیف است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Badehose kostet zwanzig Euro.",
+          "fa": "این مایوی مردانه بیست یورو قیمت دارد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 87,
+      "sourceKey": "Lesson-06-A1:087",
+      "word": "das Nachthemd",
+      "meaningFa": "پیراهن خواب",
+      "additionalExamples": [
+        {
+          "de": "Mein Nachthemd ist sehr bequem.",
+          "fa": "پیراهن خوابم خیلی راحت است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich kaufe ein weißes Nachthemd.",
+          "fa": "یک پیراهن خواب سفید می‌خرم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 88,
+      "sourceKey": "Lesson-06-A1:088",
+      "word": "der Schlafanzug",
+      "meaningFa": "لباس خواب دوتکه",
+      "additionalExamples": [
+        {
+          "de": "Mein Schlafanzug ist grau.",
+          "fa": "لباس خواب من خاکستری است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieser Schlafanzug ist angenehm warm.",
+          "fa": "این لباس خواب گرمای مطبوعی دارد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 89,
+      "sourceKey": "Lesson-06-A1:089",
+      "word": "das Unterhemd",
+      "meaningFa": "زیرپوش رکابی",
+      "additionalExamples": [
+        {
+          "de": "Ich trage ein Unterhemd unter dem Hemd.",
+          "fa": "زیر پیراهن یک زیرپوش می‌پوشم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieses Unterhemd ist aus Baumwolle.",
+          "fa": "این زیرپوش رکابی نخی است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 90,
+      "sourceKey": "Lesson-06-A1:090",
+      "word": "die Unterhose",
+      "meaningFa": "شورت زیر",
+      "additionalExamples": [
+        {
+          "de": "Diese Unterhose ist mir zu groß.",
+          "fa": "این شورت زیر برایم خیلی بزرگ است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich lege die Unterhose in den Schrank.",
+          "fa": "شورت زیر را در کمد می‌گذارم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 91,
+      "sourceKey": "Lesson-06-A1:091",
+      "word": "der Strumpf",
+      "meaningFa": "جوراب ساق‌بلند",
+      "additionalExamples": [
+        {
+          "de": "Der Strumpf hat ein Loch.",
+          "fa": "جوراب ساق‌بلند سوراخ دارد.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieser Strumpf ist aus Wolle.",
+          "fa": "این جوراب ساق‌بلند پشمی است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 92,
+      "sourceKey": "Lesson-06-A1:092",
+      "word": "die Strumpfhose",
+      "meaningFa": "جوراب‌شلواری",
+      "additionalExamples": [
+        {
+          "de": "Meine Strumpfhose ist schwarz.",
+          "fa": "جوراب‌شلواری من سیاه است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Strumpfhose ist sehr warm.",
+          "fa": "این جوراب‌شلواری خیلی گرم است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 93,
+      "sourceKey": "Lesson-06-A1:093",
+      "word": "die Krawatte",
+      "meaningFa": "کراوات",
+      "additionalExamples": [
+        {
+          "de": "Seine Krawatte ist dunkelblau.",
+          "fa": "کراوات او آبی تیره است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich schenke meinem Vater eine Krawatte.",
+          "fa": "به پدرم یک کراوات هدیه می‌دهم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 94,
+      "sourceKey": "Lesson-06-A1:094",
+      "word": "ein Paar",
+      "meaningFa": "یک جفت",
+      "additionalExamples": [
+        {
+          "de": "Hier liegt ein Paar Handschuhe.",
+          "fa": "اینجا یک جفت دستکش است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Sie kauft ein Paar Socken.",
+          "fa": "او یک جفت جوراب می‌خرد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 95,
+      "sourceKey": "Lesson-06-A1:095",
+      "word": "ein paar",
+      "meaningFa": "چند تا؛ تعدادی",
+      "additionalExamples": [
+        {
+          "de": "Wir haben noch ein paar Minuten.",
+          "fa": "هنوز چند دقیقه وقت داریم.",
+          "origin": "authored"
+        },
+        {
+          "de": "In der Tasche sind ein paar Bücher.",
+          "fa": "داخل کیف چند کتاب است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 96,
+      "sourceKey": "Lesson-06-A1:096",
+      "word": "beige",
+      "meaningFa": "بژ",
+      "additionalExamples": [
+        {
+          "de": "Mein neuer Mantel ist beige.",
+          "fa": "پالتوی جدید من بژ است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ist diese Tasche beige oder grau?",
+          "fa": "این کیف بژ است یا خاکستری؟",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 97,
+      "sourceKey": "Lesson-06-A1:097",
+      "word": "blau",
+      "meaningFa": "آبی",
+      "additionalExamples": [
+        {
+          "de": "Mein T-Shirt ist blau.",
+          "fa": "تی‌شرت من آبی است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Die Tür im Flur ist blau.",
+          "fa": "درِ راهرو آبی است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 98,
+      "sourceKey": "Lesson-06-A1:098",
+      "word": "gelb",
+      "meaningFa": "زرد",
+      "additionalExamples": [
+        {
+          "de": "Unser Küchenfenster ist gelb.",
+          "fa": "پنجرهٔ آشپزخانهٔ ما زرد است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Blumen sind gelb.",
+          "fa": "این گل‌ها زرد هستند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 99,
+      "sourceKey": "Lesson-06-A1:099",
+      "word": "grün",
+      "meaningFa": "سبز",
+      "additionalExamples": [
+        {
+          "de": "Die Tasche meiner Freundin ist grün.",
+          "fa": "کیف دوستم سبز است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Im Sommer ist der Garten grün.",
+          "fa": "تابستان باغ سبز است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 100,
+      "sourceKey": "Lesson-06-A1:100",
+      "word": "orange",
+      "meaningFa": "نارنجی",
+      "additionalExamples": [
+        {
+          "de": "Die Blume am Fenster ist orange.",
+          "fa": "گل کنار پنجره نارنجی است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Mütze ist orange.",
+          "fa": "این کلاه نارنجی است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 101,
+      "sourceKey": "Lesson-06-A1:101",
+      "word": "rot",
+      "meaningFa": "قرمز",
+      "additionalExamples": [
+        {
+          "de": "Dieses Auto ist rot.",
+          "fa": "این ماشین قرمز است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Der Schal ist rot und weiß.",
+          "fa": "شال‌گردن قرمز و سفید است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 102,
+      "sourceKey": "Lesson-06-A1:102",
+      "word": "türkis",
+      "meaningFa": "فیروزه‌ای",
+      "additionalExamples": [
+        {
+          "de": "Meine Badehose ist türkis.",
+          "fa": "مایوی مردانهٔ من فیروزه‌ای است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieser Gürtel ist türkis.",
+          "fa": "این کمربند فیروزه‌ای است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 103,
+      "sourceKey": "Lesson-06-A1:103",
+      "word": "hellblau",
+      "meaningFa": "آبی روشن",
+      "additionalExamples": [
+        {
+          "de": "Die Wand im Schlafzimmer ist hellblau.",
+          "fa": "دیوار اتاق خواب آبی روشن است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Meine Socken sind hellblau.",
+          "fa": "جوراب‌های من آبی روشن هستند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 104,
+      "sourceKey": "Lesson-06-A1:104",
+      "word": "hellrot",
+      "meaningFa": "قرمز روشن",
+      "additionalExamples": [
+        {
+          "de": "Ihr neuer Schal ist hellrot.",
+          "fa": "شال‌گردن جدید او قرمز روشن است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Die Tasche neben dem Bett ist hellrot.",
+          "fa": "کیف کنار تخت قرمز روشن است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 105,
+      "sourceKey": "Lesson-06-A1:105",
+      "word": "dunkelblau",
+      "meaningFa": "آبی تیره",
+      "additionalExamples": [
+        {
+          "de": "Meine neue Hose ist dunkelblau.",
+          "fa": "شلوار جدید من آبی تیره است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Handschuhe sind dunkelblau.",
+          "fa": "این دستکش‌ها آبی تیره هستند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 106,
+      "sourceKey": "Lesson-06-A1:106",
+      "word": "dunkelrot",
+      "meaningFa": "قرمز تیره",
+      "additionalExamples": [
+        {
+          "de": "Der Rock im Schrank ist dunkelrot.",
+          "fa": "دامن داخل کمد قرمز تیره است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Krawatte ist dunkelrot.",
+          "fa": "این کراوات قرمز تیره است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 107,
+      "sourceKey": "Lesson-06-A1:107",
+      "word": "die Baumwolle",
+      "meaningFa": "پنبه؛ پارچهٔ نخی",
+      "additionalExamples": [
+        {
+          "de": "Dieses Hemd ist aus Baumwolle.",
+          "fa": "این پیراهن نخی است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich wasche Baumwolle und Wolle getrennt.",
+          "fa": "لباس‌های نخی و پشمی را جدا می‌شویم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 108,
+      "sourceKey": "Lesson-06-A1:108",
+      "word": "das Leder",
+      "meaningFa": "چرم",
+      "additionalExamples": [
+        {
+          "de": "Mein Gürtel ist aus Leder.",
+          "fa": "کمربند من چرمی است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Tasche ist nicht aus Leder.",
+          "fa": "این کیف چرمی نیست.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 109,
+      "sourceKey": "Lesson-06-A1:109",
+      "word": "das Polyester",
+      "meaningFa": "پلی‌استر",
+      "additionalExamples": [
+        {
+          "de": "Die Jacke ist aus Polyester.",
+          "fa": "کاپشن از پلی‌استر است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieses Hemd enthält Polyester.",
+          "fa": "این پیراهن پلی‌استر دارد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 110,
+      "sourceKey": "Lesson-06-A1:110",
+      "word": "die Seide",
+      "meaningFa": "ابریشم",
+      "additionalExamples": [
+        {
+          "de": "Diese Bluse ist aus Seide.",
+          "fa": "این بلوز ابریشمی است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich wasche Seide nur von Hand.",
+          "fa": "ابریشم را فقط با دست می‌شویم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 111,
+      "sourceKey": "Lesson-06-A1:111",
+      "word": "die Viskose",
+      "meaningFa": "ویسکوز",
+      "additionalExamples": [
+        {
+          "de": "Der Rock ist aus Viskose.",
+          "fa": "دامن از ویسکوز است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Bluse enthält Viskose.",
+          "fa": "این بلوز ویسکوز دارد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 112,
+      "sourceKey": "Lesson-06-A1:112",
+      "word": "die Wolle",
+      "meaningFa": "پشم",
+      "additionalExamples": [
+        {
+          "de": "Der Schal ist aus Wolle.",
+          "fa": "شال‌گردن پشمی است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich kaufe einen Pullover aus Wolle.",
+          "fa": "یک پلیور پشمی می‌خرم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 113,
+      "sourceKey": "Lesson-06-A1:113",
+      "word": "die Wäsche",
+      "meaningFa": "رخت؛ لباس‌های شستنی",
+      "additionalExamples": [
+        {
+          "de": "Bring bitte deine Wäsche mit.",
+          "fa": "لطفاً لباس‌های شستنی‌ات را همراه بیاور.",
+          "origin": "authored"
+        },
+        {
+          "de": "Meine Wäsche liegt noch im Korb.",
+          "fa": "رخت‌های من هنوز داخل سبد هستند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 114,
+      "sourceKey": "Lesson-06-A1:114",
+      "word": "die Wäscherei",
+      "meaningFa": "رخت‌شویی",
+      "additionalExamples": [
+        {
+          "de": "Ich bringe den Anzug in die Wäscherei.",
+          "fa": "کت‌وشلوار را به رخت‌شویی می‌برم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Neben dem Laden ist eine Wäscherei.",
+          "fa": "کنار مغازه یک رخت‌شویی است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 115,
+      "sourceKey": "Lesson-06-A1:115",
+      "word": "der Waschkorb",
+      "meaningFa": "سبد رخت",
+      "additionalExamples": [
+        {
+          "de": "Stell den Waschkorb ins Bad.",
+          "fa": "سبد رخت را در حمام بگذار.",
+          "origin": "authored"
+        },
+        {
+          "de": "Mein Hemd liegt im Waschkorb.",
+          "fa": "پیراهن من داخل سبد رخت است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 116,
+      "sourceKey": "Lesson-06-A1:116",
+      "word": "die Maschine",
+      "meaningFa": "دستگاه؛ ماشین",
+      "additionalExamples": [
+        {
+          "de": "Diese Maschine ist sehr laut.",
+          "fa": "این دستگاه خیلی پرصداست.",
+          "origin": "authored"
+        },
+        {
+          "de": "Kannst du die Maschine öffnen?",
+          "fa": "می‌توانی دستگاه را باز کنی؟",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 117,
+      "sourceKey": "Lesson-06-A1:117",
+      "word": "das Programm",
+      "meaningFa": "برنامه",
+      "additionalExamples": [
+        {
+          "de": "Welches Programm ist für Wolle richtig?",
+          "fa": "کدام برنامه برای لباس پشمی مناسب است؟",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieses Programm ist sehr kurz.",
+          "fa": "این برنامه خیلی کوتاه است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 118,
+      "sourceKey": "Lesson-06-A1:118",
+      "word": "das Waschprogramm",
+      "meaningFa": "برنامهٔ شست‌وشو",
+      "additionalExamples": [
+        {
+          "de": "Wähle ein Waschprogramm für Baumwolle.",
+          "fa": "یک برنامهٔ شست‌وشوی لباس نخی انتخاب کن.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieses Waschprogramm dauert dreißig Minuten.",
+          "fa": "این برنامهٔ شست‌وشو سی دقیقه طول می‌کشد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 119,
+      "sourceKey": "Lesson-06-A1:119",
+      "word": "das Waschpulver",
+      "meaningFa": "پودر لباس‌شویی",
+      "additionalExamples": [
+        {
+          "de": "Wir brauchen neues Waschpulver.",
+          "fa": "به پودر لباس‌شویی تازه نیاز داریم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Nimm bitte wenig Waschpulver.",
+          "fa": "لطفاً پودر لباس‌شویی کمی بردار.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 120,
+      "sourceKey": "Lesson-06-A1:120",
+      "word": "der Waschsalon",
+      "meaningFa": "لباس‌شویی سلف‌سرویس",
+      "additionalExamples": [
+        {
+          "de": "Wir treffen uns im Waschsalon.",
+          "fa": "در لباس‌شویی سلف‌سرویس همدیگر را می‌بینیم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieser Waschsalon hat sechs Maschinen.",
+          "fa": "این لباس‌شویی سلف‌سرویس شش دستگاه دارد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 121,
+      "sourceKey": "Lesson-06-A1:121",
+      "word": "der Trockner",
+      "meaningFa": "دستگاه خشک‌کن",
+      "additionalExamples": [
+        {
+          "de": "Die Wäsche ist noch im Trockner.",
+          "fa": "رخت‌ها هنوز داخل خشک‌کن هستند.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieser Trockner ist sehr groß.",
+          "fa": "این خشک‌کن خیلی بزرگ است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 122,
+      "sourceKey": "Lesson-06-A1:122",
+      "word": "trocknen",
+      "meaningFa": "خشک‌کردن؛ خشک‌شدن",
+      "additionalExamples": [
+        {
+          "de": "Meine Socken trocknen im Bad.",
+          "fa": "جوراب‌های من در حمام خشک می‌شوند.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir trocknen die Hemden draußen.",
+          "fa": "پیراهن‌ها را بیرون خشک می‌کنیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 123,
+      "sourceKey": "Lesson-06-A1:123",
+      "word": "die Anleitung",
+      "meaningFa": "راهنمای انجام کار",
+      "additionalExamples": [
+        {
+          "de": "Lies bitte zuerst die Anleitung.",
+          "fa": "لطفاً اول راهنما را بخوان.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Anleitung ist leicht zu verstehen.",
+          "fa": "فهمیدن این راهنما آسان است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 124,
+      "sourceKey": "Lesson-06-A1:124",
+      "word": "der Automat",
+      "meaningFa": "دستگاه خودکار",
+      "additionalExamples": [
+        {
+          "de": "Dieser Automat ist leider kaputt.",
+          "fa": "این دستگاه خودکار متأسفانه خراب است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Am Eingang steht ein Automat.",
+          "fa": "کنار ورودی یک دستگاه خودکار است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 125,
+      "sourceKey": "Lesson-06-A1:125",
+      "word": "der Kassenautomat",
+      "meaningFa": "دستگاه پرداخت خودکار",
+      "additionalExamples": [
+        {
+          "de": "Bezahlen Sie bitte am Kassenautomaten.",
+          "fa": "لطفاً در دستگاه پرداخت خودکار پرداخت کنید.",
+          "origin": "authored"
+        },
+        {
+          "de": "Der Kassenautomat nimmt auch Karten.",
+          "fa": "دستگاه پرداخت خودکار کارت هم قبول می‌کند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 126,
+      "sourceKey": "Lesson-06-A1:126",
+      "word": "anmachen",
+      "meaningFa": "روشن‌کردن",
+      "additionalExamples": [
+        {
+          "de": "Wir müssen zuerst die Maschine anmachen.",
+          "fa": "باید اول دستگاه را روشن کنیم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich möchte den Fernseher anmachen.",
+          "fa": "می‌خواهم تلویزیون را روشن کنم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 127,
+      "sourceKey": "Lesson-06-A1:127",
+      "word": "sortieren",
+      "meaningFa": "دسته‌بندی‌کردن",
+      "additionalExamples": [
+        {
+          "de": "Bitte die Hemden nach Farben sortieren.",
+          "fa": "لطفاً پیراهن‌ها را بر اساس رنگ دسته‌بندی کن.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich möchte zuerst meine Bücher sortieren.",
+          "fa": "می‌خواهم اول کتاب‌هایم را دسته‌بندی کنم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 128,
+      "sourceKey": "Lesson-06-A1:128",
+      "word": "umdrehen",
+      "meaningFa": "برگرداندن؛ پشت‌وروکردن",
+      "additionalExamples": [
+        {
+          "de": "Kannst du das Blatt umdrehen?",
+          "fa": "می‌توانی برگه را برگردانی؟",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir sollen die Hemden vor dem Waschen umdrehen.",
+          "fa": "باید پیراهن‌ها را پیش از شستن پشت‌ورو کنیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 129,
+      "sourceKey": "Lesson-06-A1:129",
+      "word": "füllen",
+      "meaningFa": "پرکردن؛ ریختن در ظرف",
+      "additionalExamples": [
+        {
+          "de": "Bitte die Wäsche in die Maschine füllen.",
+          "fa": "لطفاً رخت‌ها را داخل دستگاه بریز.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich möchte die Tasche mit Büchern füllen.",
+          "fa": "می‌خواهم کیف را با کتاب پر کنم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 130,
+      "sourceKey": "Lesson-06-A1:130",
+      "word": "drücken",
+      "meaningFa": "فشردن",
+      "additionalExamples": [
+        {
+          "de": "Du musst auf Start drücken.",
+          "fa": "باید دکمهٔ شروع را فشار بدهی.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir drücken auf den grünen Knopf.",
+          "fa": "دکمهٔ سبز را فشار می‌دهیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 131,
+      "sourceKey": "Lesson-06-A1:131",
+      "word": "beenden",
+      "meaningFa": "به‌پایان‌رساندن",
+      "additionalExamples": [
+        {
+          "de": "Du kannst das Programm jetzt beenden.",
+          "fa": "می‌توانی حالا برنامه را پایان بدهی.",
+          "origin": "authored"
+        },
+        {
+          "de": "Bitte die Arbeit vor sechs Uhr beenden.",
+          "fa": "لطفاً کار را پیش از ساعت شش تمام کن.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 132,
+      "sourceKey": "Lesson-06-A1:132",
+      "word": "einlaufen",
+      "meaningFa": "آب‌رفتن لباس",
+      "additionalExamples": [
+        {
+          "de": "Die Jacke darf nicht einlaufen.",
+          "fa": "کاپشن نباید آب برود.",
+          "origin": "authored"
+        },
+        {
+          "de": "Kann Wolle bei heißem Wasser einlaufen?",
+          "fa": "آیا پشم در آب داغ آب می‌رود؟",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 133,
+      "sourceKey": "Lesson-06-A1:133",
+      "word": "die Anweisung",
+      "meaningFa": "دستور انجام کار",
+      "additionalExamples": [
+        {
+          "de": "Bitte lies diese Anweisung laut.",
+          "fa": "لطفاً این دستور را بلند بخوان.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir hören die Anweisung noch einmal.",
+          "fa": "دستور را یک‌بار دیگر می‌شنویم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 134,
+      "sourceKey": "Lesson-06-A1:134",
+      "word": "die Aufforderung",
+      "meaningFa": "درخواست انجام کار",
+      "additionalExamples": [
+        {
+          "de": "Ich verstehe diese Aufforderung nicht.",
+          "fa": "این درخواست انجام کار را نمی‌فهمم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Er wiederholt seine Aufforderung freundlich.",
+          "fa": "او درخواستش را دوستانه تکرار می‌کند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 135,
+      "sourceKey": "Lesson-06-A1:135",
+      "word": "der Bekannte",
+      "meaningFa": "مرد آشنا",
+      "additionalExamples": [
+        {
+          "de": "Mein Bekannter spielt Gitarre.",
+          "fa": "مرد آشنای من گیتار می‌نوازد.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieser Bekannte wohnt in Bonn.",
+          "fa": "این مرد آشنا در بن زندگی می‌کند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 136,
+      "sourceKey": "Lesson-06-A1:136",
+      "word": "die Bekannte",
+      "meaningFa": "زن آشنا",
+      "additionalExamples": [
+        {
+          "de": "Meine Bekannte kommt aus Berlin.",
+          "fa": "زن آشنای من اهل برلین است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Bekannte hilft mir beim Waschen.",
+          "fa": "این زن آشنا در شستن به من کمک می‌کند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 137,
+      "sourceKey": "Lesson-06-A1:137",
+      "word": "die Beschreibung",
+      "meaningFa": "توصیف؛ شرح",
+      "additionalExamples": [
+        {
+          "de": "Bitte lies die Beschreibung der Wohnung.",
+          "fa": "لطفاً شرح آپارتمان را بخوان.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Beschreibung passt zu meinem Zimmer.",
+          "fa": "این توصیف با اتاق من مطابقت دارد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 138,
+      "sourceKey": "Lesson-06-A1:138",
+      "word": "die Bitte",
+      "meaningFa": "خواهش؛ درخواست مؤدبانه",
+      "additionalExamples": [
+        {
+          "de": "Seine Bitte ist sehr höflich.",
+          "fa": "درخواست او خیلی مؤدبانه است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Kannst du meine Bitte verstehen?",
+          "fa": "می‌توانی خواهش مرا درک کنی؟",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 139,
+      "sourceKey": "Lesson-06-A1:139",
+      "word": "der Copyshop",
+      "meaningFa": "مغازهٔ فتوکپی",
+      "additionalExamples": [
+        {
+          "de": "Ich gehe heute zum Copyshop.",
+          "fa": "امروز به مغازهٔ فتوکپی می‌روم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Im Copyshop kann man Dokumente kopieren.",
+          "fa": "در مغازهٔ فتوکپی می‌توان مدارک را کپی کرد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 140,
+      "sourceKey": "Lesson-06-A1:140",
+      "word": "der Espresso",
+      "meaningFa": "قهوهٔ اسپرسو",
+      "additionalExamples": [
+        {
+          "de": "Ich möchte einen Espresso ohne Zucker.",
+          "fa": "یک اسپرسو بدون شکر می‌خواهم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ein Espresso kostet hier zwei Euro.",
+          "fa": "یک اسپرسو اینجا دو یورو قیمت دارد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 141,
+      "sourceKey": "Lesson-06-A1:141",
+      "word": "die Entschuldigung",
+      "meaningFa": "عذرخواهی؛ پوزش",
+      "additionalExamples": [
+        {
+          "de": "Entschuldigung, wo ist die Kasse?",
+          "fa": "ببخشید، صندوق کجاست؟",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich warte auf eine Entschuldigung.",
+          "fa": "منتظر یک عذرخواهی هستم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 142,
+      "sourceKey": "Lesson-06-A1:142",
+      "word": "der Inhaber",
+      "meaningFa": "صاحب مردِ کسب‌وکار",
+      "additionalExamples": [
+        {
+          "de": "Ich kenne den Inhaber des Cafés.",
+          "fa": "صاحب مردِ کافه را می‌شناسم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Der Inhaber hilft an der Kasse.",
+          "fa": "صاحب کسب‌وکار در صندوق کمک می‌کند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 143,
+      "sourceKey": "Lesson-06-A1:143",
+      "word": "die Inhaberin",
+      "meaningFa": "صاحب زنِ کسب‌وکار",
+      "additionalExamples": [
+        {
+          "de": "Die Inhaberin des Ladens ist sehr freundlich.",
+          "fa": "خانمی که صاحب مغازه است خیلی خوش‌برخورد است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir fragen die Inhaberin nach dem Preis.",
+          "fa": "از صاحب زنِ کسب‌وکار دربارهٔ قیمت می‌پرسیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 144,
+      "sourceKey": "Lesson-06-A1:144",
+      "word": "der Job",
+      "meaningFa": "شغل؛ کار",
+      "additionalExamples": [
+        {
+          "de": "Sie sucht einen Job im Café.",
+          "fa": "او دنبال کار در کافه است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieser Job macht mir Spaß.",
+          "fa": "این شغل برایم لذت‌بخش است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 145,
+      "sourceKey": "Lesson-06-A1:145",
+      "word": "die Kantine",
+      "meaningFa": "غذاخوری محل کار یا دانشگاه",
+      "additionalExamples": [
+        {
+          "de": "Wir essen heute in der Kantine.",
+          "fa": "امروز در غذاخوری محل کار غذا می‌خوریم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Unsere Kantine ist im Erdgeschoss.",
+          "fa": "غذاخوری ما در طبقهٔ همکف است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 146,
+      "sourceKey": "Lesson-06-A1:146",
+      "word": "die Kopie",
+      "meaningFa": "نسخهٔ کپی",
+      "additionalExamples": [
+        {
+          "de": "Ich brauche eine Kopie vom Dokument.",
+          "fa": "به یک کپی از سند نیاز دارم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Kopie ist nicht gut lesbar.",
+          "fa": "این کپی خوب خوانا نیست.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 147,
+      "sourceKey": "Lesson-06-A1:147",
+      "word": "die Liste",
+      "meaningFa": "فهرست",
+      "additionalExamples": [
+        {
+          "de": "Mein Name steht auf der Liste.",
+          "fa": "نام من در فهرست است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir schreiben eine Liste für den Einkauf.",
+          "fa": "برای خرید یک فهرست می‌نویسیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 148,
+      "sourceKey": "Lesson-06-A1:148",
+      "word": "die Neuigkeit",
+      "meaningFa": "خبر تازه",
+      "additionalExamples": [
+        {
+          "de": "Hast du eine Neuigkeit für mich?",
+          "fa": "خبر تازه‌ای برایم داری؟",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich erzähle dir die Neuigkeit morgen.",
+          "fa": "فردا خبر تازه را برایت تعریف می‌کنم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 149,
+      "sourceKey": "Lesson-06-A1:149",
+      "word": "die Notiz",
+      "meaningFa": "یادداشت",
+      "additionalExamples": [
+        {
+          "de": "Ich schreibe eine Notiz für dich.",
+          "fa": "یک یادداشت برایت می‌نویسم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Auf der Notiz steht seine Adresse.",
+          "fa": "نشانی او روی یادداشت است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 150,
+      "sourceKey": "Lesson-06-A1:150",
+      "word": "das Paar",
+      "meaningFa": "جفت؛ زوج",
+      "additionalExamples": [
+        {
+          "de": "Dieses Paar Schuhe ist zu klein.",
+          "fa": "این جفت کفش خیلی کوچک است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ein Paar Handschuhe liegt auf dem Tisch.",
+          "fa": "یک جفت دستکش روی میز است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 151,
+      "sourceKey": "Lesson-06-A1:151",
+      "word": "der Schwächling",
+      "meaningFa": "آدم ضعیف؛ ضعیفه",
+      "additionalExamples": [
+        {
+          "de": "Das Wort Schwächling ist nicht freundlich.",
+          "fa": "واژهٔ ضعیفه مؤدبانه نیست.",
+          "origin": "authored"
+        },
+        {
+          "de": "Niemand nennt ihn einen Schwächling.",
+          "fa": "هیچ‌کس او را ضعیفه صدا نمی‌کند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 152,
+      "sourceKey": "Lesson-06-A1:152",
+      "word": "die Situation",
+      "meaningFa": "وضعیت؛ موقعیت",
+      "additionalExamples": [
+        {
+          "de": "Kannst du die Situation beschreiben?",
+          "fa": "می‌توانی وضعیت را شرح بدهی؟",
+          "origin": "authored"
+        },
+        {
+          "de": "In dieser Situation brauche ich Hilfe.",
+          "fa": "در این موقعیت به کمک نیاز دارم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 153,
+      "sourceKey": "Lesson-06-A1:153",
+      "word": "der Snack",
+      "meaningFa": "میان‌وعده",
+      "additionalExamples": [
+        {
+          "de": "Ich kaufe einen Snack für die Fahrt.",
+          "fa": "برای مسیر یک میان‌وعده می‌خرم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Der Snack im Café schmeckt gut.",
+          "fa": "میان‌وعدهٔ کافه خوش‌مزه است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 154,
+      "sourceKey": "Lesson-06-A1:154",
+      "word": "der Traum",
+      "meaningFa": "خواب؛ رؤیا",
+      "additionalExamples": [
+        {
+          "de": "In meinem Traum spricht die Waschmaschine.",
+          "fa": "در خواب من ماشین لباس‌شویی حرف می‌زند.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich erzähle dir meinen Traum.",
+          "fa": "خوابم را برایت تعریف می‌کنم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 155,
+      "sourceKey": "Lesson-06-A1:155",
+      "word": "die Veranstaltung",
+      "meaningFa": "رویداد؛ برنامهٔ فرهنگی",
+      "additionalExamples": [
+        {
+          "de": "Diese Veranstaltung ist kostenlos.",
+          "fa": "این رویداد رایگان است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir besuchen eine Veranstaltung im Café.",
+          "fa": "به یک برنامهٔ فرهنگی در کافه می‌رویم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 156,
+      "sourceKey": "Lesson-06-A1:156",
+      "word": "die Vermutung",
+      "meaningFa": "حدس؛ گمان",
+      "additionalExamples": [
+        {
+          "de": "Hast du eine Vermutung?",
+          "fa": "حدسی داری؟",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Vermutung passt nicht zum Bild.",
+          "fa": "این حدس با تصویر مطابقت ندارد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 157,
+      "sourceKey": "Lesson-06-A1:157",
+      "word": "der Vetter",
+      "meaningFa": "پسرعمو؛ پسردایی؛ پسرخاله؛ پسرعمه",
+      "additionalExamples": [
+        {
+          "de": "Der Vetter meiner Freundin kommt heute.",
+          "fa": "پسرعموی دوستم امروز می‌آید.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich besuche meinen Vetter am Sonntag.",
+          "fa": "یکشنبه به دیدن پسرعمویم می‌روم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 158,
+      "sourceKey": "Lesson-06-A1:158",
+      "word": "der Vorschlag",
+      "meaningFa": "پیشنهاد",
+      "additionalExamples": [
+        {
+          "de": "Ich habe einen Vorschlag für heute Abend.",
+          "fa": "برای امشب یک پیشنهاد دارم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir sprechen über seinen Vorschlag.",
+          "fa": "دربارهٔ پیشنهاد او صحبت می‌کنیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 159,
+      "sourceKey": "Lesson-06-A1:159",
+      "word": "die Wegbeschreibung",
+      "meaningFa": "راهنمای مسیر",
+      "additionalExamples": [
+        {
+          "de": "Danke für die genaue Wegbeschreibung.",
+          "fa": "از راهنمای مسیر دقیق ممنونم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich brauche eine Wegbeschreibung zum Waschsalon.",
+          "fa": "به راهنمای مسیر لباس‌شویی نیاز دارم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 160,
+      "sourceKey": "Lesson-06-A1:160",
+      "word": "die Zeile",
+      "meaningFa": "سطر",
+      "additionalExamples": [
+        {
+          "de": "Lies bitte die nächste Zeile.",
+          "fa": "لطفاً سطر بعدی را بخوان.",
+          "origin": "authored"
+        },
+        {
+          "de": "In dieser Zeile fehlt ein Wort.",
+          "fa": "در این سطر یک کلمه کم است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 161,
+      "sourceKey": "Lesson-06-A1:161",
+      "word": "anstoßen",
+      "meaningFa": "به چیزی یا کسی برخوردکردن",
+      "additionalExamples": [
+        {
+          "de": "Du kannst hier leicht mit dem Kopf anstoßen.",
+          "fa": "اینجا ممکن است سرت به‌راحتی به چیزی بخورد.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich möchte mit dem Korb nirgends anstoßen.",
+          "fa": "نمی‌خواهم سبد را به جایی بزنم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 162,
+      "sourceKey": "Lesson-06-A1:162",
+      "word": "aufpassen",
+      "meaningFa": "دقت‌کردن؛ مواظب‌بودن",
+      "additionalExamples": [
+        {
+          "de": "Kannst du kurz auf meine Tasche aufpassen?",
+          "fa": "می‌توانی کمی مراقب کیفم باشی؟",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir müssen bei dieser Aufgabe gut aufpassen.",
+          "fa": "باید در این تمرین خوب دقت کنیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 163,
+      "sourceKey": "Lesson-06-A1:163",
+      "word": "ausführen",
+      "meaningFa": "اجراکردن",
+      "additionalExamples": [
+        {
+          "de": "Kannst du diese Aufgabe ausführen?",
+          "fa": "می‌توانی این کار را اجرا کنی؟",
+          "origin": "authored"
+        },
+        {
+          "de": "Bitte den nächsten Schritt langsam ausführen.",
+          "fa": "لطفاً مرحلهٔ بعد را آهسته اجرا کن.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 164,
+      "sourceKey": "Lesson-06-A1:164",
+      "word": "klicken",
+      "meaningFa": "کلیک‌کردن",
+      "additionalExamples": [
+        {
+          "de": "Bitte auf das Bild klicken.",
+          "fa": "لطفاً روی تصویر کلیک کن.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich möchte auf den Link klicken.",
+          "fa": "می‌خواهم روی پیوند کلیک کنم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 165,
+      "sourceKey": "Lesson-06-A1:165",
+      "word": "eingeben",
+      "meaningFa": "واردکردن اطلاعات",
+      "additionalExamples": [
+        {
+          "de": "Sie müssen zuerst die Nummer eingeben.",
+          "fa": "باید اول شماره را وارد کنید.",
+          "origin": "authored"
+        },
+        {
+          "de": "Hier kannst du die Adresse eingeben.",
+          "fa": "اینجا می‌توانی نشانی را وارد کنی.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 166,
+      "sourceKey": "Lesson-06-A1:166",
+      "word": "erklären",
+      "meaningFa": "توضیح‌دادن",
+      "additionalExamples": [
+        {
+          "de": "Ich möchte die Aufgabe erklären.",
+          "fa": "می‌خواهم تمرین را توضیح بدهم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir erklären dir die Regeln morgen.",
+          "fa": "فردا قواعد را برایت توضیح می‌دهیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 167,
+      "sourceKey": "Lesson-06-A1:167",
+      "word": "festhalten",
+      "meaningFa": "محکم‌گرفتن",
+      "additionalExamples": [
+        {
+          "de": "Kannst du meine Tasche kurz festhalten?",
+          "fa": "می‌توانی یک لحظه کیفم را محکم نگه داری؟",
+          "origin": "authored"
+        },
+        {
+          "de": "Bitte das Blatt mit beiden Händen festhalten.",
+          "fa": "لطفاً برگه را با هر دو دست نگه دار.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 168,
+      "sourceKey": "Lesson-06-A1:168",
+      "word": "helfen",
+      "meaningFa": "کمک‌کردن",
+      "additionalExamples": [
+        {
+          "de": "Wir helfen unserem Freund im Garten.",
+          "fa": "در باغ به دوستمان کمک می‌کنیم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich möchte meiner Mutter heute helfen.",
+          "fa": "می‌خواهم امروز به مادرم کمک کنم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 169,
+      "sourceKey": "Lesson-06-A1:169",
+      "word": "kopieren",
+      "meaningFa": "کپی‌کردن",
+      "additionalExamples": [
+        {
+          "de": "Wir kopieren die Liste für alle.",
+          "fa": "فهرست را برای همه کپی می‌کنیم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Kannst du bitte zwei Seiten kopieren?",
+          "fa": "می‌توانی لطفاً دو صفحه را کپی کنی؟",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 170,
+      "sourceKey": "Lesson-06-A1:170",
+      "word": "lächeln",
+      "meaningFa": "لبخندزدن",
+      "additionalExamples": [
+        {
+          "de": "Du darfst ruhig lächeln.",
+          "fa": "می‌توانی راحت لبخند بزنی.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir lächeln und sagen Hallo.",
+          "fa": "لبخند می‌زنیم و سلام می‌کنیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 171,
+      "sourceKey": "Lesson-06-A1:171",
+      "word": "mailen",
+      "meaningFa": "ایمیل‌زدن",
+      "additionalExamples": [
+        {
+          "de": "Wir mailen jeden Abend.",
+          "fa": "هر شب ایمیل ردوبدل می‌کنیم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Kannst du die Einladung heute mailen?",
+          "fa": "می‌توانی امروز دعوت‌نامه را ایمیل کنی؟",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 172,
+      "sourceKey": "Lesson-06-A1:172",
+      "word": "nachfragen",
+      "meaningFa": "دوباره پرسیدن؛ توضیح خواستن",
+      "additionalExamples": [
+        {
+          "de": "Bei der Inhaberin kannst du nachfragen.",
+          "fa": "می‌توانی از صاحب زنِ کسب‌وکار توضیح بخواهی.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir müssen wegen der Öffnungszeit nachfragen.",
+          "fa": "باید دربارهٔ ساعت بازبودن دوباره بپرسیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 173,
+      "sourceKey": "Lesson-06-A1:173",
+      "word": "nehmen",
+      "meaningFa": "گرفتن؛ برداشتن",
+      "additionalExamples": [
+        {
+          "de": "Wir nehmen den Bus zum Konzert.",
+          "fa": "با اتوبوس به کنسرت می‌رویم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Sie können hier einen Korb nehmen.",
+          "fa": "اینجا می‌توانید یک سبد بردارید.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 174,
+      "sourceKey": "Lesson-06-A1:174",
+      "word": "nennen",
+      "meaningFa": "نام‌بردن؛ نامیدن",
+      "additionalExamples": [
+        {
+          "de": "Bitte deinen Namen nennen.",
+          "fa": "لطفاً نامت را بگو.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir nennen die Kleidungsstücke auf dem Bild.",
+          "fa": "نام لباس‌های داخل تصویر را می‌گوییم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 175,
+      "sourceKey": "Lesson-06-A1:175",
+      "word": "sagen",
+      "meaningFa": "گفتن",
+      "additionalExamples": [
+        {
+          "de": "Wir sagen unserer Freundin Danke.",
+          "fa": "به دوستمان تشکر می‌گوییم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Kannst du das bitte noch einmal sagen?",
+          "fa": "می‌توانی لطفاً آن را یک‌بار دیگر بگویی؟",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 176,
+      "sourceKey": "Lesson-06-A1:176",
+      "word": "stoppen",
+      "meaningFa": "متوقف‌کردن",
+      "additionalExamples": [
+        {
+          "de": "Hier kannst du das Programm stoppen.",
+          "fa": "اینجا می‌توانی برنامه را متوقف کنی.",
+          "origin": "authored"
+        },
+        {
+          "de": "Bitte die Musik kurz stoppen.",
+          "fa": "لطفاً موسیقی را لحظه‌ای متوقف کن.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 177,
+      "sourceKey": "Lesson-06-A1:177",
+      "word": "surfen",
+      "meaningFa": "وب‌گردی‌کردن",
+      "additionalExamples": [
+        {
+          "de": "Wir surfen abends zusammen im Internet.",
+          "fa": "شب‌ها با هم در اینترنت می‌گردیم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich möchte nur zehn Minuten surfen.",
+          "fa": "می‌خواهم فقط ده دقیقه وب‌گردی کنم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 178,
+      "sourceKey": "Lesson-06-A1:178",
+      "word": "träumen",
+      "meaningFa": "خواب‌دیدن؛ رؤیاپردازی‌کردن",
+      "additionalExamples": [
+        {
+          "de": "Wir träumen von einer großen Wohnung.",
+          "fa": "رؤیای یک آپارتمان بزرگ را داریم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Kinder träumen oft von Tieren.",
+          "fa": "بچه‌ها اغلب خواب حیوانات می‌بینند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 179,
+      "sourceKey": "Lesson-06-A1:179",
+      "word": "vermuten",
+      "meaningFa": "حدس‌زدن؛ گمان‌کردن",
+      "additionalExamples": [
+        {
+          "de": "Wir vermuten einen Fehler im Text.",
+          "fa": "گمان می‌کنیم در متن اشتباهی هست.",
+          "origin": "authored"
+        },
+        {
+          "de": "Die Freunde vermuten, dass Max zu Hause ist.",
+          "fa": "دوستان گمان می‌کنند مکس در خانه است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 180,
+      "sourceKey": "Lesson-06-A1:180",
+      "word": "fertig",
+      "meaningFa": "آماده؛ تمام‌شده",
+      "additionalExamples": [
+        {
+          "de": "Bist du mit der Wäsche fertig?",
+          "fa": "شستن رخت‌هایت تمام شده است؟",
+          "origin": "authored"
+        },
+        {
+          "de": "Die Kopie ist gleich fertig.",
+          "fa": "نسخهٔ کپی الان آماده می‌شود.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 181,
+      "sourceKey": "Lesson-06-A1:181",
+      "word": "herzlich",
+      "meaningFa": "صمیمانه؛ گرم",
+      "additionalExamples": [
+        {
+          "de": "Wir begrüßen unsere Freunde herzlich.",
+          "fa": "به دوستانمان گرم خوشامد می‌گوییم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Sie bedankt sich herzlich bei der Inhaberin.",
+          "fa": "او صمیمانه از صاحب زنِ کسب‌وکار تشکر می‌کند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 182,
+      "sourceKey": "Lesson-06-A1:182",
+      "word": "klasse",
+      "meaningFa": "عالی؛ محشر",
+      "additionalExamples": [
+        {
+          "de": "Das Konzert gestern war klasse.",
+          "fa": "کنسرت دیروز عالی بود.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Idee finde ich klasse.",
+          "fa": "این ایده را عالی می‌دانم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 183,
+      "sourceKey": "Lesson-06-A1:183",
+      "word": "kulturell",
+      "meaningFa": "فرهنگی",
+      "additionalExamples": [
+        {
+          "de": "Diese Veranstaltung ist kulturell wichtig.",
+          "fa": "این رویداد از نظر فرهنگی مهم است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Die Stadt ist kulturell sehr aktiv.",
+          "fa": "شهر از نظر فرهنگی خیلی فعال است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 184,
+      "sourceKey": "Lesson-06-A1:184",
+      "word": "kurz",
+      "meaningFa": "کوتاه",
+      "additionalExamples": [
+        {
+          "de": "Ich habe nur kurz Zeit.",
+          "fa": "فقط مدت کوتاهی وقت دارم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Kannst du bitte kurz warten?",
+          "fa": "می‌توانی لطفاً کمی صبر کنی؟",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 185,
+      "sourceKey": "Lesson-06-A1:185",
+      "word": "lang",
+      "meaningFa": "بلند؛ طولانی",
+      "additionalExamples": [
+        {
+          "de": "Die Fahrt nach Bonn ist lang.",
+          "fa": "سفر به بن طولانی است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieser Satz ist zu lang.",
+          "fa": "این جمله خیلی طولانی است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 186,
+      "sourceKey": "Lesson-06-A1:186",
+      "word": "langsam",
+      "meaningFa": "آهسته؛ کند",
+      "additionalExamples": [
+        {
+          "de": "Bitte sprich etwas langsam.",
+          "fa": "لطفاً کمی آهسته صحبت کن.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir gehen langsam nach Hause.",
+          "fa": "آهسته به خانه می‌رویم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 187,
+      "sourceKey": "Lesson-06-A1:187",
+      "word": "passend",
+      "meaningFa": "مناسب؛ هماهنگ",
+      "additionalExamples": [
+        {
+          "de": "Diese Antwort ist zur Frage passend.",
+          "fa": "این پاسخ با سؤال متناسب است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Die Musik ist für das Fest passend.",
+          "fa": "موسیقی برای جشن مناسب است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 188,
+      "sourceKey": "Lesson-06-A1:188",
+      "word": "professionell",
+      "meaningFa": "حرفه‌ای",
+      "additionalExamples": [
+        {
+          "de": "Der Gitarrist spielt professionell.",
+          "fa": "گیتارنواز حرفه‌ای می‌نوازد.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Beschreibung klingt professionell.",
+          "fa": "این توصیف حرفه‌ای به نظر می‌رسد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 189,
+      "sourceKey": "Lesson-06-A1:189",
+      "word": "vorsichtig",
+      "meaningFa": "مواظب؛ محتاط",
+      "additionalExamples": [
+        {
+          "de": "Wir sind beim Waschen vorsichtig.",
+          "fa": "هنگام شستن احتیاط می‌کنیم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Öffne die Tür vorsichtig.",
+          "fa": "در را با احتیاط باز کن.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 190,
+      "sourceKey": "Lesson-06-A1:190",
+      "word": "gleich",
+      "meaningFa": "همین الان؛ تا لحظه‌ای دیگر",
+      "additionalExamples": [
+        {
+          "de": "Das Programm ist gleich zu Ende.",
+          "fa": "برنامه تا لحظه‌ای دیگر تمام می‌شود.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir können gleich anfangen.",
+          "fa": "می‌توانیم همین الان شروع کنیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 191,
+      "sourceKey": "Lesson-06-A1:191",
+      "word": "nun",
+      "meaningFa": "اکنون؛ حالا",
+      "additionalExamples": [
+        {
+          "de": "Die Wäsche ist nun trocken.",
+          "fa": "رخت‌ها حالا خشک هستند.",
+          "origin": "authored"
+        },
+        {
+          "de": "Was machen wir nun mit der Jacke?",
+          "fa": "حالا با کاپشن چه کار کنیم؟",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 192,
+      "sourceKey": "Lesson-06-A1:192",
+      "word": "später",
+      "meaningFa": "بعداً؛ دیرتر",
+      "additionalExamples": [
+        {
+          "de": "Wir waschen die Hemden später.",
+          "fa": "پیراهن‌ها را بعداً می‌شوییم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Kannst du etwas später kommen?",
+          "fa": "می‌توانی کمی دیرتر بیایی؟",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 193,
+      "sourceKey": "Lesson-06-A1:193",
+      "word": "wirklich",
+      "meaningFa": "واقعاً",
+      "additionalExamples": [
+        {
+          "de": "Ich habe wirklich keine Zeit.",
+          "fa": "واقعاً وقت ندارم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Das Konzert war wirklich schön.",
+          "fa": "کنسرت واقعاً قشنگ بود.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 194,
+      "sourceKey": "Lesson-06-A1:194",
+      "word": "zuerst",
+      "meaningFa": "ابتدا؛ اول",
+      "additionalExamples": [
+        {
+          "de": "Wir sortieren zuerst die Wäsche.",
+          "fa": "اول رخت‌ها را دسته‌بندی می‌کنیم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich möchte zuerst einen Tee trinken.",
+          "fa": "می‌خواهم اول یک چای بنوشم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 195,
+      "sourceKey": "Lesson-06-A1:195",
+      "word": "ja",
+      "meaningFa": "که؛ واقعاً، برای تأکید یا تعجب",
+      "additionalExamples": [
+        {
+          "de": "Du bist ja schon fertig!",
+          "fa": "تو که دیگر کارت تمام شده است!",
+          "origin": "authored"
+        },
+        {
+          "de": "Das sieht ja klasse aus!",
+          "fa": "واقعاً محشر به نظر می‌رسد!",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 196,
+      "sourceKey": "Lesson-06-A1:196",
+      "word": "mal",
+      "meaningFa": "یک لحظه؛ برای ملایم‌کردن درخواست",
+      "additionalExamples": [
+        {
+          "de": "Komm mal bitte hierher.",
+          "fa": "لطفاً یک لحظه بیا اینجا.",
+          "origin": "authored"
+        },
+        {
+          "de": "Schau mal in die Tasche.",
+          "fa": "یک نگاهی داخل کیف بینداز.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 197,
+      "sourceKey": "Lesson-06-A1:197",
+      "word": "doch",
+      "meaningFa": "برای تأکید یا ترغیب در پیشنهاد",
+      "additionalExamples": [
+        {
+          "de": "Frag doch die Inhaberin.",
+          "fa": "از خود صاحب زنِ کسب‌وکار بپرس دیگر.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir können doch zusammen waschen.",
+          "fa": "می‌توانیم با هم لباس بشوییم دیگر.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 198,
+      "sourceKey": "Lesson-06-A1:198",
+      "word": "alles",
+      "meaningFa": "همه‌چیز",
+      "additionalExamples": [
+        {
+          "de": "Hast du alles verstanden?",
+          "fa": "همه‌چیز را فهمیدی؟",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir bringen alles zum Waschsalon.",
+          "fa": "همه‌چیز را به لباس‌شویی می‌بریم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 199,
+      "sourceKey": "Lesson-06-A1:199",
+      "word": "der Dummkopf",
+      "meaningFa": "آدم نادان؛ کله‌پوک",
+      "additionalExamples": [
+        {
+          "de": "Er nennt mich einen Dummkopf.",
+          "fa": "او مرا کله‌پوک صدا می‌کند.",
+          "origin": "authored"
+        },
+        {
+          "de": "Das Wort Dummkopf ist unhöflich.",
+          "fa": "واژهٔ کله‌پوک بی‌ادبانه است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 200,
+      "sourceKey": "Lesson-06-A1:200",
+      "word": "das Tischtuch",
+      "meaningFa": "رومیزی",
+      "additionalExamples": [
+        {
+          "de": "Wir waschen das weiße Tischtuch.",
+          "fa": "رومیزی سفید را می‌شوییم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Auf dem Tischtuch sind rote Rosen.",
+          "fa": "روی رومیزی گل‌های رز قرمز هست.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 201,
+      "sourceKey": "Lesson-06-A1:201",
+      "word": "die Rose",
+      "meaningFa": "گل رز",
+      "additionalExamples": [
+        {
+          "de": "Ich schenke dir eine Rose.",
+          "fa": "یک گل رز به تو هدیه می‌دهم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Rose duftet sehr gut.",
+          "fa": "این گل رز خیلی خوش‌بوست.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 202,
+      "sourceKey": "Lesson-06-A1:202",
+      "word": "die Hosentasche",
+      "meaningFa": "جیب شلوار",
+      "additionalExamples": [
+        {
+          "de": "Mein Schlüssel liegt in der Hosentasche.",
+          "fa": "کلیدم داخل جیب شلوار است.",
+          "origin": "authored"
+        },
+        {
+          "de": "In dieser Hosentasche ist ein Zettel.",
+          "fa": "در این جیب شلوار یک برگه است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 203,
+      "sourceKey": "Lesson-06-A1:203",
+      "word": "das Internetcafé",
+      "meaningFa": "کافی‌نت",
+      "additionalExamples": [
+        {
+          "de": "Im Internetcafé kann ich mailen.",
+          "fa": "در کافی‌نت می‌توانم ایمیل بزنم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieses Internetcafé ist neben dem Bahnhof.",
+          "fa": "این کافی‌نت کنار ایستگاه قطار است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 204,
+      "sourceKey": "Lesson-06-A1:204",
+      "word": "die Kulturveranstaltung",
+      "meaningFa": "رویداد فرهنگی",
+      "additionalExamples": [
+        {
+          "de": "Wir besuchen eine Kulturveranstaltung in Bonn.",
+          "fa": "به یک رویداد فرهنگی در بن می‌رویم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Kulturveranstaltung ist sehr beliebt.",
+          "fa": "این رویداد فرهنگی خیلی محبوب است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 205,
+      "sourceKey": "Lesson-06-A1:205",
+      "word": "die Öffnungszeit",
+      "meaningFa": "ساعت بازبودن",
+      "additionalExamples": [
+        {
+          "de": "Ich frage nach der Öffnungszeit.",
+          "fa": "دربارهٔ ساعت بازبودن می‌پرسم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Die Öffnungszeit am Samstag ist anders.",
+          "fa": "ساعت بازبودن در شنبه متفاوت است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 206,
+      "sourceKey": "Lesson-06-A1:206",
+      "word": "die Preisliste",
+      "meaningFa": "فهرست قیمت‌ها",
+      "additionalExamples": [
+        {
+          "de": "Ich suche die Preisliste auf der Webseite.",
+          "fa": "در صفحهٔ وب دنبال فهرست قیمت‌ها می‌گردم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Preisliste ist nicht mehr aktuell.",
+          "fa": "این فهرست قیمت‌ها دیگر به‌روز نیست.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 207,
+      "sourceKey": "Lesson-06-A1:207",
+      "word": "der Kontakt",
+      "meaningFa": "تماس؛ ارتباط",
+      "additionalExamples": [
+        {
+          "de": "Wir bleiben nach dem Kurs in Kontakt.",
+          "fa": "بعد از دوره در تماس می‌مانیم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich habe keinen Kontakt zu diesem Mann.",
+          "fa": "با این مرد ارتباطی ندارم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 208,
+      "sourceKey": "Lesson-06-A1:208",
+      "word": "die Atmosphäre",
+      "meaningFa": "فضا؛ جوّ",
+      "additionalExamples": [
+        {
+          "de": "Ich mag die Atmosphäre im Waschsalon.",
+          "fa": "فضای لباس‌شویی را دوست دارم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Atmosphäre ist sehr angenehm.",
+          "fa": "این فضا خیلی دلپذیر است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 209,
+      "sourceKey": "Lesson-06-A1:209",
+      "word": "die Situationsbeschreibung",
+      "meaningFa": "شرح موقعیت",
+      "additionalExamples": [
+        {
+          "de": "Wir lesen zuerst die Situationsbeschreibung.",
+          "fa": "اول شرح موقعیت را می‌خوانیم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Situationsbeschreibung ist sehr kurz.",
+          "fa": "این شرح موقعیت خیلی کوتاه است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 210,
+      "sourceKey": "Lesson-06-A1:210",
+      "word": "der Start",
+      "meaningFa": "شروع؛ دکمهٔ شروع",
+      "additionalExamples": [
+        {
+          "de": "Drück bitte auf Start.",
+          "fa": "لطفاً دکمهٔ شروع را فشار بده.",
+          "origin": "authored"
+        },
+        {
+          "de": "Nach dem Start läuft die Maschine.",
+          "fa": "بعد از شروع، دستگاه کار می‌کند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 211,
+      "sourceKey": "Lesson-06-A1:211",
+      "word": "die Waschmaschinentür",
+      "meaningFa": "درِ ماشین لباس‌شویی",
+      "additionalExamples": [
+        {
+          "de": "Schließ bitte die Waschmaschinentür.",
+          "fa": "لطفاً درِ ماشین لباس‌شویی را ببند.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir öffnen die Waschmaschinentür nach dem Waschen.",
+          "fa": "پس از شستن درِ ماشین لباس‌شویی را باز می‌کنیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 212,
+      "sourceKey": "Lesson-06-A1:212",
+      "word": "das Konzert",
+      "meaningFa": "کنسرت",
+      "additionalExamples": [
+        {
+          "de": "Wir gehen zusammen ins Konzert.",
+          "fa": "با هم به کنسرت می‌رویم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Dieses Konzert findet im Café statt.",
+          "fa": "این کنسرت در کافه برگزار می‌شود.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 213,
+      "sourceKey": "Lesson-06-A1:213",
+      "word": "die Gitarre",
+      "meaningFa": "گیتار",
+      "additionalExamples": [
+        {
+          "de": "Bring bitte deine Gitarre zum Fest mit.",
+          "fa": "لطفاً گیتارت را به جشن بیاور.",
+          "origin": "authored"
+        },
+        {
+          "de": "Meine Freundin spielt gut Gitarre.",
+          "fa": "دوستم خوب گیتار می‌نوازد.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 214,
+      "sourceKey": "Lesson-06-A1:214",
+      "word": "die Konzertkarte",
+      "meaningFa": "بلیت کنسرت",
+      "additionalExamples": [
+        {
+          "de": "Ich kaufe eine Konzertkarte für dich.",
+          "fa": "یک بلیت کنسرت برایت می‌خرم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Meine Konzertkarte liegt auf dem Tisch.",
+          "fa": "بلیت کنسرتم روی میز است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 215,
+      "sourceKey": "Lesson-06-A1:215",
+      "word": "der Gitarrist",
+      "meaningFa": "گیتارنواز مرد",
+      "additionalExamples": [
+        {
+          "de": "Dieser Gitarrist spielt heute im Café.",
+          "fa": "این گیتارنواز امروز در کافه می‌نوازد.",
+          "origin": "authored"
+        },
+        {
+          "de": "Wir hören dem Gitarristen zu.",
+          "fa": "به گیتارنواز گوش می‌دهیم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 216,
+      "sourceKey": "Lesson-06-A1:216",
+      "word": "die Gitarrenmusik",
+      "meaningFa": "موسیقی گیتار",
+      "additionalExamples": [
+        {
+          "de": "Wir hören abends gerne Gitarrenmusik.",
+          "fa": "شب‌ها با علاقه موسیقی گیتار گوش می‌دهیم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Gitarrenmusik ist sehr ruhig.",
+          "fa": "این موسیقی گیتار خیلی آرام است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 217,
+      "sourceKey": "Lesson-06-A1:217",
+      "word": "der Profi",
+      "meaningFa": "حرفه‌ای؛ فرد کاربلد",
+      "additionalExamples": [
+        {
+          "de": "Dieser Profi erklärt uns die Maschine.",
+          "fa": "این فرد کاربلد دستگاه را برایمان توضیح می‌دهد.",
+          "origin": "authored"
+        },
+        {
+          "de": "Meine Freundin ist schon ein Profi.",
+          "fa": "دوستم دیگر حرفه‌ای شده است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 218,
+      "sourceKey": "Lesson-06-A1:218",
+      "word": "der Pulli",
+      "meaningFa": "پلیور، صورت محاوره‌ای",
+      "additionalExamples": [
+        {
+          "de": "Dieser Pulli ist aus Baumwolle.",
+          "fa": "این پلیور نخی است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Ich ziehe heute den grünen Pulli an.",
+          "fa": "امروز پلیور سبز را می‌پوشم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 219,
+      "sourceKey": "Lesson-06-A1:219",
+      "word": "getrennt",
+      "meaningFa": "جدا؛ جداگانه",
+      "additionalExamples": [
+        {
+          "de": "Baumwolle und Wolle bleiben getrennt.",
+          "fa": "لباس‌های نخی و پشمی جدا می‌مانند.",
+          "origin": "authored"
+        },
+        {
+          "de": "Die beiden Freunde wohnen getrennt.",
+          "fa": "آن دو دوست جدا زندگی می‌کنند.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 220,
+      "sourceKey": "Lesson-06-A1:220",
+      "word": "rundherum",
+      "meaningFa": "دورتادور؛ از همه طرف",
+      "additionalExamples": [
+        {
+          "de": "Wir schauen uns rundherum um.",
+          "fa": "دورتادورمان را نگاه می‌کنیم.",
+          "origin": "authored"
+        },
+        {
+          "de": "Das Tischtuch ist rundherum nass.",
+          "fa": "رومیزی از همه طرف خیس است.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 221,
+      "sourceKey": "Lesson-06-A1:221",
+      "word": "furchtbar",
+      "meaningFa": "وحشتناک؛ خیلی بد",
+      "additionalExamples": [
+        {
+          "de": "Das Wetter ist heute furchtbar.",
+          "fa": "هوا امروز خیلی بد است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Diese Musik finde ich furchtbar.",
+          "fa": "این موسیقی را خیلی بد می‌دانم.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 222,
+      "sourceKey": "Lesson-06-A1:222",
+      "word": "der Idiot",
+      "meaningFa": "احمق، توهین‌آمیز",
+      "additionalExamples": [
+        {
+          "de": "Das Wort Idiot ist eine Beleidigung.",
+          "fa": "واژهٔ احمق یک توهین است.",
+          "origin": "authored"
+        },
+        {
+          "de": "Bitte nenne niemanden einen Idioten.",
+          "fa": "لطفاً هیچ‌کس را احمق صدا نکن.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 223,
+      "sourceKey": "Lesson-06-A1:223",
+      "word": "der Mist",
+      "meaningFa": "گند؛ مزخرف، محاوره‌ای",
+      "additionalExamples": [
+        {
+          "de": "Das ist doch Mist!",
+          "fa": "این که مزخرف است!",
+          "origin": "authored"
+        },
+        {
+          "de": "Er sagt aus Ärger das Wort Mist.",
+          "fa": "او از عصبانیت واژهٔ گند را می‌گوید.",
+          "origin": "authored"
+        }
+      ]
+    },
+    {
+      "row": 224,
+      "sourceKey": "Lesson-06-A1:224",
+      "word": "schade",
+      "meaningFa": "حیف؛ مایهٔ تأسف",
+      "additionalExamples": [
+        {
+          "de": "Wie schade, du kommst nicht mit!",
+          "fa": "چه حیف که همراهمان نمی‌آیی!",
+          "origin": "authored"
+        },
+        {
+          "de": "Das finde ich wirklich schade.",
+          "fa": "این واقعاً برایم مایهٔ تأسف است.",
+          "origin": "authored"
+        }
+      ]
     }
   ]
 }

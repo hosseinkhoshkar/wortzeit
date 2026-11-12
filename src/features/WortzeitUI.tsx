@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useId, useRef, useState, useSyncE
 import type { ReactNode } from 'react'
 import type { ContentBundle, Entry, EntryProgress, Example, LearningCommand, LessonDefinition, LessonSummary, ReverseProgress, ReverseReview, SessionTask, WortzeitUIProps } from '../contracts/index.ts'
 import { getReverseExample } from '../learning/examples.ts'
+import { lessonVocabularyEntries } from '../content/lesson-vocabulary.ts'
 import { browserPronunciation, wordPronunciation } from './pronunciation.ts'
 import type { Pronunciation } from './pronunciation.ts'
 import '../App.css'
@@ -341,7 +342,7 @@ function LessonWordList({ entries, props }: { entries: Entry[]; props: WortzeitU
   const playback = usePronunciation()
   return <div className="word-list">{entries.map(entry => <details className="word-item" key={entry.entryId} onToggle={event => { if (!event.currentTarget.open) playback.stopScope(entry.entryId) }}>
           <summary><span className="word-item-main"><SpeechScope value={entry.entryId}><SpokenWord entry={entry} /></SpeechScope><span>{entry.meaningFa}</span></span><span className={`word-status status-${statuses[entry.entryId]}`}><i />{statusLabels[statuses[entry.entryId]]}</span><span className="details-chevron" aria-hidden="true">⌄</span></summary>
-          <div className="word-item-details"><SpeechScope value={entry.entryId}><ExampleBlock entry={entry} /><MoreExamples entry={entry} currentExampleId={entry.examples[0]?.exampleId} /><SkillDetails entry={entry} progress={state.progress[entry.entryId]} /><ReverseSkillDetails progress={state.reverseProgress?.[entry.entryId]} now={now} /><Sources entry={entry} bundle={bundle} />{state.progress[entry.entryId]?.nextDueAt && <p className="word-due">مرور بعدی: {dateLabel(state.progress[entry.entryId].nextDueAt, now)}</p>}</SpeechScope></div>
+          <div className="word-item-details"><SpeechScope value={entry.entryId}><ExampleBlock entry={entry} /><MoreExamples entry={entry} currentExampleId={entry.examples[0]?.exampleId} />{entry.introducedInLessonId !== state.activeLessonId && <p className="tiny-label">واژهٔ مشترک با درس دیگر؛ پیشرفت قبلی حفظ شده است.</p>}<SkillDetails entry={entry} progress={state.progress[entry.entryId]} /><ReverseSkillDetails progress={state.reverseProgress?.[entry.entryId]} now={now} /><Sources entry={entry} bundle={bundle} />{state.progress[entry.entryId]?.nextDueAt && <p className="word-due">مرور بعدی: {dateLabel(state.progress[entry.entryId].nextDueAt, now)}</p>}</SpeechScope></div>
         </details>)}</div>
 }
 
@@ -383,6 +384,7 @@ function WortzeitView(props: WortzeitUIProps) {
   const disabled = busy || !!error
   const activeLesson = props.activeLesson ?? (bundle.lessons ?? [bundle.lesson]).find(lesson => lesson.lessonId === state.activeLessonId) ?? bundle.lesson
   const activeEntries = lessonEntries(bundle, activeLesson.lessonId)
+  const vocabularyEntries = lessonVocabularyEntries(bundle, activeLesson.lessonId)
   const total = activeEntries.length
   const summaries = props.lessonSummaries ?? (bundle.lessons ?? [bundle.lesson]).map(lesson => {
     const entries = lessonEntries(bundle, lesson.lessonId)
@@ -427,7 +429,7 @@ function WortzeitView(props: WortzeitUIProps) {
   const reverseSessionReviews = (state.reverseReviews ?? []).filter(review => review.sessionId === session?.sessionId)
   const hasOriginalSessionWork = summary.totalAnswers > 0 || summary.introduced > 0
   const summaryNextDueAt = [summary.nextDueAt, ...reverseSessionReviews.map(review => state.reverseProgress[review.entryId]?.nextDueAt)].filter((value): value is string => !!value).sort()[0] ?? null
-  const selectedWords = activeEntries.filter(entry => (filter === 'all' || statuses[entry.entryId] === filter) && `${entry.lemma} ${entry.meaningFa}`.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
+  const selectedWords = vocabularyEntries.filter(entry => (filter === 'all' || statuses[entry.entryId] === filter) && `${entry.lemma} ${entry.meaningFa}`.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
   return <div className={`wortzeit-app page-${effectivePage}`} dir="rtl" lang="fa">
     <header className="app-header"><button type="button" className="brand" aria-label="Wortzeit، خانه" onClick={() => setPage('home')}><span className="brand-mark"><Icon name="leaf" /></span><span><strong lang="de" dir="ltr">Wortzeit<span className="brand-dot">.</span></strong><small>وقتِ واژه‌هاست</small></span></button><nav className="desktop-nav" aria-label="ناوبری اصلی">{navigation.map(item => <button type="button" key={item.page} className={effectivePage === item.page ? 'active' : ''} onClick={() => void navigate(item.page)}>{item.label}</button>)}</nav><div className={`offline-pill ${offlineStatus === 'ready' ? 'offline-ready' : ''}`} role="status"><span className="status-dot" />{offlineStatus === 'ready' ? 'آمادهٔ آفلاین' : offlineStatus === 'checking' ? 'آماده‌سازی آفلاین…' : 'آفلاین آماده نیست'}</div></header>
     <main className="app-main">
@@ -461,10 +463,10 @@ function WortzeitView(props: WortzeitUIProps) {
       </section>}
       {effectivePage === 'words' && <section className="words-page">
         <PronunciationStatus />
-        <div className="page-intro"><div><span className="eyebrow">واژه‌نامهٔ کوچک تو</span><h1>واژه‌های {lessonLabel(activeLesson)}<span className="orange-dot">.</span></h1><p>{number(total)} مدخل از گزیدهٔ موجود؛ وضعیت‌ها براساس پیشرفت واقعی تو هستند.</p></div><span className="level-pill" lang="de" dir="ltr">{activeLesson.level}</span></div>
+        <div className="page-intro"><div><span className="eyebrow">واژه‌نامهٔ کوچک تو</span><h1>واژه‌های {lessonLabel(activeLesson)}<span className="orange-dot">.</span></h1><p>{number(vocabularyEntries.length)} مدخل؛ واژه‌های مشترک، همان پیشرفت درس اصلی را دارند.</p></div><span className="level-pill" lang="de" dir="ltr">{activeLesson.level}</span></div>
         <p className="stabilization-note">«تثبیت‌شده» یعنی دست‌کم سه مرور مستقلِ موعدرسیده در روزهای جدا، بدون خطا یا کمک در میان آن‌ها؛ برای اسم، پاسخ آرتیکلِ بدون کمک هم لازم است. مرور بلندمدت همچنان ادامه دارد.</p>
         <label className="word-search"><span className="sr-only">جست‌وجوی واژه یا معنی</span><input type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="واژه یا معنی‌اش را جست‌وجو کن…" /></label>
-        <div className="word-filters" aria-label="فیلتر وضعیت">{[{ id: 'all', label: 'همه' }, { id: 'new', label: statusLabels.new }, { id: 'learning', label: statusLabels.learning }, { id: 'due', label: statusLabels.due }, { id: 'stabilized', label: statusLabels.stabilized }].map(item => <button type="button" key={item.id} className={filter === item.id ? 'active' : ''} aria-pressed={filter === item.id} onClick={() => setFilter(item.id)}>{item.label}<span>{number(item.id === 'all' ? total : activeEntries.filter(entry => statuses[entry.entryId] === item.id).length)}</span></button>)}</div>
+        <div className="word-filters" aria-label="فیلتر وضعیت">{[{ id: 'all', label: 'همه' }, { id: 'new', label: statusLabels.new }, { id: 'learning', label: statusLabels.learning }, { id: 'due', label: statusLabels.due }, { id: 'stabilized', label: statusLabels.stabilized }].map(item => <button type="button" key={item.id} className={filter === item.id ? 'active' : ''} aria-pressed={filter === item.id} onClick={() => setFilter(item.id)}>{item.label}<span>{number(item.id === 'all' ? vocabularyEntries.length : vocabularyEntries.filter(entry => statuses[entry.entryId] === item.id).length)}</span></button>)}</div>
         <LessonWordList entries={selectedWords} props={props} />
         {!selectedWords.length && <div className="empty-state"><Icon name="book" /><h2>واژه‌ای با این جست‌وجو پیدا نشد.</h2><button className="text-button" type="button" onClick={() => { setSearch(''); setFilter('all') }}>نمایش همهٔ واژه‌ها</button></div>}
       </section>}

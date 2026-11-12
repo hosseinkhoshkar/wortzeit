@@ -11,7 +11,7 @@ test('every discovered source lesson has exactly two authored, paired examples f
   const sources = readdirSync('reference/vocabulary').filter(name => /^Lesson-\d+-(A1|A2|B1)\.txt$/u.test(name))
   assert.equal(lessons.length, sources.length)
   assert.deepEqual(validateExampleCatalog(lessons), [])
-  assert.equal(lessons.reduce((sum: number, lesson: { rows: unknown[] }) => sum + lesson.rows.length, 0), 1333)
+  assert.equal(lessons.reduce((sum: number, lesson: { rows: unknown[] }) => sum + lesson.rows.length, 0), 1477)
   const sorted = lessons.map((lesson: { catalog: { lessonNumber: number } }) => lesson.catalog.lessonNumber)
   assert.deepEqual(sorted, [...sorted].sort((a, b) => a - b))
 })
@@ -22,7 +22,7 @@ test('all active entry identities, original examples and game data stay intact; 
     const extended = courseBundle.entries.find(entry => entry.entryId === original.entryId)!
     assert.equal(extended.examples.length, 3)
     assert.deepEqual(extended.examples[0], original.examples[0])
-    assert.deepEqual({ ...extended, examples: extended.examples.slice(0, 1) }, original)
+    assert.deepEqual({ ...extended, examples: extended.examples.slice(0, 1), sourceRefIds: extended.sourceRefIds.slice(0, original.sourceRefIds.length), occurrences: extended.occurrences.slice(0, original.occurrences.length) }, original)
     assert.equal(new Set(extended.examples.map(example => example.de)).size, 3)
     assert.deepEqual(extendEntryExamples(extended), extended)
     assert.equal(original.examples.length, 1)
