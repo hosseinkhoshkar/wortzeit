@@ -202,9 +202,11 @@ async function checkKeyboardViewport(page, force = false) {
 async function installClock(context, now) {
   await context.addInitScript(now => {
     const RealDate = Date
+    let instant = now
+    window.__setStudyTestClock = value => { instant = value }
     window.Date = class extends RealDate {
-      constructor(...args) { super(...(args.length ? args : [now])) }
-      static now() { return RealDate.parse(now) }
+      constructor(...args) { super(...(args.length ? args : [instant])) }
+      static now() { return RealDate.parse(instant) }
     }
   }, now)
 }
@@ -736,33 +738,51 @@ try {
     await second.getByRole('alert').filter({ hasText: 'تب دیگری' }).waitFor()
     await isolated.close()
   })
-  await checkpoint('daily target uses a modal with contained keyboard focus and reachable continue control', async () => {
+  await checkpoint('daily streak completes once without blocking study, survives offline reload, and resets after a missed day', async () => {
     const isolated = await browser.newContext({ viewport: { width: 320, height: 568 }, isMobile: true, hasTouch: true, locale: 'fa-IR', timezoneId: 'Europe/Berlin', reducedMotion: 'reduce' })
     observeContext(isolated)
-    await installClock(isolated, '2026-11-01T12:00:00.000Z')
-    const targetPage = await isolated.newPage()
-    await targetPage.goto(`${origin}/__test/setup`)
-    const initial = createInitialState(bundle, 'Europe/Berlin')
-    initial.dailyActivity['2026-11-01'] = initial.settings.targetActiveMs
-    await writeState(targetPage, initial)
-    await targetPage.goto(origin)
-    await targetPage.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).click()
-    const dialog = targetPage.locator('.target-dialog[open]')
-    await dialog.waitFor()
-    await assertViewport(targetPage, 'daily goal dialog', '.target-dialog button')
-    const before = await readState(targetPage)
-    for (let key = 0; key < 5; key++) {
-      await targetPage.keyboard.press('Tab')
-      assert.equal(await targetPage.evaluate(() => document.activeElement === document.body || !!document.activeElement.closest('.target-dialog')), true, 'keyboard cannot focus underlying controls (native dialog may focus browser chrome)')
+    await installClock(isolated, '2026-11-13T12:00:00.000Z')
+    const page = await isolated.newPage()
+    await page.goto(`${origin}/__test/setup`)
+    let initial = createInitialState(bundle, 'Europe/Berlin')
+    initial.dailyActivity['2026-11-12'] = initial.settings.targetActiveMs
+    initial.dailyActivity['2026-11-13'] = initial.settings.targetActiveMs - 1000
+    initial = transition(initial, { type: 'start-session', sessionId: 'streak-boundary', seed: 1 }, bundle, '2026-11-13T11:59:00.000Z')
+    initial = transition(initial, { type: 'pause' }, bundle, '2026-11-13T11:59:00.000Z')
+    await writeState(page, initial)
+    await page.goto(origin)
+    assert.ok((await page.locator('.streak-progress').innerText()).includes('۱'))
+    await clickAndSave(page, page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }), true)
+    await page.locator('.flashcard-flip').focus()
+    const before = await readState(page)
+    await page.locator('.streak-toast').waitFor()
+    assert.ok((await page.locator('.streak-toast').innerText()).includes('۲ روز متوالی'))
+    assert.equal(await page.locator('.target-dialog').count(), 0)
+    assert.equal(await page.locator('.flashcard-flip').evaluate(element => element === document.activeElement), true)
+    assert.deepEqual((await readState(page)).attempts, before.attempts)
+    assert.equal((await readState(page)).session.state, 'active')
+    await assertViewport(page, 'streak completion', '.flashcard-flip')
+    await clickAndSave(page, page.locator('.flashcard-flip'))
+    assert.equal((await readState(page)).session.queue[(await readState(page)).session.cursor].revealed, true)
+    await page.locator('.offline-pill').filter({ hasText: 'آمادهٔ آفلاین' }).waitFor()
+    await contextOfflineReload()
+    async function contextOfflineReload() {
+      await clickAndSave(page, page.getByRole('button', { name: 'توقف و بازگشت', exact: true }))
+      const saved = await readState(page)
+      await isolated.setOffline(true)
+      await page.reload()
+      await page.getByRole('button', { name: 'ادامهٔ یادگیری', exact: true }).waitFor()
+      assert.equal(await page.locator('.streak-toast').count(), 0)
+      assert.ok((await page.locator('.streak-progress').innerText()).includes('۲'))
+      assert.deepEqual((await readState(page)).dailyActivity, saved.dailyActivity)
+      assert.equal(await page.evaluate(() => window.localStorage.getItem('wortzeit-streak-notice-v1')), '2026-11-13')
+      await page.evaluate(() => { window.__setStudyTestClock('2026-11-14T12:00:00.000Z'); window.dispatchEvent(new Event('focus')) })
+      await page.waitForFunction(() => document.querySelector('.streak-progress')?.textContent.includes('امروز ۰'))
+      assert.ok((await page.locator('.streak-progress').innerText()).includes('۲'))
+      await page.evaluate(() => { window.__setStudyTestClock('2026-11-15T12:00:00.000Z'); window.dispatchEvent(new Event('focus')) })
+      await page.waitForFunction(() => document.querySelector('.streak-progress strong')?.textContent === '۰')
+      await assertViewport(page, 'home', '.hero-button')
     }
-    assert.equal(await dialog.evaluate(element => element.matches(':modal')), true, 'daily target is a real modal top layer')
-    await targetPage.locator('.flashcard-flip').evaluate(element => element.focus())
-    assert.equal(await targetPage.locator('.flashcard-flip').evaluate(element => element === document.activeElement), false, 'underlying exercise is inert to programmatic focus')
-    assert.deepEqual((await readState(targetPage)).attempts, before.attempts, 'Tab does not answer the underlying exercise')
-    await clickAndSave(targetPage, dialog.getByRole('button', { name: 'ادامهٔ تمرین', exact: true }))
-    await targetPage.locator('.target-dialog').waitFor({ state: 'hidden' })
-    assert.equal((await readState(targetPage)).session.targetAcknowledged, true)
-    await assertViewport(targetPage, 'after goal acknowledgement', '.flashcard')
     await isolated.close()
   })
   await checkpoint('V3 learned evidence activates cross-lesson reverse cards; reveal, lesson switching and offline reload preserve the answer', async () => {

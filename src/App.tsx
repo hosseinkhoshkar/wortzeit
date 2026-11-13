@@ -1,4 +1,5 @@
-﻿import { useEffect, useRef, useState } from 'react'
+import { DEFAULT_STUDY_TIME_ZONE } from './learning/streak.ts'
+import { useEffect, useRef, useState } from 'react'
 import type { AppState, LearningCommand, OfflineStatus } from './contracts/index.ts'
 import { courseBundle, lessonBundles } from './content/catalog.ts'
 import { validateContent } from './content/validate.ts'
@@ -41,7 +42,7 @@ export default function App() {
       if (errors.length) throw new Error(`بستهٔ درس معتبر نیست: ${errors.join('؛ ')}`)
       const loaded = await loadState(bundle)
       if (disposed || signal.aborted) return
-      const initial = loaded ?? createInitialState(bundle, Intl.DateTimeFormat().resolvedOptions().timeZone)
+      const initial = loaded ?? createInitialState(bundle, DEFAULT_STUDY_TIME_ZONE)
       const startupWriter = new CommandWriter(initial, {
         bundle, now: () => new Date().toISOString(), save: saveState,
         onSaved: saved => { if (!disposed) { setState(saved); setNow(new Date().toISOString()) } },
@@ -125,9 +126,12 @@ export default function App() {
     check()
     window.addEventListener('online', check)
     navigator.serviceWorker?.addEventListener('controllerchange', check)
-    const timer = window.setInterval(() => setNow(new Date().toISOString()), 30_000)
+    const refreshDate = () => setNow(new Date().toISOString())
+    const timer = window.setInterval(refreshDate, 30_000)
+    window.addEventListener('focus', refreshDate)
+    document.addEventListener('visibilitychange', refreshDate)
     return () => {
-      disposed = true; window.clearInterval(timer); window.removeEventListener('online', check)
+      disposed = true; window.clearInterval(timer); window.removeEventListener('focus', refreshDate); document.removeEventListener('visibilitychange', refreshDate); window.removeEventListener('online', check)
       navigator.serviceWorker?.removeEventListener('controllerchange', check)
     }
   }, [])

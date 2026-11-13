@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useId, useRef, useState, useSyncE
 import type { ReactNode } from 'react'
 import type { ContentBundle, Entry, EntryProgress, Example, LearningCommand, LessonDefinition, LessonSummary, ReverseProgress, ReverseReview, SessionTask, WortzeitUIProps } from '../contracts/index.ts'
 import { getReverseExample } from '../learning/examples.ts'
+import { getDailyStreak, STREAK_TARGET_MS } from '../learning/streak.ts'
+import type { DailyStreak } from '../learning/streak.ts'
 import { lessonVocabularyEntries } from '../content/lesson-vocabulary.ts'
 import { browserPronunciation, wordPronunciation } from './pronunciation.ts'
 import type { Pronunciation } from './pronunciation.ts'
@@ -127,18 +129,32 @@ function DetailSheet({ title, label, children, disabled = false, beforeOpen }: {
     try { await beforeOpen?.(); dialog.current?.showModal() } catch { /* Application keeps the retryable command. */ } finally { setOpening(false) }
   }}><Icon name="info" />{label ?? title}</button><dialog ref={dialog} className="detail-sheet" aria-labelledby={titleId} onClose={() => playback.stopScope(speechScope)} onClick={event => { if (event.target === event.currentTarget) dialog.current?.close() }}><div className="detail-sheet-header"><h2 id={titleId}>{title}</h2><button type="button" className="sheet-close" aria-label="بستن جزئیات" onClick={() => dialog.current?.close()}><Icon name="close" /></button></div><div className="detail-sheet-body"><SpeechScope value={speechScope}>{children}<PronunciationStatus /></SpeechScope></div></dialog></>
 }
-function TargetPrompt({ active, minutes, disabled, onFinish, onContinue }: {
-  active: boolean; minutes: number; disabled: boolean; onFinish: () => Promise<void>; onContinue: () => Promise<void>
-}) {
-  const dialog = useRef<HTMLDialogElement>(null)
-  const titleId = useId()
+function StreakProgress({ streak }: { streak: DailyStreak }) {
+  return <span className="streak-progress" aria-label={`استریک: ${number(streak.days)} روز متوالی؛ امروز ${number(Math.floor(Math.min(streak.activeMs, STREAK_TARGET_MS) / 60_000))} از ۲۰ دقیقه`}><span aria-hidden="true">🔥</span><strong>{number(streak.days)}</strong><span>روز متوالی · امروز {number(Math.floor(Math.min(streak.activeMs, STREAK_TARGET_MS) / 60_000))} از ۲۰ دقیقه{streak.completedToday ? ' ✓' : ''}</span></span>
+}
+function StreakToast({ days }: { days: number }) {
+  return <aside className="streak-toast" role="status" aria-live="polite"><span aria-hidden="true">🎉</span><div><strong>مطالعهٔ امروزت انجام شد!</strong><p>استریک تو: {number(days)} روز متوالی 🔥</p></div></aside>
+}
+function DailyStreakNotice({ streak }: { streak: DailyStreak }) {
+  const [notice, setNotice] = useState<{ date: string; days: number } | null>(null)
+  const claimedDate = useRef<string | null>(null)
   useEffect(() => {
-    const element = dialog.current
-    if (active) { if (!element?.open) element?.showModal() }
-    else element?.close()
-    return () => { element?.close() }
-  }, [active])
-  return <dialog ref={dialog} className="target-banner target-dialog" aria-labelledby={titleId} onCancel={event => event.preventDefault()}><div><h2 id={titleId}>به هدف حدود {number(minutes)} دقیقهٔ امروز رسیدی.</h2><p>می‌توانی جلسه را تمام کنی یا با همان صف، به تمرین ادامه بدهی.</p><div className="target-actions"><button className="primary-button" type="button" disabled={disabled} onClick={() => void onFinish()}>پایان و دیدن خلاصه</button><button className="secondary-button" type="button" autoFocus disabled={disabled} onClick={() => void onContinue().catch(() => {})}>ادامهٔ تمرین</button></div></div></dialog>
+    if (!streak.completedToday || claimedDate.current === streak.date) return
+    const key = 'wortzeit-streak-notice-v1'
+    // Only the announcement marker lives here. Achievements always come from IndexedDB activity.
+    try {
+      if (window.localStorage.getItem(key) === streak.date) { claimedDate.current = streak.date; return }
+      window.localStorage.setItem(key, streak.date)
+    } catch { /* Playback/study still work when optional localStorage is unavailable. */ }
+    claimedDate.current = streak.date
+    setNotice({ date: streak.date, days: streak.days })
+  }, [streak.date, streak.days, streak.completedToday])
+  useEffect(() => {
+    if (!notice) return
+    const timer = window.setTimeout(() => setNotice(null), 7000)
+    return () => window.clearTimeout(timer)
+  }, [notice])
+  return notice?.date === streak.date ? <StreakToast days={notice.days} /> : null
 }
 function Sources({ entry, bundle }: { entry: Entry; bundle: ContentBundle }) {
   return <DetailSheet title="ارجاع این واژه"><div className="entry-sources"><ul>{entry.sourceRefIds.map(id => {
@@ -401,7 +417,7 @@ function WortzeitView(props: WortzeitUIProps) {
       setSearch(''); setFilter('all'); setPage('home')
     } catch { /* Keep the current lesson until its selection and session are saved. */ } finally { selectingLesson.current = false }
   }
-  const targetReached = stats.todayActiveMs >= state.settings.targetActiveMs && !session?.targetAcknowledged
+  const streak = getDailyStreak(state, now)
   async function start() {
     try { await onCommand({ type: 'start-session', sessionId: crypto.randomUUID(), seed: Math.floor(Math.random() * 0xffffffff) }); setPage('session') } catch { /* Root displays the persistent failure. */ }
   }
@@ -441,15 +457,14 @@ function WortzeitView(props: WortzeitUIProps) {
         <div className="home-grid"><section className="hero-panel"><div className="hero-copy"><span className="eyebrow lesson-eyebrow"><span className="mini-line" /> {lessonLabel(activeLesson)} · {activeLesson.titleFa}</span><h2 lang="de" dir="ltr">{activeLesson.titleDe}</h2><p>اول چند فلش‌کارت، بعد کمی بازی.<br />واژه‌های تازه را با ریتم خودت یاد بگیر.</p><button type="button" className="primary-button hero-button" disabled={disabled} onClick={() => void start()}>ادامهٔ یادگیری<Icon name="arrow" /></button><span className="hero-caption">{session && session.state !== 'ended' ? 'جلسهٔ ناتمام تو از همان‌جا ادامه پیدا می‌کند.' : 'شروع یادگیری · حداکثر ۵ واژهٔ جدید در هر جلسه'}</span></div><GardenIllustration /></section>
           <aside className="today-panel"><span className="eyebrow"><Icon name="clock" /> نوبت مرور</span><div className="review-number">{number(stats.due)}<span>واژه</span></div><h2>{stats.due ? 'منتظر یک دیدار دوباره‌اند' : 'مرور عقب‌افتاده‌ای نداری'}</h2><p>{stats.due ? 'مرورهای موعدرسیده پیش از واژه‌های تازه می‌آیند.' : 'پس از تمرین، وقت مرور بعدی اینجا مشخص می‌شود.'}</p><div className="next-review"><Icon name="clock" /><span>مرور بعدی<strong>{dateLabel(stats.nextDueAt, now)}</strong></span></div></aside></div>
         <section className="progress-panel"><div><span className="eyebrow">ردِ قدم‌های تو</span><h2>پیشرفت در {lessonLabel(activeLesson)}</h2><p>واژه‌های همین درس و پیشرفت واقعی تو.</p></div><div className="progress-overview"><div className="progress-count"><strong>{number(stats.introduced)}</strong><span>از {number(total)} واژه معرفی شده</span></div><div className="word-progress" role="progressbar" aria-label="واژه‌های معرفی‌شده در بسته" aria-valuemin={0} aria-valuemax={total} aria-valuenow={stats.introduced}><span style={{ width: `${total ? stats.introduced / total * 100 : 0}%` }} /></div><span className="progress-note">معرفی شدن با تسلط یکی نیست؛ مرورهای روزهای بعد مهم‌اند.</span></div><div className="answer-stat"><span className="stat-icon"><Icon name="check" /></span><strong>{number(stats.correct)} <small>از {number(stats.totalAnswers)}</small></strong><span>پاسخ درست</span></div></section>
-        <div className="daily-glance"><span><Icon name="clock" /> امروز <bdi dir="ltr">{durationLabel(stats.todayActiveMs)}</bdi> مطالعه</span><span><Icon name="flip" />{learnedCount < 15 ? `مرور معکوس · ${number(learnedCount)} از ۱۵ واژه` : `مرور معکوس · ${number(reverseDueCount)} آماده`}</span></div>
+        <div className="daily-glance"><StreakProgress streak={streak} /><span><Icon name="flip" />{learnedCount < 15 ? `مرور معکوس · ${number(learnedCount)} از ۱۵ واژه` : `مرور معکوس · ${number(reverseDueCount)} آماده`}</span></div>
         <section className="home-lessons-section" aria-label="دسترسی به درس‌ها"><button type="button" className="lesson-shortcut" onClick={() => void navigate('lessons')}><span><Icon name="book" /> درس‌های من</span><span>{number(summaries.length)} درس آماده <Icon name="arrow" /></span></button></section>
         <div className="home-footnote"><Icon name="leaf" /><p>پیشرفتت در همین مرورگر می‌ماند؛ هر وقت برگشتی، از همین‌جا ادامه بده.</p><button type="button" className="text-button" onClick={() => setPage('about')}>دربارهٔ محتوا و ذخیره</button></div>
       </section>}
       {effectivePage === 'session' && <section className="session-page">
         <div className="session-toolbar"><button type="button" className="text-button" onClick={() => void pause()} disabled={disabled}><Icon name="pause" /> توقف و بازگشت</button><span>{lessonLabel(activeLesson)} <span className="toolbar-dot">·</span> {number(summary.practiced)} واژه تمرین شده</span><button type="button" className="text-button finish-button" onClick={() => void finish()} disabled={disabled}>پایان جلسه</button></div>
         <div className="session-progress"><span style={{ width: `${session?.queue.length ? Math.min(100, session.cursor / session.queue.length * 100) : 0}%` }} /></div>
-        <div className="session-activity"><span><Icon name="clock" /> زمان فعال این جلسه <bdi dir="ltr">{durationLabel(summary.activeMs)}</bdi></span><span className="session-phase">{task?.kind === 'reverse-card' ? 'مرور · فارسی به آلمانی' : task?.kind === 'flashcard' ? '۱ · آشنایی با واژه‌ها' : task?.kind === 'match' ? '۳ · بازی جفت‌ها' : '۲ · یادآوری و تمرین'}</span></div>
-        <TargetPrompt active={targetReached} minutes={state.settings.targetActiveMs / 60_000} disabled={disabled} onFinish={finish} onContinue={() => onCommand({ type: 'continue-after-target' })} />
+        <div className="session-activity"><StreakProgress streak={streak} /><span className="session-phase">{task?.kind === 'reverse-card' ? 'مرور · فارسی به آلمانی' : task?.kind === 'flashcard' ? '۱ · آشنایی با واژه‌ها' : task?.kind === 'match' ? '۳ · بازی جفت‌ها' : '۲ · یادآوری و تمرین'}</span></div>
         {task ? <TaskPanel key={task.taskId} task={task} props={props} /> : <div className="empty-state"><Icon name="check" /><h1>تمرین‌های این نوبت تمام شد.</h1><p>خلاصهٔ واقعی جلسه و وقت مرور بعدی را ببین.</p><button className="primary-button" type="button" onClick={() => void finish()} disabled={disabled}>دیدن خلاصه <Icon name="arrow" /></button></div>}
       </section>}
       {effectivePage === 'summary' && <section className={`summary-page ${reverseSessionReviews.length ? 'with-reverse-summary' : ''}`}>
@@ -470,8 +485,9 @@ function WortzeitView(props: WortzeitUIProps) {
         <LessonWordList entries={selectedWords} props={props} />
         {!selectedWords.length && <div className="empty-state"><Icon name="book" /><h2>واژه‌ای با این جست‌وجو پیدا نشد.</h2><button className="text-button" type="button" onClick={() => { setSearch(''); setFilter('all') }}>نمایش همهٔ واژه‌ها</button></div>}
       </section>}
-      {effectivePage === 'about' && <section className="about-page"><span className="eyebrow">شفاف، ساده، روی همین دستگاه</span><h1>پشتِ این واژه‌ها<span className="orange-dot">.</span></h1><article className="about-card"><span className="about-icon"><Icon name="book" /></span><div><h2>یک گزیدهٔ کوچک برای شروع</h2><p>این بسته شامل {number(total)} مدخل از {lessonLabel(activeLesson)} <bdi lang="de" dir="ltr">{activeLesson.titleDe}</bdi> است. معنی، آرتیکل و ارجاعات با فایل گزیده تطبیق داده شده‌اند.</p><p>{activeProvenance.noteFa}</p><p>جمله‌ها و ترجمهٔ آن‌ها تألیفی‌اند و نقل‌قول از کتاب نیستند. ارجاع هر واژه در کارت و فهرست واژه‌ها در دسترس است.</p><span className="source-file" dir="ltr">{activeProvenance.file}</span></div></article><article className="about-card"><span className="about-icon peach"><Icon name="clock" /></span><div><h2>یادگیری با فاصله</h2><p>نخستین یادآوری موفق، مرور را برای یک روز بعد برنامه‌ریزی می‌کند. با مرورهای موفقِ موعدرسیده در روزهای جدا، فاصله‌ها به ۳، ۷، ۱۴ و ۳۰ روز می‌رسند.</p><p>چند جواب درست در یک روز، چند پله را جلو نمی‌برد. کارت و بازی جای یادآوری مستقل را نمی‌گیرند. پاسخ غلط پس از چند سؤال دیگر دوباره تمرین می‌شود؛ اگر تمرین کافی نماند، برای جلسهٔ بعد محفوظ است.</p></div></article><article className="about-card"><span className="about-icon yellow"><Icon name="leaf" /></span><div><h2>پیشرفتت روی همین مرورگر</h2><p>پاسخ‌ها، موعد مرور و محل ادامهٔ جلسه در حافظهٔ محلی مرورگر این دستگاه ذخیره می‌شوند. حساب کاربری و همگام‌سازی ابری وجود ندارد.</p><p>تازه‌سازی و بستن عادی برنامه پیشرفت را حفظ می‌کنند. پاک‌کردن دادهٔ سایت یا حذف داده‌ها توسط مرورگر می‌تواند پیشرفت را پاک کند؛ پشتیبان خودکار وجود ندارد.</p><p>{offlineStatus === 'ready' ? 'پوسته و بستهٔ این نسخه بررسی شده‌اند و برای مطالعهٔ آفلاین آماده‌اند.' : 'آمادگی آفلاین هنوز تأیید نشده است؛ پس از آماده‌شدن، نشان بالای صفحه تغییر می‌کند.'}</p></div></article><article className="about-card"><span className="about-icon"><Icon name="spark" /></span><div><h2>معنی، نوشتن و آرتیکل جدا سنجیده می‌شوند</h2><p>شناخت معنی و اتصال جفت‌ها یک مهارت‌اند؛ جای خالی و نوشتن واژه مهارت نوشتن را تمرین می‌دهند. آرتیکل فقط برای اسم مناسب مطرح می‌شود. شمار پاسخ درست، غلط، پاسخ با کمک و پاسخ درستِ بدون کمک را در جزئیات هر واژه می‌بینی.</p><p>تثبیت در این برنامه یک وضعیت عملیاتی است: دست‌کم سه مرور مستقلِ موعدرسیده در روزهای جدا، بدون خطا یا کمک میانی؛ برای اسم، دست‌کم یک پاسخ آرتیکلِ بدون کمک هم لازم است. بازی یا چند جواب درست در یک روز این وضعیت را نمی‌سازد.</p><p>هدف روزانه حدود {number(state.settings.targetActiveMs / 60_000)} دقیقه مطالعهٔ فعال است. فقط زمان حضور در جلسهٔ فعال شمرده می‌شود؛ صفحهٔ پنهان، توقف، واژه‌نامه و زمان بسته‌بودن برنامه به آن اضافه نمی‌شوند. رسیدن به هدف، پیشنهاد پایان است و ادامه‌دادن مجاز می‌ماند.</p></div></article></section>}
+      {effectivePage === 'about' && <section className="about-page"><span className="eyebrow">شفاف، ساده، روی همین دستگاه</span><h1>پشتِ این واژه‌ها<span className="orange-dot">.</span></h1><article className="about-card"><span className="about-icon"><Icon name="book" /></span><div><h2>یک گزیدهٔ کوچک برای شروع</h2><p>این بسته شامل {number(total)} مدخل از {lessonLabel(activeLesson)} <bdi lang="de" dir="ltr">{activeLesson.titleDe}</bdi> است. معنی، آرتیکل و ارجاعات با فایل گزیده تطبیق داده شده‌اند.</p><p>{activeProvenance.noteFa}</p><p>جمله‌ها و ترجمهٔ آن‌ها تألیفی‌اند و نقل‌قول از کتاب نیستند. ارجاع هر واژه در کارت و فهرست واژه‌ها در دسترس است.</p><span className="source-file" dir="ltr">{activeProvenance.file}</span></div></article><article className="about-card"><span className="about-icon peach"><Icon name="clock" /></span><div><h2>یادگیری با فاصله</h2><p>نخستین یادآوری موفق، مرور را برای یک روز بعد برنامه‌ریزی می‌کند. با مرورهای موفقِ موعدرسیده در روزهای جدا، فاصله‌ها به ۳، ۷، ۱۴ و ۳۰ روز می‌رسند.</p><p>چند جواب درست در یک روز، چند پله را جلو نمی‌برد. کارت و بازی جای یادآوری مستقل را نمی‌گیرند. پاسخ غلط پس از چند سؤال دیگر دوباره تمرین می‌شود؛ اگر تمرین کافی نماند، برای جلسهٔ بعد محفوظ است.</p></div></article><article className="about-card"><span className="about-icon yellow"><Icon name="leaf" /></span><div><h2>پیشرفتت روی همین مرورگر</h2><p>پاسخ‌ها، موعد مرور و محل ادامهٔ جلسه در حافظهٔ محلی مرورگر این دستگاه ذخیره می‌شوند. حساب کاربری و همگام‌سازی ابری وجود ندارد.</p><p>تازه‌سازی و بستن عادی برنامه پیشرفت را حفظ می‌کنند. پاک‌کردن دادهٔ سایت یا حذف داده‌ها توسط مرورگر می‌تواند پیشرفت را پاک کند؛ پشتیبان خودکار وجود ندارد.</p><p>{offlineStatus === 'ready' ? 'پوسته و بستهٔ این نسخه بررسی شده‌اند و برای مطالعهٔ آفلاین آماده‌اند.' : 'آمادگی آفلاین هنوز تأیید نشده است؛ پس از آماده‌شدن، نشان بالای صفحه تغییر می‌کند.'}</p></div></article><article className="about-card"><span className="about-icon"><Icon name="spark" /></span><div><h2>معنی، نوشتن و آرتیکل جدا سنجیده می‌شوند</h2><p>شناخت معنی و اتصال جفت‌ها یک مهارت‌اند؛ جای خالی و نوشتن واژه مهارت نوشتن را تمرین می‌دهند. آرتیکل فقط برای اسم مناسب مطرح می‌شود. شمار پاسخ درست، غلط، پاسخ با کمک و پاسخ درستِ بدون کمک را در جزئیات هر واژه می‌بینی.</p><p>تثبیت در این برنامه یک وضعیت عملیاتی است: دست‌کم سه مرور مستقلِ موعدرسیده در روزهای جدا، بدون خطا یا کمک میانی؛ برای اسم، دست‌کم یک پاسخ آرتیکلِ بدون کمک هم لازم است. بازی یا چند جواب درست در یک روز این وضعیت را نمی‌سازد.</p><p>استریک با ۲۰ دقیقه تمرین فعال در هر روز کامل می‌شود؛ زمان چند نوبت و همهٔ درس‌ها با هم جمع می‌شود. فقط زمان حضور در جلسهٔ فعال شمرده می‌شود؛ صفحهٔ پنهان، توقف، واژه‌نامه و زمان بسته‌بودن برنامه به آن اضافه نمی‌شوند. پس از تکمیل استریک، تمرین بدون توقف ادامه دارد. اگر یک روز کامل به ۲۰ دقیقه نرسی، استریک صفر می‌شود؛ تا پایان امروز فرصت داری.</p></div></article></section>}
     </main>
+    <DailyStreakNotice streak={streak} />
     <footer className="app-footer"><span lang="de" dir="ltr">Kleine Schritte. Neue Wörter.</span><span>واژه‌های کوچک، قدم‌های ماندگار.</span></footer>
     {effectivePage !== 'session' && <nav className="mobile-nav" aria-label="ناوبری اصلی موبایل">{navigation.map(item => <button type="button" key={item.page} className={effectivePage === item.page ? 'active' : ''} aria-current={effectivePage === item.page ? 'page' : undefined} onClick={() => void navigate(item.page)}><Icon name={item.icon} /><span>{item.label}</span></button>)}</nav>}
   </div>

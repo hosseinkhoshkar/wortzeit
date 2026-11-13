@@ -16,11 +16,12 @@ import { createInitialState } from '../learning/engine.ts'
 // with React SSR. These are static content/accessibility checks, not browser proof.
 const require = createRequire(import.meta.url)
 const source = readFileSync(new URL('./WortzeitUI.tsx', import.meta.url), 'utf8')
-const javascript = ts.transpileModule(`${source}\nexport { TaskPanel, SkillDetails, LessonCards, LessonWordList, lessonEntries, ReverseReviewSummary, TargetPrompt, PronunciationProvider }`, {
+const javascript = ts.transpileModule(`${source}\nexport { TaskPanel, SkillDetails, LessonCards, LessonWordList, lessonEntries, ReverseReviewSummary, StreakToast, StreakProgress, PronunciationProvider }`, {
   compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2023 },
 }).outputText.replace(/import ['"]\.\.\/App\.css['"];?/u, '')
   .replace(/from (['"])(react(?:\/jsx-runtime)?)\1/gu,
     (_match, _quote: string, specifier: string) => `from '${pathToFileURL(require.resolve(specifier)).href}'`)
+  .replace("from '../learning/streak.ts'", `from '${new URL('../learning/streak.ts', import.meta.url).href}'`)
   .replace("from '../learning/examples.ts'", `from '${new URL('../learning/examples.ts', import.meta.url).href}'`)
   .replace("from '../content/lesson-vocabulary.ts'", `from '${new URL('../content/lesson-vocabulary.ts', import.meta.url).href}'`)
   .replace("from './pronunciation.ts'", `from '${new URL('./pronunciation.ts', import.meta.url).href}'`)
@@ -232,12 +233,14 @@ test('reverse review summary reports self-assessed recall separately from origin
 })
 
 
-test('daily target prompt uses a labelled native dialog and explicit continuation controls', () => {
-  const html = renderToStaticMarkup(createElement(view.TargetPrompt, { active: true, minutes: 20, disabled: false, onFinish: async () => {}, onContinue: async () => {} }))
-  assert.match(html, /<dialog[^>]+class="target-banner target-dialog"[^>]+aria-labelledby=/u)
-  assert.ok(!html.includes('role="status"'))
-  assert.match(html, /پایان و دیدن خلاصه/u)
-  assert.match(html, /ادامهٔ تمرین/u)
+test('daily completion is a polite non-modal notification and never offers to end the session', () => {
+  const html = renderToStaticMarkup(createElement(view.StreakToast, { days: 5 }))
+  assert.ok(html.includes('مطالعهٔ امروزت انجام شد!'))
+  assert.ok(html.includes('۵ روز متوالی'))
+  assert.ok(html.includes('role="status"'))
+  assert.ok(!html.includes('<dialog'))
+  assert.ok(!html.includes('پایان جلسه'))
+  assert.ok(!html.includes('<button'))
 })
 
 
