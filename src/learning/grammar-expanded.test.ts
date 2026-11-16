@@ -4,7 +4,7 @@ import { grammarQuestions } from '../content/grammar-catalog.ts'
 import { applyGrammar, grammarFeedback, grammarStats, validateGrammar } from './grammar.ts'
 
 // Additional fifty-question lessons are added one release at a time.
-const lessonIds = ['a1-lesson-03', 'a1-lesson-04', 'a1-lesson-06']
+const lessonIds = ['a1-lesson-03', 'a1-lesson-04', 'a1-lesson-05', 'a1-lesson-06']
 const now = '2026-11-16T12:00:00.000Z'
 for (const lessonId of lessonIds) {
   const questions = grammarQuestions.filter(question => question.lessonId === lessonId)

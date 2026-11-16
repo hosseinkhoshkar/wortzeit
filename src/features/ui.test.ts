@@ -404,3 +404,32 @@ test('lesson-two grammar renders independently of the vocabulary lesson with its
   assert.ok(!html.includes('پاسخ درست:'))
   assert.deepEqual(props.state, before)
 })
+
+test('grammar library lists six lessons in order, puts lesson five between four and six and removes the select', () => {
+  const props = propsFor({ taskId: 'grammar-library', kind: 'flashcard', entryId: bundle.entries[0].entryId, revealed: false })
+  const before = structuredClone(props.state)
+  const html = renderToStaticMarkup(createElement(view.GrammarPanel, { props, onBack: async () => {} }))
+  assert.equal((html.match(/class="grammar-lesson-card"/gu) ?? []).length, 6)
+  const labels = ['اول', 'دوم', 'سوم', 'چهارم', 'پنجم', 'ششم'].map(name => 'aria-label="شروع گرامر درس ' + name + '"')
+  const positions = labels.map(label => html.indexOf(label))
+  assert.ok(positions.every((position, index) => position >= 0 && (index === 0 || position > positions[index - 1])))
+  assert.ok(html.includes('Endlich ein Zimmer!'))
+  assert.ok(!html.includes('<select'))
+  assert.ok(!html.includes('grammar-options'))
+  assert.deepEqual(props.state, before)
+})
+test('grammar library displays saved progress and an unfinished lesson as continuation without revealing its answer', async () => {
+  const { applyGrammar } = await import('../learning/grammar.ts')
+  const props = propsFor({ taskId: 'grammar-library-progress', kind: 'flashcard', entryId: bundle.entries[0].entryId, revealed: false })
+  let grammar = applyGrammar(undefined, { type: 'grammar-start', lessonId: 'a1-lesson-05', sessionId: 'library-five', seed: 11 }, now)!
+  const item = grammar.session!.items[0]
+  grammar = applyGrammar(grammar, { type: 'grammar-answer', sessionId: 'library-five', questionId: item.questionId, attemptId: 'library-answer', option: item.options[0] }, now)!
+  props.state.grammar = applyGrammar(grammar, { type: 'grammar-pause' }, now)
+  const before = structuredClone(props.state)
+  const html = renderToStaticMarkup(createElement(view.GrammarPanel, { props, onBack: async () => {} }))
+  assert.ok(html.includes('aria-label="ادامهٔ گرامر درس پنجم"'))
+  assert.ok(html.includes('ادامهٔ آخرین تمرین'))
+  assert.ok(html.includes('۱ از ۵۰ سؤال'))
+  assert.ok(!html.includes('پاسخ درست:') && !html.includes('grammar-options'))
+  assert.deepEqual(props.state, before)
+})
