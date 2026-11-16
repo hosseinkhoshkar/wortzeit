@@ -1,4 +1,4 @@
-import { grammarQuestions } from '../content/grammar-one.ts'
+import { grammarQuestions } from '../content/grammar-catalog.ts'
 
 export const GRAMMAR_BATCH_SIZE = 5
 export interface GrammarAttempt {
@@ -22,6 +22,7 @@ export interface GrammarState {
   version: 1
   attempts: GrammarAttempt[]
   session: GrammarSession | null
+  savedSessions?: Record<string, GrammarSession>
 }
 export type GrammarCommand =
   | { type: 'grammar-start'; lessonId: string; sessionId: string; seed: number }
@@ -48,29 +49,39 @@ export function grammarFeedback(state: GrammarState | undefined): GrammarAttempt
   const item = session?.items[session.cursor]
   return item ? state!.attempts.find(attempt => attempt.sessionId === session!.sessionId && attempt.questionId === item.questionId) : undefined
 }
-export function grammarStats(state: GrammarState | undefined) {
-  const attempts = state?.attempts ?? []
+export function grammarStats(state: GrammarState | undefined, lessonId = 'a1-lesson-01') {
+  const questions = grammarQuestions.filter(question => question.lessonId === lessonId)
+  const attempts = (state?.attempts ?? []).filter(attempt => questions.some(question => question.questionId === attempt.questionId))
   const last = new Map(attempts.map(attempt => [attempt.questionId, attempt]))
-  return { answered: last.size, total: grammarQuestions.length,
+  return { answered: last.size, total: questions.length,
     correct: attempts.filter(attempt => attempt.correct).length, attempts: attempts.length,
     mistakes: [...last.values()].filter(attempt => !attempt.correct).length }
 }
 export function applyGrammar(state: GrammarState | undefined, command: GrammarCommand, now: string): GrammarState | undefined {
   if (!Number.isFinite(Date.parse(now))) return state
   if (command.type === 'grammar-start') {
-    if (command.lessonId !== 'a1-lesson-01' || !command.sessionId || !Number.isFinite(command.seed)) return state
-    if (state?.session && state.session.state !== 'ended') {
-      if (state.session.state === 'active') return state
-      return { ...state, session: { ...state.session, state: 'active' } }
+    const questions = grammarQuestions.filter(question => question.lessonId === command.lessonId)
+    if (!questions.length || !command.sessionId || !Number.isFinite(command.seed)) return state
+    const savedSessions = { ...state?.savedSessions }
+    const current = state?.session
+    const target = current?.lessonId === command.lessonId ? current : savedSessions[command.lessonId]
+    if (current && current.lessonId !== command.lessonId) {
+      savedSessions[current.lessonId] = { ...current, state: current.state === 'active' ? 'paused' : current.state }
     }
-    if (state?.attempts.some(attempt => attempt.sessionId === command.sessionId)) return state
+    delete savedSessions[command.lessonId]
+    if (target && target.state !== 'ended') {
+      if (current === target && target.state === 'active') return state
+      return { ...state!, savedSessions, session: { ...target, state: 'active' } }
+    }
+    if (current?.sessionId === command.sessionId || Object.values(savedSessions).some(session => session.sessionId === command.sessionId)
+      || state?.attempts.some(attempt => attempt.sessionId === command.sessionId)) return state
     const attempts = state?.attempts ?? []
     const last = new Map(attempts.map(attempt => [attempt.questionId, attempt]))
     const priority = (id: string) => !last.has(id) ? 1 : last.get(id)!.correct ? 2 : 0
-    const selected = shuffle(grammarQuestions, command.seed)
+    const selected = shuffle(questions, command.seed)
       .sort((a, b) => priority(a.questionId) - priority(b.questionId))
       .slice(0, GRAMMAR_BATCH_SIZE)
-    return { version: 1, attempts: [...attempts],
+    return { version: 1, attempts: [...attempts], savedSessions,
       session: { sessionId: command.sessionId, lessonId: command.lessonId, state: 'active', startedAt: now,
         activeMs: 0, cursor: 0, items: selected.map((question, index) => ({
           questionId: question.questionId, options: shuffle(question.options, command.seed + index + 1),
@@ -115,25 +126,43 @@ export function validateGrammar(value: unknown): boolean {
     if (answered.has(key)) return false
     answered.add(key); ids.add(attempt.attemptId)
   }
-  const session = value.session
-  if (session === null) return true
-  if (!record(session) || typeof session.sessionId !== 'string' || !session.sessionId || session.lessonId !== 'a1-lesson-01'
-    || !['active', 'paused', 'ended'].includes(String(session.state)) || !validTime(session.startedAt)
-    || typeof session.activeMs !== 'number' || !Number.isFinite(session.activeMs) || session.activeMs < 0
-    || !Array.isArray(session.items) || session.items.length !== GRAMMAR_BATCH_SIZE
-    || typeof session.cursor !== 'number' || !Number.isInteger(session.cursor) || session.cursor < 0 || session.cursor > session.items.length
-    || (session.state === 'ended') !== (session.cursor === session.items.length)) return false
-  const questions = new Set<string>()
-  for (const [index, item] of session.items.entries()) {
-    if (!record(item)) return false
-    const question = grammarQuestions.find(question => question.questionId === item.questionId)
-    if (!question || questions.has(question.questionId) || !Array.isArray(item.options) || item.options.length !== 4
-      || new Set(item.options).size !== 4 || item.options.some(option => !question.options.includes(option))) return false
-    questions.add(question.questionId)
-    const key = JSON.stringify([session.sessionId, question.questionId])
-    if (index < session.cursor && !answered.has(key) || index > session.cursor && answered.has(key)) return false
+  if (value.savedSessions !== undefined && !record(value.savedSessions)) return false
+  const sessions = [value.session, ...Object.values((value.savedSessions ?? {}) as Record<string, unknown>)]
+  const sessionIds = new Set<string>(), lessonIds = new Set<string>()
+  for (const [key, saved] of Object.entries(value.savedSessions ?? {})) {
+    if (!record(saved) || saved.lessonId !== key || saved.state === 'active') return false
   }
-  const relevant = value.attempts.filter(attempt => attempt.sessionId === session.sessionId)
-  if (relevant.some(attempt => !questions.has(attempt.questionId) || Date.parse(attempt.at) < Date.parse(String(session.startedAt)))) return false
+  for (const session of sessions) {
+    if (session === null) continue
+    if (!record(session) || typeof session.sessionId !== 'string' || !session.sessionId
+      || typeof session.lessonId !== 'string' || !grammarQuestions.some(question => question.lessonId === session.lessonId)
+      || sessionIds.has(session.sessionId) || lessonIds.has(session.lessonId)
+      || !['active', 'paused', 'ended'].includes(String(session.state)) || !validTime(session.startedAt)
+      || typeof session.activeMs !== 'number' || !Number.isFinite(session.activeMs) || session.activeMs < 0
+      || !Array.isArray(session.items) || session.items.length !== GRAMMAR_BATCH_SIZE
+      || typeof session.cursor !== 'number' || !Number.isInteger(session.cursor) || session.cursor < 0 || session.cursor > session.items.length
+      || (session.state === 'ended') !== (session.cursor === session.items.length)) return false
+    sessionIds.add(session.sessionId); lessonIds.add(session.lessonId)
+    const questions = new Set<string>()
+    for (const [index, item] of session.items.entries()) {
+      if (!record(item)) return false
+      const question = grammarQuestions.find(question => question.questionId === item.questionId)
+      if (!question || question.lessonId !== session.lessonId || questions.has(question.questionId)
+        || !Array.isArray(item.options) || item.options.length !== 4 || new Set(item.options).size !== 4
+        || item.options.some(option => !question.options.includes(option))) return false
+      questions.add(question.questionId)
+      const key = JSON.stringify([session.sessionId, question.questionId])
+      if (index < session.cursor && !answered.has(key) || index > session.cursor && answered.has(key)) return false
+    }
+    const relevant = value.attempts.filter(attempt => attempt.sessionId === session.sessionId)
+    if (relevant.some(attempt => !questions.has(attempt.questionId) || Date.parse(attempt.at) < Date.parse(String(session.startedAt)))) return false
+  }
+  // A historical session cannot mix questions from different lessons.
+  const historicalLessons = new Map<string, string>()
+  for (const attempt of value.attempts) {
+    const lessonId = grammarQuestions.find(question => question.questionId === attempt.questionId)!.lessonId
+    if (historicalLessons.has(attempt.sessionId) && historicalLessons.get(attempt.sessionId) !== lessonId) return false
+    historicalLessons.set(attempt.sessionId, lessonId)
+  }
   return true
 }

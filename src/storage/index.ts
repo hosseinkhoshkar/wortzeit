@@ -27,8 +27,9 @@ export function validateState(value: unknown, bundle: ContentBundle): asserts va
   if (!isRecord(value) || value.schemaVersion !== SCHEMA_VERSION || !isRecord(value.reverseProgress)
     || !Array.isArray(value.reverseReviews) || !isRecord(value.savedSessions)) fail()
   const state = value as unknown as AppState
-  if (!validateGrammar(state.grammar) || state.grammar?.session?.state === 'active' && (state.session?.state === 'active' || state.activeLessonId !== 'a1-lesson-01')) fail()
-  if (state.grammar?.session && [state.session, ...Object.values(state.savedSessions)].some(session => session?.sessionId === state.grammar!.session!.sessionId)) fail()
+  if (!validateGrammar(state.grammar) || state.grammar?.session?.state === 'active' && state.session?.state === 'active') fail()
+  const grammarSessions = [state.grammar?.session, ...Object.values(state.grammar?.savedSessions ?? {})]
+  if (grammarSessions.some(grammar => grammar && [state.session, ...Object.values(state.savedSessions)].some(session => session?.sessionId === grammar.sessionId))) fail()
   const known = new Set(bundle.entries.map(entry => entry.entryId))
   const sessions = [state.session, ...Object.values(state.savedSessions)].filter((session): session is Session => session !== null)
   const project = (session: Session | null): VersionThreeSession | null => {
