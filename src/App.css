@@ -195,3 +195,8 @@
  .grammar-library-footer{font-size:9px;min-height:40px}.grammar-library-footer .details-trigger{font-size:10px;min-height:40px}.grammar-resume{padding:10px 14px}.grammar-resume strong{font-size:12px}.grammar-resume small{font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){.grammar-lesson-card{transition:none}}
+
+/* Keep the card contents intact when the lesson list becomes scrollable. */
+.grammar-lesson-grid{grid-auto-rows:max-content}
+.grammar-lesson-card{min-height:154px}
+.grammar-card-top,.grammar-card-title,.grammar-card-topic,.grammar-card-progress,.grammar-card-bottom{flex-shrink:0}
