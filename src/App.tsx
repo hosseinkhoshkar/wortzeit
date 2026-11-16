@@ -101,8 +101,9 @@ export default function App() {
     }
   }, [bootAttempt])
 
-  const sessionId = state?.session?.sessionId
-  const sessionActive = state?.session?.state === 'active'
+  const grammarActive = state?.grammar?.session?.state === 'active'
+  const sessionId = grammarActive ? state?.grammar?.session?.sessionId : state?.session?.sessionId
+  const sessionActive = grammarActive || state?.session?.state === 'active'
   useEffect(() => {
     if (!sessionId || !sessionActive || !sessionVisible || error) return
     const tracker = new ActivityTracker(sessionId, {
@@ -137,8 +138,8 @@ export default function App() {
   }, [])
 
   const onCommand = (command: LearningCommand): Promise<void> => {
-    if (command.type === 'next' || command.type === 'rate-reverse') activity.current?.flush()
-    if (command.type === 'pause' || command.type === 'end-session' || command.type === 'select-lesson') activity.current?.stop()
+    if (command.type === 'next' || command.type === 'rate-reverse' || command.type === 'grammar-next') activity.current?.flush()
+    if (command.type === 'pause' || command.type === 'end-session' || command.type === 'select-lesson' || command.type === 'grammar-pause' || command.type === 'grammar-start') activity.current?.stop()
     return writer.current?.submit(command) ?? Promise.resolve()
   }
 

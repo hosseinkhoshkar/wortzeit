@@ -16,11 +16,13 @@ import { createInitialState } from '../learning/engine.ts'
 // with React SSR. These are static content/accessibility checks, not browser proof.
 const require = createRequire(import.meta.url)
 const source = readFileSync(new URL('./WortzeitUI.tsx', import.meta.url), 'utf8')
-const javascript = ts.transpileModule(`${source}\nexport { TaskPanel, SkillDetails, LessonCards, LessonWordList, lessonEntries, ReverseReviewSummary, StreakToast, StreakProgress, PronunciationProvider }`, {
+const javascript = ts.transpileModule(`${source}\nexport { TaskPanel, SkillDetails, LessonCards, LessonWordList, lessonEntries, ReverseReviewSummary, StreakToast, StreakProgress, PronunciationProvider, GrammarPanel }`, {
   compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2023 },
 }).outputText.replace(/import ['"]\.\.\/App\.css['"];?/u, '')
   .replace(/from (['"])(react(?:\/jsx-runtime)?)\1/gu,
     (_match, _quote: string, specifier: string) => `from '${pathToFileURL(require.resolve(specifier)).href}'`)
+  .replace("from '../content/grammar-one.ts'", `from '${new URL('../content/grammar-one.ts', import.meta.url).href}'`)
+  .replace("from '../learning/grammar.ts'", `from '${new URL('../learning/grammar.ts', import.meta.url).href}'`)
   .replace("from '../learning/streak.ts'", `from '${new URL('../learning/streak.ts', import.meta.url).href}'`)
   .replace("from '../learning/examples.ts'", `from '${new URL('../learning/examples.ts', import.meta.url).href}'`)
   .replace("from '../content/lesson-vocabulary.ts'", `from '${new URL('../content/lesson-vocabulary.ts', import.meta.url).href}'`)
@@ -375,5 +377,17 @@ test('shared lesson-six vocabulary displays the same word, examples and progress
   assert.ok(html.includes('Rock'))
   assert.ok(html.includes('واژهٔ مشترک با درس دیگر'))
   assert.ok(html.includes(entry.examples[0].de))
+  assert.deepEqual(props.state, before)
+})
+
+test('lesson-one grammar renders four options without showing feedback until its answer is committed', async () => {
+  const { applyGrammar } = await import('../learning/grammar.ts')
+  const props = propsFor({ taskId: 'grammar-ui', kind: 'flashcard', entryId: bundle.entries[0].entryId, revealed: false })
+  props.state.grammar = applyGrammar(undefined, { type: 'grammar-start', lessonId: 'a1-lesson-01', sessionId: 'grammar-ui', seed: 1 }, now)
+  const before = structuredClone(props.state)
+  const html = renderToStaticMarkup(createElement(view.GrammarPanel, { props, onBack: async () => {} }))
+  assert.equal((html.match(/class="grammar-option-number"/gu) ?? []).length, 4)
+  assert.ok(!html.includes('پاسخ درست:'))
+  assert.ok(html.includes('سؤال بعدی'))
   assert.deepEqual(props.state, before)
 })

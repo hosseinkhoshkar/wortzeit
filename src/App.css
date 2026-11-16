@@ -135,3 +135,22 @@
 @media(max-width:720px){.daily-glance .streak-progress{font-size:11px}.streak-toast{inset-block-start:calc(env(safe-area-inset-top,0px) + 62px)}}
 
 .streak-toast{pointer-events:none}
+
+/* Grammar uses the same viewport contract: one question and four reachable choices. */
+.grammar-page{display:flex;flex-direction:column;gap:12px;max-width:760px;margin:0 auto;width:100%;min-height:0}
+.grammar-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;flex:0 0 auto}
+.grammar-heading h1{font-size:22px;margin:4px 0}.grammar-heading>span,.grammar-source-note{font-size:11px;color:#827294}.grammar-heading p{font-size:13px}
+.grammar-sentence{background:#f1eafb;border-radius:18px;padding:18px;text-align:center;font-size:23px;line-height:1.6;margin:0}
+.grammar-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grammar-options button{display:flex;align-items:center;gap:8px;min-height:56px;text-align:start;border:1px solid #dcd0ed;border-radius:14px;padding:10px;background:#fffaf4;color:#453456;font-size:16px}
+.grammar-options button>span[lang=de]{flex:1;text-align:center;overflow-wrap:anywhere}.grammar-option-number{font-size:11px;color:#89799a}
+.grammar-options button.is-correct{background:#dcefe4;border-color:#518b6e;color:#21563d}.grammar-options button.is-wrong{background:#f8e2e2;border-color:#bc6262;color:#8d3434}.grammar-options button:disabled{opacity:1}
+.grammar-feedback{min-height:98px;font-size:13px;line-height:1.8}.grammar-feedback p{margin:3px 0}.grammar-next{width:100%;min-height:46px;flex:0 0 auto}.grammar-intro{padding:20px;background:#f4edfb;border-radius:22px;line-height:2}.grammar-intro h1{font-size:24px}.grammar-intro p{font-size:14px}.grammar-streak-note{color:#78618c}
+@media(max-width:720px){.mobile-nav{grid-template-columns:repeat(5,minmax(0,1fr))}.grammar-page{flex:1;gap:6px;overflow:hidden}.page-grammar .app-main{display:flex;flex-direction:column;min-height:0}.page-grammar .active-lesson-strip{display:none}.grammar-toolbar{min-height:44px;font-size:11px}.grammar-heading h1{font-size:18px}.grammar-heading p{font-size:11px;margin:2px 0}.grammar-sentence{padding:8px 12px;font-size:18px;flex:0 0 auto}.grammar-options{gap:7px;flex:0 0 auto}.grammar-options button{font-size:14px;padding:7px;min-height:49px}.grammar-feedback{flex:1;min-height:0;font-size:11px;line-height:1.7;overflow:auto}.grammar-source-note{font-size:9px}.grammar-intro{padding:14px;overflow:auto}.grammar-intro h1{font-size:21px}.grammar-intro p{font-size:12px}}
+
+/* Selection marks must not resize choices or squeeze feedback off a small screen. */
+.grammar-options button{position:relative;padding-inline:17px}.grammar-option-number{position:absolute;inset-inline-start:5px;inset-block-start:4px;line-height:12px;font-size:9px}.grammar-options button>span[aria-label]{position:absolute;inset-inline-end:5px;inset-block-start:4px;font-size:12px;line-height:12px}.grammar-options button>span[lang=de]{min-width:0;width:100%}
+@media(max-width:720px) and (max-height:650px){
+ .grammar-page{gap:4px}.grammar-heading{flex:0 0 auto}.grammar-heading>span{display:block;font-size:10px;line-height:14px}.grammar-heading h1{font-size:16px;line-height:22px;margin:0}.grammar-heading p{font-size:10px;line-height:14px;margin:0}
+ .grammar-sentence{font-size:16px;line-height:22px;padding:6px 10px}.grammar-options{gap:6px}.grammar-options button{font-size:13px;line-height:18px;padding:6px 15px;min-height:50px}.grammar-feedback{font-size:10.5px;line-height:16px;min-height:82px;padding:0 2px}.grammar-feedback p{margin:2px 0}.grammar-next{font-size:13px;line-height:20px;min-height:44px;padding:8px 16px}.grammar-source-note{flex:0 0 auto;font-size:9px;line-height:11px}
+}

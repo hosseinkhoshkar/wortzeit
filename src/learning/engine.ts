@@ -1,3 +1,4 @@
+import { applyGrammar, isGrammarCommand } from './grammar.ts'
 import { NORMALIZATION_VERSION, POLICY_VERSION, SCHEMA_VERSION, TARGET_ACTIVE_MS } from '../contracts/index.ts'
 import type {
   AppState, ContentBundle, Entry, EntryProgress, EntryStatus, HomeStats,
@@ -273,7 +274,7 @@ function assist(state: AppState, command: Extract<LearningCommand, { type: 'assi
 }
 
 function activity(state: AppState, command: Extract<LearningCommand, { type: 'activity' }>, now: string): boolean {
-  const session = state.session!
+  const session = state.grammar?.session?.sessionId === command.sessionId ? state.grammar.session : state.session!
   const from = Date.parse(command.from)
   const to = Date.parse(command.to)
   const elapsed = command.elapsedMs
@@ -373,6 +374,25 @@ export function transition(state: AppState, command: LearningCommand, bundle: Co
   if (command.type === 'assist' && state.assistanceEvents.some(item => item.eventId === command.eventId)) return state
   if (command.type === 'activity' && state.activityEventIds.includes(command.eventId)) return state
   if (command.type === 'rate-reverse' && state.reverseReviews.some(review => review.reviewId === command.reviewId)) return state
+  if (isGrammarCommand(command)) {
+    if (command.type === 'grammar-start' && (command.lessonId !== state.activeLessonId || command.sessionId === state.session?.sessionId
+      || Object.values(state.savedSessions).some(session => session.sessionId === command.sessionId)
+      || state.attempts.some(attempt => attempt.sessionId === command.sessionId))) return state
+    const grammar = applyGrammar(state.grammar, command, now)
+    if (grammar === state.grammar) return state
+    const next = structuredClone(state)
+    next.grammar = grammar
+    if (command.type === 'grammar-start' && next.session?.state === 'active') next.session.state = 'paused'
+    next.revision++
+    return next
+  }
+  if (command.type === 'activity' && state.grammar?.session?.sessionId === command.sessionId) {
+    if (state.grammar.session.state !== 'active') return state
+    const next = structuredClone(state)
+    if (!activity(next, command, now)) return state
+    next.revision++
+    return next
+  }
   const next = structuredClone(state)
   const date = studyDate(now, next.settings.studyTimeZone)
   if (next.session && next.session.targetAcknowledgedDate !== null && next.session.targetAcknowledgedDate !== date) {
@@ -390,6 +410,7 @@ export function transition(state: AppState, command: LearningCommand, bundle: Co
     delete next.savedSessions[command.lessonId]
     if (next.session?.state === 'active') next.session.state = 'paused'
   } else if (command.type === 'start-session') {
+    if (command.sessionId === state.grammar?.session?.sessionId || state.grammar?.attempts.some(attempt => attempt.sessionId === command.sessionId)) return state
     if (!command.sessionId || !Number.isFinite(command.seed)) return state
     if ((!state.session || state.session.state === 'ended')
       && (state.session?.sessionId === command.sessionId
@@ -453,6 +474,7 @@ export function transition(state: AppState, command: LearningCommand, bundle: Co
       }
     }
   }
+  if ((command.type === 'start-session' || command.type === 'select-lesson') && next.grammar?.session?.state === 'active') next.grammar.session.state = 'paused'
   next.revision = state.revision + 1
   return next
 }

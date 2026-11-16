@@ -1,3 +1,4 @@
+import type { GrammarState, GrammarCommand } from '../learning/grammar.ts'
 /** Multi-lesson state. Frozen v1/v2 contracts support lossless progress upgrades. */
 export const SCHEMA_VERSION = 4 as const
 export const POLICY_VERSION = 'learning-policy-v2' as const
@@ -155,6 +156,7 @@ export interface ReverseReview {
   studyDate: string
 }
 export interface AppState {
+  grammar?: GrammarState
   schemaVersion: 4
   learningPolicyVersion: typeof POLICY_VERSION
   contentVersion: string
@@ -172,6 +174,7 @@ export interface AppState {
   activityEventIds: string[]
 }
 export type LearningCommand =
+  | GrammarCommand
   | { type: 'start-session'; sessionId: string; seed: number }
   | { type: 'select-lesson'; lessonId: string }
   | { type: 'reveal-card'; taskId: string }
