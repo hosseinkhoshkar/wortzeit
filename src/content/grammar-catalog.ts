@@ -1,3 +1,4 @@
+import { grammarFourQuestions, grammarFourSource } from './grammar-four.ts'
 import { grammarThreeQuestions, grammarThreeSource } from './grammar-three.ts'
 import { grammarQuestions as lessonOneQuestions, grammarSource } from './grammar-one.ts'
 import { grammarTwoQuestions, grammarTwoSource } from './grammar-two.ts'
@@ -15,5 +16,9 @@ export const grammarLessons = [
     descriptionFa: 'فعل‌های کمکی können، müssen، möchten؛ جمله با فعل کمکی، ملکی‌ها، kein و und؛ ۵۰ سؤال چهارگزینه‌ای، هر نوبت۵ سؤال.',
     rulesFa: 'پس از انتخاب پاسخ، توضیح فارسی قاعده و صورت درست نمایش داده می‌شود.',
     source: grammarThreeSource },
+  { lessonId: 'a1-lesson-04', labelFa: 'گرامر درس۴', titleDe: 'Spiel und Spaß', titleFa: 'گرامر درس چهارم',
+    descriptionFa: 'فعل‌های با تغییر واکه، گذشتهٔ sein/haben، mögen/wollen/dürfen، پیوندهای aber/oder/denn و پرفکت فعل‌های باقاعده؛ ۵۰ سؤال چهارگزینه‌ای، هر نوبت۵ سؤال.',
+    rulesFa: 'پس از انتخاب پاسخ، توضیح فارسی قاعده و صورت درست نمایش داده می‌شود.',
+    source: grammarFourSource },
 ]
-export const grammarQuestions = [...lessonOneQuestions, ...grammarTwoQuestions, ...grammarThreeQuestions]
+export const grammarQuestions = [...lessonOneQuestions, ...grammarTwoQuestions, ...grammarThreeQuestions, ...grammarFourQuestions]
