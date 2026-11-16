@@ -758,7 +758,7 @@ try {
       await context.setOffline(true)
       await page.reload()
       await page.getByRole('button', { name: 'گرامر', exact: true }).click()
-      await page.getByRole('button', { name: 'ادامهٔ آخرین تمرین', exact: true }).click()
+      await page.getByRole('button', { name: /^ادامهٔ آخرین تمرین/u }).click()
       state = await waitState(page, state => state.grammar?.session?.state === 'active')
       assert.equal(state.grammar.session.items[0].questionId, item.questionId)
       assert.deepEqual(await page.locator('.grammar-options button [lang=de]').allTextContents(), order)
@@ -797,7 +797,7 @@ try {
       await context.setOffline(true)
       await page.reload()
       await page.getByRole('button', { name: 'گرامر', exact: true }).click()
-      await page.getByRole('button', { name: 'ادامهٔ آخرین تمرین', exact: true }).click()
+      await page.getByRole('button', { name: /^ادامهٔ آخرین تمرین/u }).click()
       state = await waitState(page, state => state.grammar?.session?.state === 'active')
       assert.deepEqual(state.grammar.session.items, two.items)
       assert.equal(await page.locator('.grammar-feedback').innerText(), feedback)
@@ -818,6 +818,10 @@ try {
       await page.getByRole('button', { name: 'گرامر', exact: true }).click()
       assert.equal(await page.locator('.grammar-lesson-card').count(), 6)
       assert.equal(await page.locator('.grammar-page select').count(), 0)
+      assert.ok(await page.locator('.grammar-lesson-card').evaluateAll(cards => cards.every(card => {
+        const bottom = card.querySelector('.grammar-card-bottom')
+        return bottom && bottom.getBoundingClientRect().bottom <= card.getBoundingClientRect().bottom
+      })), 'progress and action must fit inside each card on short screens')
       const labels = await page.locator('.grammar-lesson-card').evaluateAll(cards => cards.map(card => card.getAttribute('aria-label')))
       assert.deepEqual(labels, ['اول','دوم','سوم','چهارم','پنجم','ششم'].map(name => 'شروع گرامر درس ' + name))
       await page.getByRole('button', { name: 'شروع گرامر درس پنجم', exact: true }).click()
