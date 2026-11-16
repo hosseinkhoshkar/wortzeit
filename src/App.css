@@ -155,5 +155,48 @@
  .grammar-sentence{font-size:16px;line-height:22px;padding:6px 10px}.grammar-options{gap:6px}.grammar-options button{font-size:13px;line-height:18px;padding:6px 15px;min-height:50px}.grammar-feedback{font-size:10.5px;line-height:16px;min-height:82px;padding:0 2px}.grammar-feedback p{margin:2px 0}.grammar-next{font-size:13px;line-height:20px;min-height:44px;padding:8px 16px}.grammar-source-note{flex:0 0 auto;font-size:9px;line-height:11px}
 }
 
-/* The grammar curriculum is independent of the vocabulary catalog. */
-.grammar-lesson-select { min-height:44px; min-width:0; max-width:58%; border:1px solid var(--line); border-radius:12px; padding:4px 8px; color:inherit; background:var(--cream); font:inherit; font-size:12px; }
+
+/* A visible lesson library replaces the compact native selector. */
+.grammar-library{gap:16px}
+.grammar-library-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:0 0 auto}
+.grammar-library-heading h1{font-size:26px;line-height:1.5;margin:4px 0 0;color:#443354}
+.grammar-library-heading .eyebrow{font-size:12px;color:#8b7a9c}
+.grammar-home-button{width:44px;height:44px;display:grid;place-items:center;flex:0 0 auto;border:1px solid #e5dbee;background:#fffaf6;color:#775394;border-radius:14px}
+.grammar-lesson-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-content:start;min-height:0}
+.grammar-lesson-card{display:flex;flex-direction:column;gap:8px;text-align:start;min-width:0;padding:16px;border:1px solid #e5dbee;border-radius:20px;background:#fffdfa;color:#493958;box-shadow:0 3px 12px #76549208;transition:border-color .15s,background .15s}
+.grammar-lesson-card:hover{background:#faf5ff;border-color:#bda3d4}
+.grammar-lesson-card.has-session{border-color:#bda3d4;background:#f7f0fd}
+.grammar-card-top{display:flex;align-items:center;gap:8px;width:100%;min-height:30px}
+.grammar-card-top strong{font-size:14px}
+.grammar-card-number{display:grid;place-items:center;width:30px;height:30px;flex:0 0 auto;background:#ede1f9;color:#77529a;border-radius:10px;font-weight:700}
+.grammar-lesson-card:nth-child(3n+2) .grammar-card-number{background:#e1f0e8;color:#42735f}
+.grammar-lesson-card:nth-child(3n) .grammar-card-number{background:#f9e9d9;color:#a8764d}
+.grammar-card-badge{margin-inline-start:auto;font-size:9px;color:#8056a3}
+.grammar-card-title{font-size:14px;font-weight:600;line-height:20px;min-height:40px;text-align:start;overflow-wrap:anywhere}
+.grammar-card-topic{font-size:11px;line-height:18px;color:#8b7a98}
+.grammar-card-progress{display:block;height:4px;background:#ede6f2;border-radius:10px;overflow:hidden;margin-top:auto}
+.grammar-card-progress>span{display:block;height:100%;background:#9d79bc;border-radius:inherit}
+.grammar-card-bottom{display:flex;justify-content:space-between;align-items:center;gap:4px;font-size:10px;color:#907d9f}
+.grammar-card-action{display:flex;align-items:center;gap:3px;color:#79539a;font-weight:700;white-space:nowrap}
+.grammar-card-action .wz-icon{width:13px;height:13px}
+.grammar-resume{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:0 0 auto;padding:12px 16px;background:#78529d;color:#fff;border:0;border-radius:18px;text-align:start}
+.grammar-resume strong,.grammar-resume small{display:block}.grammar-resume strong{font-size:14px}.grammar-resume small{font-size:11px;opacity:.85;margin-top:3px}
+.grammar-library-footer{display:flex;justify-content:space-between;align-items:center;gap:6px;flex:0 0 auto;color:#94839f;font-size:11px;min-height:44px}
+.grammar-library-footer .details-trigger{min-height:44px;font-size:11px;white-space:nowrap}
+.grammar-change-lesson{display:flex;align-items:center;gap:8px;min-height:44px;min-width:148px;padding:5px 10px;border:1px solid #e2d6ec;border-radius:14px;background:#fffaf6;color:#694884;text-align:start}
+.grammar-change-lesson>span{flex:1;font-size:12px;font-weight:700;line-height:16px}.grammar-change-lesson small{display:block;font-size:9px;font-weight:400;color:#9b87aa}
+.grammar-change-lesson .wz-icon{width:17px;height:17px}.grammar-change-lesson .wz-icon:last-child{width:13px;height:13px}
+.grammar-lesson-card:focus-visible,.grammar-home-button:focus-visible,.grammar-resume:focus-visible,.grammar-change-lesson:focus-visible{outline:3px solid #a17cc1;outline-offset:3px}
+@media(max-width:720px){
+ .grammar-library{gap:10px}.grammar-library-heading h1{font-size:23px}.grammar-library-heading .eyebrow{font-size:10px}
+ .grammar-lesson-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:3px 3px 6px}
+ .grammar-lesson-card{padding:12px 10px;gap:7px;border-radius:17px}.grammar-card-top{gap:6px}.grammar-card-top strong{font-size:12px}.grammar-card-number{width:26px;height:26px;font-size:12px;border-radius:9px}
+ .grammar-card-title{font-size:12px;line-height:18px;min-height:36px}.grammar-card-topic{font-size:9.5px;line-height:15px}.grammar-card-bottom{font-size:9px}.grammar-card-badge{font-size:8px}
+ .grammar-library-footer{font-size:9px;min-height:40px}.grammar-library-footer .details-trigger{font-size:10px;min-height:40px}.grammar-resume{padding:10px 14px}.grammar-resume strong{font-size:12px}.grammar-resume small{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.grammar-lesson-card{transition:none}}
+
+/* Keep the card contents intact when the lesson list becomes scrollable. */
+.grammar-lesson-grid{grid-auto-rows:max-content}
+.grammar-lesson-card{min-height:154px}
+.grammar-card-top,.grammar-card-title,.grammar-card-topic,.grammar-card-progress,.grammar-card-bottom{flex-shrink:0}
