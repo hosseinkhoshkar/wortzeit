@@ -12,7 +12,8 @@ const start = (lessonId: string, sessionId: string) => ({ type: 'grammar-start' 
 test('lesson two has 28 authored questions, four distinct options, stable IDs and seven topics', () => {
   assert.equal(grammarTwoQuestions.length, 28)
   assert.equal(new Set(grammarTwoQuestions.map(question => question.topicFa)).size, 7)
-  assert.equal(new Set(grammarQuestions.map(question => question.questionId)).size, 52)
+  assert.equal(new Set(grammarQuestions.map(question => question.questionId)).size, grammarQuestions.length)
+  assert.equal(grammarQuestions.filter(question => ['a1-lesson-01', 'a1-lesson-02'].includes(question.lessonId)).length, 52)
   grammarTwoQuestions.forEach((question, index) => {
     assert.equal(question.questionId, `a1-g02-${String(index + 1).padStart(3, '0')}`)
     assert.equal(question.lessonId, 'a1-lesson-02')
