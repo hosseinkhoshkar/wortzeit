@@ -21,7 +21,7 @@ const javascript = ts.transpileModule(`${source}\nexport { TaskPanel, SkillDetai
 }).outputText.replace(/import ['"]\.\.\/App\.css['"];?/u, '')
   .replace(/from (['"])(react(?:\/jsx-runtime)?)\1/gu,
     (_match, _quote: string, specifier: string) => `from '${pathToFileURL(require.resolve(specifier)).href}'`)
-  .replace("from '../content/grammar-one.ts'", `from '${new URL('../content/grammar-one.ts', import.meta.url).href}'`)
+  .replace("from '../content/grammar-catalog.ts'", `from '${new URL('../content/grammar-catalog.ts', import.meta.url).href}'`)
   .replace("from '../learning/grammar.ts'", `from '${new URL('../learning/grammar.ts', import.meta.url).href}'`)
   .replace("from '../learning/streak.ts'", `from '${new URL('../learning/streak.ts', import.meta.url).href}'`)
   .replace("from '../learning/examples.ts'", `from '${new URL('../learning/examples.ts', import.meta.url).href}'`)
@@ -389,5 +389,18 @@ test('lesson-one grammar renders four options without showing feedback until its
   assert.equal((html.match(/class="grammar-option-number"/gu) ?? []).length, 4)
   assert.ok(!html.includes('پاسخ درست:'))
   assert.ok(html.includes('سؤال بعدی'))
+  assert.deepEqual(props.state, before)
+})
+
+test('lesson-two grammar renders independently of the vocabulary lesson with its own selector and options', async () => {
+  const { applyGrammar } = await import('../learning/grammar.ts')
+  const props = propsFor({ taskId: 'grammar-two-ui', kind: 'flashcard', entryId: bundle.entries[0].entryId, revealed: false })
+  props.state.grammar = applyGrammar(undefined, { type: 'grammar-start', lessonId: 'a1-lesson-02', sessionId: 'grammar-two-ui', seed: 17 }, now)
+  const before = structuredClone(props.state)
+  const html = renderToStaticMarkup(createElement(view.GrammarPanel, { props, onBack: async () => {} }))
+  assert.ok(html.includes('انتخاب درس گرامر'))
+  assert.ok(html.includes('تمرین گرامر درس دوم'))
+  assert.equal((html.match(/class="grammar-option-number"/gu) ?? []).length, 4)
+  assert.ok(!html.includes('پاسخ درست:'))
   assert.deepEqual(props.state, before)
 })

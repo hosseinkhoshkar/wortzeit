@@ -154,3 +154,6 @@
  .grammar-page{gap:4px}.grammar-heading{flex:0 0 auto}.grammar-heading>span{display:block;font-size:10px;line-height:14px}.grammar-heading h1{font-size:16px;line-height:22px;margin:0}.grammar-heading p{font-size:10px;line-height:14px;margin:0}
  .grammar-sentence{font-size:16px;line-height:22px;padding:6px 10px}.grammar-options{gap:6px}.grammar-options button{font-size:13px;line-height:18px;padding:6px 15px;min-height:50px}.grammar-feedback{font-size:10.5px;line-height:16px;min-height:82px;padding:0 2px}.grammar-feedback p{margin:2px 0}.grammar-next{font-size:13px;line-height:20px;min-height:44px;padding:8px 16px}.grammar-source-note{flex:0 0 auto;font-size:9px;line-height:11px}
 }
+
+/* The grammar curriculum is independent of the vocabulary catalog. */
+.grammar-lesson-select { min-height:44px; min-width:0; max-width:58%; border:1px solid var(--line); border-radius:12px; padding:4px 8px; color:inherit; background:var(--cream); font:inherit; font-size:12px; }

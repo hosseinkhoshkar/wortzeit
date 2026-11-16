@@ -375,7 +375,7 @@ export function transition(state: AppState, command: LearningCommand, bundle: Co
   if (command.type === 'activity' && state.activityEventIds.includes(command.eventId)) return state
   if (command.type === 'rate-reverse' && state.reverseReviews.some(review => review.reviewId === command.reviewId)) return state
   if (isGrammarCommand(command)) {
-    if (command.type === 'grammar-start' && (command.lessonId !== state.activeLessonId || command.sessionId === state.session?.sessionId
+    if (command.type === 'grammar-start' && (command.sessionId === state.session?.sessionId
       || Object.values(state.savedSessions).some(session => session.sessionId === command.sessionId)
       || state.attempts.some(attempt => attempt.sessionId === command.sessionId))) return state
     const grammar = applyGrammar(state.grammar, command, now)
@@ -410,7 +410,7 @@ export function transition(state: AppState, command: LearningCommand, bundle: Co
     delete next.savedSessions[command.lessonId]
     if (next.session?.state === 'active') next.session.state = 'paused'
   } else if (command.type === 'start-session') {
-    if (command.sessionId === state.grammar?.session?.sessionId || state.grammar?.attempts.some(attempt => attempt.sessionId === command.sessionId)) return state
+    if (command.sessionId === state.grammar?.session?.sessionId || Object.values(state.grammar?.savedSessions ?? {}).some(session => session.sessionId === command.sessionId) || state.grammar?.attempts.some(attempt => attempt.sessionId === command.sessionId)) return state
     if (!command.sessionId || !Number.isFinite(command.seed)) return state
     if ((!state.session || state.session.state === 'ended')
       && (state.session?.sessionId === command.sessionId

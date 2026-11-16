@@ -1,4 +1,4 @@
-import { grammarQuestions, grammarSource } from '../content/grammar-one.ts'
+import { grammarQuestions, grammarLessons } from '../content/grammar-catalog.ts'
 import { grammarFeedback, grammarStats } from '../learning/grammar.ts'
 import { createContext, useContext, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react'
 import type { ReactNode } from 'react'
@@ -367,14 +367,17 @@ function LessonWordList({ entries, props }: { entries: Entry[]; props: WortzeitU
 
 function GrammarPanel({ props, onBack }: { props: WortzeitUIProps; onBack: () => Promise<void> }) {
   const { state, busy, error, onCommand } = props
-  const session = state.grammar?.session
-  const stats = grammarStats(state.grammar)
+  const [lessonId, setLessonId] = useState(state.grammar?.session?.lessonId ?? 'a1-lesson-01')
+  const lesson = grammarLessons.find(lesson => lesson.lessonId === lessonId) ?? grammarLessons[0]
+  const session = state.grammar?.session?.lessonId === lesson.lessonId
+    ? state.grammar.session : state.grammar?.savedSessions?.[lesson.lessonId]
+  const stats = grammarStats(state.grammar, lesson.lessonId)
   const item = session?.items[session.cursor]
   const question = grammarQuestions.find(question => question.questionId === item?.questionId)
-  const feedback = grammarFeedback(state.grammar)
+  const feedback = grammarFeedback(state.grammar ? { ...state.grammar, session: session ?? null } : undefined)
   const disabled = busy || !!error
   async function start() {
-    try { await onCommand({ type: 'grammar-start', lessonId: state.activeLessonId, sessionId: crypto.randomUUID(), seed: Math.floor(Math.random() * 0xffffffff) }) } catch { /* The root keeps the retryable command and error. */ }
+    try { await onCommand({ type: 'grammar-start', lessonId: lesson.lessonId, sessionId: crypto.randomUUID(), seed: Math.floor(Math.random() * 0xffffffff) }) } catch { /* The root keeps the retryable command and error. */ }
   }
   async function answer(option: string) {
     if (!session || !question || feedback || disabled) return
@@ -389,8 +392,11 @@ function GrammarPanel({ props, onBack }: { props: WortzeitUIProps; onBack: () =>
   useEffect(() => { heading.current?.focus({ preventScroll: true }) }, [active, question?.questionId])
   const completed = session?.state === 'ended'
   const sessionAnswers = state.grammar?.attempts.filter(attempt => attempt.sessionId === session?.sessionId) ?? []
-  return <section className="grammar-page" aria-label="تمرین گرامر درس اول">
-    <div className="grammar-toolbar"><button type="button" className="text-button" disabled={disabled} onClick={() => void onBack()}>توقف و بازگشت</button><span>گرامر درس۱ · چهارگزینه‌ای</span></div>
+  return <section className="grammar-page" aria-label={`تمرین ${lesson.titleFa}`}>
+    <div className="grammar-toolbar"><button type="button" className="text-button" disabled={disabled} onClick={() => void onBack()}>توقف و بازگشت</button><select className="grammar-lesson-select" aria-label="انتخاب درس گرامر" value={lesson.lessonId} disabled={disabled}
+      onChange={event => { const id = event.target.value; void (async () => { try { await onCommand({ type: 'grammar-pause' }); setLessonId(id) } catch { /* Keep the previous lesson until pause is saved. */ } })() }}>
+      {grammarLessons.map(item => <option key={item.lessonId} value={item.lessonId}>{item.labelFa} · چهارگزینه‌ای</option>)}
+    </select></div>
     {active && question && item ? <>
       <div className="grammar-heading"><span>سؤال {number(session.cursor + 1)} از {number(session.items.length)}</span><h1 ref={heading} tabIndex={-1}>{question.topicFa}</h1><p>{question.promptFa}</p></div>
       <p className="grammar-sentence" lang="de" dir="ltr">{question.sentenceDe}</p>
@@ -405,12 +411,12 @@ function GrammarPanel({ props, onBack }: { props: WortzeitUIProps; onBack: () =>
       <button type="button" className="primary-button grammar-next" disabled={disabled || !feedback} onClick={() => void next()}>{session.cursor === session.items.length - 1 ? 'دیدن نتیجهٔ این نوبت' : 'سؤال بعدی'}</button>
       <span className="grammar-source-note">تمرین تألیفی · {question.locator}</span>
     </> : <div className="grammar-intro">
-      <span className="eyebrow">Ich und die anderen · A1</span><h1 ref={heading} tabIndex={-1}>{completed ? 'این نوبت تمام شد.' : 'گرامر درس اول'}</h1>
-      {completed ? <p>{number(sessionAnswers.filter(answer => answer.correct).length)} پاسخ درست از {number(sessionAnswers.length)} سؤال</p> : <p>صرف فعل، ضمیرها، پرسش‌واژه‌ها و ترتیب جمله؛ هر نوبت۵ سؤال چهارگزینه‌ای.</p>}
+      <span className="eyebrow" lang="de" dir="ltr">{lesson.titleDe} · A1</span><h1 ref={heading} tabIndex={-1}>{completed ? 'این نوبت تمام شد.' : lesson.titleFa}</h1>
+      {completed ? <p>{number(sessionAnswers.filter(answer => answer.correct).length)} پاسخ درست از {number(sessionAnswers.length)} سؤال</p> : <p>{lesson.descriptionFa}</p>}
       <p>{number(stats.answered)} از {number(stats.total)} سؤال تمرین شده · {number(stats.mistakes)} سؤال برای مرور اشتباه‌ها</p>
       <p className="grammar-streak-note">زمان تمرین فعال برای استریک روزانه حساب می‌شود؛ پیشرفت گرامر از واژگان جداست.</p>
       <button type="button" className="primary-button wide" disabled={disabled} onClick={() => void start()}>{session?.state === 'paused' ? 'ادامهٔ تمرین گرامر' : completed ? '۵ سؤال بعدی' : 'شروع ۵ سؤال'}</button>
-      <DetailSheet title="دربارهٔ گرامر این درس"><p>{grammarSource.noteFa}</p><p>با ich از bin، با du از bist و با wir و Sie رسمی از sind استفاده می‌کنیم. در جملهٔ خبری و سؤال W، فعل جایگاه دوم دارد؛ سؤال بله/خیر با فعل شروع می‌شود.</p><a href={grammarSource.url} target="_blank" rel="noreferrer">منبع مباحث درس۱</a></DetailSheet>
+      <DetailSheet title="دربارهٔ گرامر این درس"><p>{lesson.source.noteFa}</p><p>{lesson.rulesFa}</p><a href={lesson.source.url} target="_blank" rel="noreferrer">منبع مباحث این درس</a></DetailSheet>
     </div>}
   </section>
 }
@@ -531,9 +537,7 @@ function WortzeitView(props: WortzeitUIProps) {
         {summary.remaining > 0 && <p className="summary-unfinished">{number(summary.remaining)} واژه با تمرین ناتمام برای ادامه باقی مانده؛ انجام‌شده حساب نشده‌اند.</p>}
         <DetailSheet title="دربارهٔ نتیجهٔ جلسه"><p>پاسخ‌های درست ممکن است با کمک باشند؛ تعداد پاسخ درست به‌تنهایی تسلط را نشان نمی‌دهد. فاصلهٔ مرور با یادآوری مستقل در روزهای جدا بیشتر می‌شود. این گزیده، پایان همهٔ واژگان اصل این درس نیست.</p><p>مرور معکوس، ارزیابی شخصیِ فارسی به آلمانی است و امتیازش جدا از تمرین نوشتن ذخیره می‌شود.</p></DetailSheet><div className="summary-actions"><button className="primary-button" type="button" disabled={disabled} onClick={() => void start()}>ادامهٔ یادگیری<Icon name="arrow" /></button><button className="secondary-button" type="button" onClick={() => setPage('home')}>بازگشت به خانه</button></div>
       </section>}
-      {effectivePage === 'grammar' && (state.activeLessonId === 'a1-lesson-01'
-        ? <GrammarPanel props={props} onBack={async () => { await onCommand({ type: 'grammar-pause' }); setPage('home') }} />
-        : <section className="grammar-page"><div className="grammar-intro"><h1>گرامر از درس۱ شروع می‌شود.</h1><p>تمرین گرامر این درس هنوز آماده نشده است.</p><button type="button" className="primary-button" disabled={disabled} onClick={async () => { try { await chooseLesson('a1-lesson-01'); setPage('grammar') } catch { /* Preserve the selected lesson on failure. */ } }}>رفتن به گرامر درس۱</button></div></section>)}
+      {effectivePage === 'grammar' && <GrammarPanel props={props} onBack={async () => { await onCommand({ type: 'grammar-pause' }); setPage('home') }} />}
       {effectivePage === 'words' && <section className="words-page">
         <PronunciationStatus />
         <div className="page-intro"><div><span className="eyebrow">واژه‌نامهٔ کوچک تو</span><h1>واژه‌های {lessonLabel(activeLesson)}<span className="orange-dot">.</span></h1><p>{number(vocabularyEntries.length)} مدخل؛ واژه‌های مشترک، همان پیشرفت درس اصلی را دارند.</p></div><span className="level-pill" lang="de" dir="ltr">{activeLesson.level}</span></div>
