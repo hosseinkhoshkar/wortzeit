@@ -1,3 +1,4 @@
+import { grammarSixQuestions, grammarSixSource } from './grammar-six.ts'
 import { grammarFourQuestions, grammarFourSource } from './grammar-four.ts'
 import { grammarThreeQuestions, grammarThreeSource } from './grammar-three.ts'
 import { grammarQuestions as lessonOneQuestions, grammarSource } from './grammar-one.ts'
@@ -20,5 +21,9 @@ export const grammarLessons = [
     descriptionFa: 'فعل‌های با تغییر واکه، گذشتهٔ sein/haben، mögen/wollen/dürfen، پیوندهای aber/oder/denn و پرفکت فعل‌های باقاعده؛ ۵۰ سؤال چهارگزینه‌ای، هر نوبت۵ سؤال.',
     rulesFa: 'پس از انتخاب پاسخ، توضیح فارسی قاعده و صورت درست نمایش داده می‌شود.',
     source: grammarFourSource },
+  { lessonId: 'a1-lesson-06', labelFa: 'گرامر درس۶', titleDe: 'Kleider machen Freunde', titleFa: 'گرامر درس ششم',
+    descriptionFa: 'امر رسمی Sie، پیشنهاد با wir، امر du/ihr، امرهای بی‌قاعده، پیشوندهای جداشدنی و پیشنهاد با sollen/wollen؛ ۵۰ سؤال چهارگزینه‌ای، هر نوبت۵ سؤال.',
+    rulesFa: 'پس از انتخاب پاسخ، توضیح فارسی قاعده و صورت درست نمایش داده می‌شود.',
+    source: grammarSixSource },
 ]
-export const grammarQuestions = [...lessonOneQuestions, ...grammarTwoQuestions, ...grammarThreeQuestions, ...grammarFourQuestions]
+export const grammarQuestions = [...lessonOneQuestions, ...grammarTwoQuestions, ...grammarThreeQuestions, ...grammarFourQuestions, ...grammarSixQuestions]
