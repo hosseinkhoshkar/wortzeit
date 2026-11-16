@@ -1,3 +1,4 @@
+import { validateGrammar } from '../learning/grammar.ts'
 import { POLICY_VERSION, SCHEMA_VERSION } from '../contracts/index.ts'
 import type { AppState, ContentBundle, Session } from '../contracts/index.ts'
 import type { Session as VersionThreeSession } from '../contracts/legacy-v3.ts'
@@ -26,6 +27,8 @@ export function validateState(value: unknown, bundle: ContentBundle): asserts va
   if (!isRecord(value) || value.schemaVersion !== SCHEMA_VERSION || !isRecord(value.reverseProgress)
     || !Array.isArray(value.reverseReviews) || !isRecord(value.savedSessions)) fail()
   const state = value as unknown as AppState
+  if (!validateGrammar(state.grammar) || state.grammar?.session?.state === 'active' && (state.session?.state === 'active' || state.activeLessonId !== 'a1-lesson-01')) fail()
+  if (state.grammar?.session && [state.session, ...Object.values(state.savedSessions)].some(session => session?.sessionId === state.grammar!.session!.sessionId)) fail()
   const known = new Set(bundle.entries.map(entry => entry.entryId))
   const sessions = [state.session, ...Object.values(state.savedSessions)].filter((session): session is Session => session !== null)
   const project = (session: Session | null): VersionThreeSession | null => {
@@ -159,6 +162,7 @@ export async function loadState(bundle: ContentBundle): Promise<AppState | null>
       database.close()
       // A current-version load is read-only in effect and does not change its revision.
       if (restored?.session?.state === 'active') restored.session.state = 'paused'
+      if (restored?.grammar?.session?.state === 'active') restored.grammar.session.state = 'paused'
       resolve(restored)
     }
     transaction.onerror = transaction.onabort = () => {

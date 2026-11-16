@@ -1,3 +1,5 @@
+import { grammarQuestions, grammarSource } from '../content/grammar-one.ts'
+import { grammarFeedback, grammarStats } from '../learning/grammar.ts'
 import { createContext, useContext, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react'
 import type { ReactNode } from 'react'
 import type { ContentBundle, Entry, EntryProgress, Example, LearningCommand, LessonDefinition, LessonSummary, ReverseProgress, ReverseReview, SessionTask, WortzeitUIProps } from '../contracts/index.ts'
@@ -9,7 +11,7 @@ import { browserPronunciation, wordPronunciation } from './pronunciation.ts'
 import type { Pronunciation } from './pronunciation.ts'
 import '../App.css'
 
-type Page = 'home' | 'lessons' | 'words' | 'about' | 'session' | 'summary'
+type Page = 'home' | 'lessons' | 'words' | 'about' | 'session' | 'summary' | 'grammar'
 type IconName = 'arrow' | 'book' | 'home' | 'leaf' | 'spark' | 'clock' | 'check' | 'close' | 'flip' | 'pause' | 'link' | 'info'
 
 function Icon({ name, className = '' }: { name: IconName; className?: string }) {
@@ -362,6 +364,57 @@ function LessonWordList({ entries, props }: { entries: Entry[]; props: WortzeitU
         </details>)}</div>
 }
 
+
+function GrammarPanel({ props, onBack }: { props: WortzeitUIProps; onBack: () => Promise<void> }) {
+  const { state, busy, error, onCommand } = props
+  const session = state.grammar?.session
+  const stats = grammarStats(state.grammar)
+  const item = session?.items[session.cursor]
+  const question = grammarQuestions.find(question => question.questionId === item?.questionId)
+  const feedback = grammarFeedback(state.grammar)
+  const disabled = busy || !!error
+  async function start() {
+    try { await onCommand({ type: 'grammar-start', lessonId: state.activeLessonId, sessionId: crypto.randomUUID(), seed: Math.floor(Math.random() * 0xffffffff) }) } catch { /* The root keeps the retryable command and error. */ }
+  }
+  async function answer(option: string) {
+    if (!session || !question || feedback || disabled) return
+    try { await onCommand({ type: 'grammar-answer', sessionId: session.sessionId, questionId: question.questionId, attemptId: crypto.randomUUID(), option }) } catch { /* Keep the same question until commit/retry. */ }
+  }
+  async function next() {
+    if (!session || !question || !feedback) return
+    try { await onCommand({ type: 'grammar-next', sessionId: session.sessionId, questionId: question.questionId }) } catch { /* Stay on committed feedback. */ }
+  }
+  const active = session?.state === 'active'
+  const heading = useRef<HTMLHeadingElement>(null)
+  useEffect(() => { heading.current?.focus({ preventScroll: true }) }, [active, question?.questionId])
+  const completed = session?.state === 'ended'
+  const sessionAnswers = state.grammar?.attempts.filter(attempt => attempt.sessionId === session?.sessionId) ?? []
+  return <section className="grammar-page" aria-label="تمرین گرامر درس اول">
+    <div className="grammar-toolbar"><button type="button" className="text-button" disabled={disabled} onClick={() => void onBack()}>توقف و بازگشت</button><span>گرامر درس۱ · چهارگزینه‌ای</span></div>
+    {active && question && item ? <>
+      <div className="grammar-heading"><span>سؤال {number(session.cursor + 1)} از {number(session.items.length)}</span><h1 ref={heading} tabIndex={-1}>{question.topicFa}</h1><p>{question.promptFa}</p></div>
+      <p className="grammar-sentence" lang="de" dir="ltr">{question.sentenceDe}</p>
+      <div className="grammar-options" role="group" aria-label="چهار گزینهٔ پاسخ">{item.options.map((option, index) => {
+        const correct = !!feedback && option === question.answer
+        const wrong = !!feedback && option === feedback.option && !feedback.correct
+        return <button key={option} type="button" className={correct ? 'is-correct' : wrong ? 'is-wrong' : ''}
+          disabled={disabled || !!feedback} aria-pressed={feedback?.option === option}
+          onClick={() => void answer(option)}><span className="grammar-option-number">{number(index + 1)}</span><span lang="de" dir="ltr">{option}</span>{correct ? <span aria-label="پاسخ درست">✓</span> : wrong ? <span aria-label="پاسخ نادرست">✕</span> : null}</button>
+      })}</div>
+      <div className="grammar-feedback" role="status" aria-live="polite">{feedback && <><strong>{feedback.correct ? 'درست بود! ✓' : 'این گزینه درست نبود. ✕'}</strong><p>پاسخ درست: <bdi lang="de" dir="ltr">{question.answer}</bdi></p><p>{question.explanationFa}</p></>}</div>
+      <button type="button" className="primary-button grammar-next" disabled={disabled || !feedback} onClick={() => void next()}>{session.cursor === session.items.length - 1 ? 'دیدن نتیجهٔ این نوبت' : 'سؤال بعدی'}</button>
+      <span className="grammar-source-note">تمرین تألیفی · {question.locator}</span>
+    </> : <div className="grammar-intro">
+      <span className="eyebrow">Ich und die anderen · A1</span><h1 ref={heading} tabIndex={-1}>{completed ? 'این نوبت تمام شد.' : 'گرامر درس اول'}</h1>
+      {completed ? <p>{number(sessionAnswers.filter(answer => answer.correct).length)} پاسخ درست از {number(sessionAnswers.length)} سؤال</p> : <p>صرف فعل، ضمیرها، پرسش‌واژه‌ها و ترتیب جمله؛ هر نوبت۵ سؤال چهارگزینه‌ای.</p>}
+      <p>{number(stats.answered)} از {number(stats.total)} سؤال تمرین شده · {number(stats.mistakes)} سؤال برای مرور اشتباه‌ها</p>
+      <p className="grammar-streak-note">زمان تمرین فعال برای استریک روزانه حساب می‌شود؛ پیشرفت گرامر از واژگان جداست.</p>
+      <button type="button" className="primary-button wide" disabled={disabled} onClick={() => void start()}>{session?.state === 'paused' ? 'ادامهٔ تمرین گرامر' : completed ? '۵ سؤال بعدی' : 'شروع ۵ سؤال'}</button>
+      <DetailSheet title="دربارهٔ گرامر این درس"><p>{grammarSource.noteFa}</p><p>با ich از bin، با du از bist و با wir و Sie رسمی از sind استفاده می‌کنیم. در جملهٔ خبری و سؤال W، فعل جایگاه دوم دارد؛ سؤال بله/خیر با فعل شروع می‌شود.</p><a href={grammarSource.url} target="_blank" rel="noreferrer">منبع مباحث درس۱</a></DetailSheet>
+    </div>}
+  </section>
+}
+
 export function WortzeitUI(props: WortzeitUIProps) {
   return <PronunciationProvider><WortzeitView {...props} /></PronunciationProvider>
 }
@@ -392,7 +445,7 @@ function WortzeitView(props: WortzeitUIProps) {
     window.addEventListener('resize', resize)
     return () => { viewport?.removeEventListener('resize', resize); viewport?.removeEventListener('scroll', resize); window.removeEventListener('resize', resize) }
   }, [])
-  const sessionIsVisible = effectivePage === 'session' && session?.state === 'active'
+  const sessionIsVisible = effectivePage === 'session' && session?.state === 'active' || effectivePage === 'grammar' && state.grammar?.session?.state === 'active'
   useEffect(() => {
     onSessionVisibilityChange(sessionIsVisible)
     return () => onSessionVisibilityChange(false)
@@ -436,10 +489,12 @@ function WortzeitView(props: WortzeitUIProps) {
           await onCommand({ type: 'assist', taskId: task.taskId, eventId: crypto.randomUUID(), kind: 'answer' })
         }
       }
+      if (state.grammar?.session?.state === 'active' && destination !== 'grammar') await onCommand({ type: 'grammar-pause' })
+      if (destination === 'grammar' && session?.state === 'active') await onCommand({ type: 'pause' })
       setPage(destination)
     } catch { /* Keep the answer concealed until its assistance event is stored. */ }
   }
-  const navigation: { page: Page; label: string; icon: IconName }[] = [{ page: 'home', label: 'خانه', icon: 'home' }, { page: 'lessons', label: 'درس‌ها', icon: 'book' }, { page: 'words', label: 'واژه‌ها', icon: 'spark' }, { page: 'about', label: 'دربارهٔ درس', icon: 'info' }]
+  const navigation: { page: Page; label: string; icon: IconName }[] = [{ page: 'home', label: 'خانه', icon: 'home' }, { page: 'lessons', label: 'درس‌ها', icon: 'book' }, { page: 'words', label: 'واژه‌ها', icon: 'spark' }, { page: 'grammar', label: 'گرامر', icon: 'book' }, { page: 'about', label: 'دربارهٔ درس', icon: 'info' }]
   const learnedCount = Object.keys(state.reverseProgress ?? {}).length
   const reverseDueCount = Object.values(state.reverseProgress ?? {}).filter(item => Date.parse(item.nextDueAt) <= Date.parse(now)).length
   const reverseSessionReviews = (state.reverseReviews ?? []).filter(review => review.sessionId === session?.sessionId)
@@ -476,6 +531,9 @@ function WortzeitView(props: WortzeitUIProps) {
         {summary.remaining > 0 && <p className="summary-unfinished">{number(summary.remaining)} واژه با تمرین ناتمام برای ادامه باقی مانده؛ انجام‌شده حساب نشده‌اند.</p>}
         <DetailSheet title="دربارهٔ نتیجهٔ جلسه"><p>پاسخ‌های درست ممکن است با کمک باشند؛ تعداد پاسخ درست به‌تنهایی تسلط را نشان نمی‌دهد. فاصلهٔ مرور با یادآوری مستقل در روزهای جدا بیشتر می‌شود. این گزیده، پایان همهٔ واژگان اصل این درس نیست.</p><p>مرور معکوس، ارزیابی شخصیِ فارسی به آلمانی است و امتیازش جدا از تمرین نوشتن ذخیره می‌شود.</p></DetailSheet><div className="summary-actions"><button className="primary-button" type="button" disabled={disabled} onClick={() => void start()}>ادامهٔ یادگیری<Icon name="arrow" /></button><button className="secondary-button" type="button" onClick={() => setPage('home')}>بازگشت به خانه</button></div>
       </section>}
+      {effectivePage === 'grammar' && (state.activeLessonId === 'a1-lesson-01'
+        ? <GrammarPanel props={props} onBack={async () => { await onCommand({ type: 'grammar-pause' }); setPage('home') }} />
+        : <section className="grammar-page"><div className="grammar-intro"><h1>گرامر از درس۱ شروع می‌شود.</h1><p>تمرین گرامر این درس هنوز آماده نشده است.</p><button type="button" className="primary-button" disabled={disabled} onClick={async () => { try { await chooseLesson('a1-lesson-01'); setPage('grammar') } catch { /* Preserve the selected lesson on failure. */ } }}>رفتن به گرامر درس۱</button></div></section>)}
       {effectivePage === 'words' && <section className="words-page">
         <PronunciationStatus />
         <div className="page-intro"><div><span className="eyebrow">واژه‌نامهٔ کوچک تو</span><h1>واژه‌های {lessonLabel(activeLesson)}<span className="orange-dot">.</span></h1><p>{number(vocabularyEntries.length)} مدخل؛ واژه‌های مشترک، همان پیشرفت درس اصلی را دارند.</p></div><span className="level-pill" lang="de" dir="ltr">{activeLesson.level}</span></div>
