@@ -1,12 +1,12 @@
 import { grammarQuestions, grammarLessons } from '../content/grammar-catalog.ts'
 import { grammarFeedback, grammarStats } from '../learning/grammar.ts'
-import { createContext, useContext, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react'
+import { Fragment, createContext, useContext, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react'
 import type { ReactNode } from 'react'
 import type { ContentBundle, Entry, EntryProgress, Example, LearningCommand, LessonDefinition, LessonSummary, ReverseProgress, ReverseReview, SessionTask, WortzeitUIProps } from '../contracts/index.ts'
 import { getReverseExample } from '../learning/examples.ts'
 import { getDailyStreak, STREAK_TARGET_MS } from '../learning/streak.ts'
 import type { DailyStreak } from '../learning/streak.ts'
-import { lessonVocabularyEntries } from '../content/lesson-vocabulary.ts'
+import { lessonVocabularyEntries, lessonStudyEntries } from '../content/lesson-vocabulary.ts'
 import { browserPronunciation, wordPronunciation } from './pronunciation.ts'
 import type { Pronunciation } from './pronunciation.ts'
 import '../App.css'
@@ -47,8 +47,7 @@ function lessonLabel(lesson: LessonDefinition) {
   return lessonNumber(lesson) === 1 ? 'درس اول' : lessonNumber(lesson) === 4 ? 'درس چهارم' : lessonNumber(lesson) === 5 ? 'درس پنجم' : 'درس ' + number(lessonNumber(lesson))
 }
 function lessonEntries(bundle: ContentBundle, lessonId: string) {
-  return bundle.entries.filter(entry => entry.introducedInLessonId === lessonId)
-    .sort((a, b) => a.introductionOrder - b.introductionOrder)
+  return lessonStudyEntries(bundle, lessonId)
 }
 function LessonCards({ summaries, activeLessonId, disabled, onChoose }: {
   summaries: LessonSummary[]; activeLessonId: string; disabled: boolean; onChoose: (lessonId: string) => Promise<void>
@@ -158,8 +157,10 @@ function DailyStreakNotice({ streak }: { streak: DailyStreak }) {
   }, [notice])
   return notice?.date === streak.date ? <StreakToast days={notice.days} /> : null
 }
-function Sources({ entry, bundle }: { entry: Entry; bundle: ContentBundle }) {
-  return <DetailSheet title="ارجاع این واژه"><div className="entry-sources"><ul>{entry.sourceRefIds.map(id => {
+function Sources({ entry, bundle, lessonId }: { entry: Entry; bundle: ContentBundle; lessonId?: string }) {
+  const checked = lessonId === 'lesson-06' ? entry.sourceRefIds.filter(id => id.endsWith('-coursebook-lesson-06')) : []
+  const ids = checked.length ? checked : entry.sourceRefIds
+  return <DetailSheet title="ارجاع این واژه"><div className="entry-sources"><ul>{ids.map(id => {
     const ref = bundle.sourceRefs.find(item => item.sourceRefId === id)
     if (!ref) return null
     const source = bundle.sources.find(item => item.sourceId === ref.sourceId)
@@ -358,10 +359,14 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
 function LessonWordList({ entries, props }: { entries: Entry[]; props: WortzeitUIProps }) {
   const { bundle, state, statuses, now } = props
   const playback = usePronunciation()
-  return <div className="word-list">{entries.map(entry => <details className="word-item" key={entry.entryId} onToggle={event => { if (!event.currentTarget.open) playback.stopScope(entry.entryId) }}>
+  const pages = new Map(bundle.sourceRefs.filter(ref => ref.lessonId === state.activeLessonId && ref.sourceRefId.endsWith('-coursebook-lesson-06'))
+    .map(ref => [ref.sourceRefId.replace('-coursebook-lesson-06', ''), Number(/چاپی (\d+)/u.exec(ref.locator)?.[1])]))
+  return <div className="word-list">{entries.map((entry, index) => <Fragment key={entry.entryId}>
+    {pages.has(entry.entryId) && (index === 0 || pages.get(entries[index - 1].entryId) !== pages.get(entry.entryId)) && <h2 className="word-page-heading">صفحهٔ {number(pages.get(entry.entryId)!)}</h2>}
+    <details className="word-item" key={entry.entryId} onToggle={event => { if (!event.currentTarget.open) playback.stopScope(entry.entryId) }}>
           <summary><span className="word-item-main"><SpeechScope value={entry.entryId}><SpokenWord entry={entry} /></SpeechScope><span>{entry.meaningFa}</span></span><span className={`word-status status-${statuses[entry.entryId]}`}><i />{statusLabels[statuses[entry.entryId]]}</span><span className="details-chevron" aria-hidden="true">⌄</span></summary>
-          <div className="word-item-details"><SpeechScope value={entry.entryId}><ExampleBlock entry={entry} /><MoreExamples entry={entry} currentExampleId={entry.examples[0]?.exampleId} />{entry.introducedInLessonId !== state.activeLessonId && <p className="tiny-label">واژهٔ مشترک با درس دیگر؛ پیشرفت قبلی حفظ شده است.</p>}<SkillDetails entry={entry} progress={state.progress[entry.entryId]} /><ReverseSkillDetails progress={state.reverseProgress?.[entry.entryId]} now={now} /><Sources entry={entry} bundle={bundle} />{state.progress[entry.entryId]?.nextDueAt && <p className="word-due">مرور بعدی: {dateLabel(state.progress[entry.entryId].nextDueAt, now)}</p>}</SpeechScope></div>
-        </details>)}</div>
+          <div className="word-item-details"><SpeechScope value={entry.entryId}><ExampleBlock entry={entry} /><MoreExamples entry={entry} currentExampleId={entry.examples[0]?.exampleId} />{entry.introducedInLessonId !== state.activeLessonId && <p className="tiny-label">واژهٔ مشترک با درس دیگر؛ پیشرفت قبلی حفظ شده است.</p>}<SkillDetails entry={entry} progress={state.progress[entry.entryId]} /><ReverseSkillDetails progress={state.reverseProgress?.[entry.entryId]} now={now} /><Sources entry={entry} bundle={bundle} lessonId={state.activeLessonId} />{state.progress[entry.entryId]?.nextDueAt && <p className="word-due">مرور بعدی: {dateLabel(state.progress[entry.entryId].nextDueAt, now)}</p>}</SpeechScope></div>
+        </details></Fragment>)}</div>
 }
 
 
@@ -591,7 +596,7 @@ function WortzeitView(props: WortzeitUIProps) {
       {effectivePage === 'grammar' && <GrammarPanel props={props} onQuestionVisibilityChange={setGrammarQuestionVisible} onBack={async () => { await onCommand({ type: 'grammar-pause' }); setPage('home') }} />}
       {effectivePage === 'words' && <section className="words-page">
         <PronunciationStatus />
-        <div className="page-intro"><div><span className="eyebrow">واژه‌نامهٔ کوچک تو</span><h1>واژه‌های {lessonLabel(activeLesson)}<span className="orange-dot">.</span></h1><p>{number(vocabularyEntries.length)} مدخل؛ واژه‌های مشترک، همان پیشرفت درس اصلی را دارند.</p></div><span className="level-pill" lang="de" dir="ltr">{activeLesson.level}</span></div>
+        <div className="page-intro"><div><span className="eyebrow">واژه‌نامهٔ کوچک تو</span><h1>واژه‌های {lessonLabel(activeLesson)}<span className="orange-dot">.</span></h1><p>{number(vocabularyEntries.length)} مدخل؛ {activeLesson.lessonId === 'lesson-06' ? 'واژه‌نامهٔ اصلی کتاب، به ترتیب صفحات۵۲ تا۵۸؛ ۱۰ واژهٔ مشترک.' : 'واژه‌های مشترک، همان پیشرفت درس اصلی را دارند.'}</p></div><span className="level-pill" lang="de" dir="ltr">{activeLesson.level}</span></div>
         <p className="stabilization-note">«تثبیت‌شده» یعنی دست‌کم سه مرور مستقلِ موعدرسیده در روزهای جدا، بدون خطا یا کمک در میان آن‌ها؛ برای اسم، پاسخ آرتیکلِ بدون کمک هم لازم است. مرور بلندمدت همچنان ادامه دارد.</p>
         <label className="word-search"><span className="sr-only">جست‌وجوی واژه یا معنی</span><input type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="واژه یا معنی‌اش را جست‌وجو کن…" /></label>
         <div className="word-filters" aria-label="فیلتر وضعیت">{[{ id: 'all', label: 'همه' }, { id: 'new', label: statusLabels.new }, { id: 'learning', label: statusLabels.learning }, { id: 'due', label: statusLabels.due }, { id: 'stabilized', label: statusLabels.stabilized }].map(item => <button type="button" key={item.id} className={filter === item.id ? 'active' : ''} aria-pressed={filter === item.id} onClick={() => setFilter(item.id)}>{item.label}<span>{number(item.id === 'all' ? vocabularyEntries.length : vocabularyEntries.filter(entry => statuses[entry.entryId] === item.id).length)}</span></button>)}</div>

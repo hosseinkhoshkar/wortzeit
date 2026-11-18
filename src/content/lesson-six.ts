@@ -244,8 +244,8 @@ const configuration: Parameters<typeof buildExcerptLesson>[0] = {
     ['entschuldigen', 'sich entschuldigen'], ['schließen', 'zumachen'],
   ],
   provenance: {
-    file: 'reference/vocabulary/Lesson-06-A1.txt', reviewStatus: 'excerpt-checked',
-    noteFa: '۸۰ مدخل قبلی حفظ و ۱۴۴ مدخلِ جاافتاده افزوده شد. فهرست درس شامل واژگان رسمی ناشر و متن درسِ کتاب درسی، صفحات ۵۲ تا ۵۹ است. واژه‌های مشترک با درس‌های دیگر با همان شناسه و پیشرفت نمایش داده می‌شوند. بررسی کامل متن کتاب تمرین انجام نشده است. مثال‌ها تألیفی‌اند.',
+    file: 'reference/audits/lesson-06-coursebook.json', reviewStatus: 'excerpt-checked',
+    noteFa: 'فهرست اصلی بر پایهٔ واژه‌نامهٔ Lektionswortschatz صفحهٔ۵۸ کتاب درسی است: ۱۷۲ مدخل، شامل۱۶۲ واژهٔ این درس و۱۰ واژهٔ مشترک. ترتیب از اولین حضور در صفحات۵۲ تا۵۸ می‌آید. واژه‌های عمومیِ متن تمرین، کتاب تمرین و صوت به‌تنهایی وارد این فهرست نمی‌شوند. بانک تاریخی و جلسه‌های قبلی برای حفظ پیشرفت باقی می‌مانند؛ مثال‌ها تألیفی‌اند.',
   },
 }
 

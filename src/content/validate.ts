@@ -38,6 +38,15 @@ export function validateContent(bundle: ContentBundle): string[] {
     if (entries.length < 4 || new Set(lesson.introducedEntryIds).size !== expected.length || lesson.introducedEntryIds.length !== expected.length || expected.some(id => !lesson.introducedEntryIds.includes(id))) errors.push(`Introduction IDs must cover each entry once: ${lesson.lessonId}`)
     const orders = entries.map(entry => entry.introductionOrder)
     if (new Set(orders).size !== expected.length || orders.some(order => !Number.isInteger(order) || order < 1 || order > expected.length)) errors.push(`Introduction order must be unique and contiguous: ${lesson.lessonId}`)
+    for (const [kind, scope] of [['study', lesson.studyEntryIds], ['vocabulary', lesson.vocabularyEntryIds]] as const) {
+      if (scope === undefined) continue
+      if (scope.length < 4 || new Set(scope).size !== scope.length || scope.some(id => {
+        const entry = byId.get(id)
+        return !entry || (kind === 'study' ? entry.introducedInLessonId !== lesson.lessonId
+          : !entry.occurrences.some(occurrence => occurrence.lessonId === lesson.lessonId))
+      })) errors.push(`Invalid current ${kind} scope: ${lesson.lessonId}`)
+    }
+    if (lesson.studyEntryIds && lesson.vocabularyEntryIds && lesson.studyEntryIds.some(id => !lesson.vocabularyEntryIds!.includes(id))) errors.push(`Study scope missing from vocabulary: ${lesson.lessonId}`)
   }
   for (const ref of bundle.sourceRefs) {
     if (!sourceIds.has(ref.sourceId) || !lessonIds.has(ref.lessonId) || !ref.locator.trim()) errors.push(`Broken source reference: ${ref.sourceRefId}`)

@@ -9,6 +9,7 @@ import type { ReactNode } from 'react'
 import ts from 'typescript'
 import type { ContentBundle, Entry, EntryProgress, LessonDefinition, SessionTask, WortzeitUIProps } from '../contracts/index.ts'
 import { lessonOneBundle as bundle } from '../content/lesson-one.ts'
+import { lessonStudyEntries } from '../content/lesson-vocabulary.ts'
 import { courseBundle } from '../content/catalog.ts'
 import { createInitialState } from '../learning/engine.ts'
 
@@ -307,12 +308,12 @@ test('word details retain the original sentence and allow manual access to the t
 
 test('the active catalog renders eleven lesson cards with independent counts and twelfth-lesson selection', () => {
   const summaries = courseBundle.lessons!.map(lesson => ({ lesson,
-    total: courseBundle.entries.filter(entry => entry.introducedInLessonId === lesson.lessonId).length,
+    total: lessonStudyEntries(courseBundle, lesson.lessonId).length,
     introduced: 0, due: 0, stabilized: 0,
   }))
   const html = renderToStaticMarkup(createElement(view.LessonCards, { activeLessonId: 'lesson-12', disabled: false, onChoose: async () => {}, summaries }))
   assert.equal((html.match(/data-lesson-id=/gu) ?? []).length, 11)
-  for (const count of [20, 84, 76, 224, 55, 52, 43, 51, 38, 40, 5]) assert.ok(html.includes(`aria-valuemax="${count}"`))
+  for (const count of [20, 84, 76, 162, 55, 52, 43, 51, 38, 40, 5]) assert.ok(html.includes(`aria-valuemax="${count}"`))
   assert.ok(html.includes('Endlich ein Zimmer!') && html.includes('بالاخره یک اتاق!'))
   assert.ok(html.includes('Kleider machen Freunde') && html.includes('لباس و دوستان تازه'))
   assert.ok(html.includes('Grüezi in der Schweiz') && html.includes('سلام از سوئیس'))

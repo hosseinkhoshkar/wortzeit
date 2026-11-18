@@ -56,7 +56,7 @@ test('the catalog preserves existing identities and validates each active lesson
   let offset = 0
   for (const bundle of lessonBundles) {
     assert.deepEqual(courseBundle.entries.slice(offset, offset + bundle.entries.length)
-      .map(entry => ({ ...entry, examples: entry.examples.slice(0, 1), sourceRefIds: entry.sourceRefIds.filter(id => !id.endsWith('-occurrence-lesson-06')), occurrences: entry.occurrences.filter(occurrence => !occurrence.sourceRefIds.some(id => id.endsWith('-occurrence-lesson-06'))) })), bundle.entries)
+      .map(entry => ({ ...entry, examples: entry.examples.slice(0, 1), sourceRefIds: entry.sourceRefIds.filter(id => !id.endsWith('-occurrence-lesson-06') && !id.endsWith('-coursebook-lesson-06')), occurrences: entry.occurrences.filter(occurrence => !occurrence.sourceRefIds.some(id => id.endsWith('-occurrence-lesson-06'))).map(occurrence => ({ ...occurrence, sourceRefIds: occurrence.sourceRefIds.filter(id => !id.endsWith('-coursebook-lesson-06')) })) })), bundle.entries)
     offset += bundle.entries.length
   }
   assert.equal(new Set(courseBundle.entries.map(entry => entry.entryId)).size, 688)

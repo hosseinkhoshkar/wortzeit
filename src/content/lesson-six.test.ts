@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
+import { lessonStudyEntries } from './lesson-vocabulary.ts'
 import { courseBundle, lessonBundles } from './catalog.ts'
 import { createInitialState, transition } from '../learning/engine.ts'
 import { validateContent } from './validate.ts'
@@ -22,7 +23,7 @@ test('all 224 lesson-six entries match their source, keep exact articles and hav
     assert.equal(entry.entryId, `a1-l06-${row.padStart(3, '0')}`)
     assert.equal(entry.nounData ? `${entry.nounData.article} ${entry.lemma}` : entry.lemma, headword)
     assert.equal(entry.meaningFa, meaningFa)
-    assert.deepEqual(entry.sourceRefIds.map(id => lesson.sourceRefs.find(ref => ref.sourceRefId === id)?.locator), locators.split('؛ '))
+    assert.deepEqual(entry.sourceRefIds.filter(id => !id.endsWith('-coursebook-lesson-06')).map(id => lesson.sourceRefs.find(ref => ref.sourceRefId === id)?.locator), locators.split('؛ '))
     assert.equal(entry.enabledExercises.includes('choose-article'), Boolean(entry.nounData))
     assert.ok(!entry.writing.cueFa.includes(entry.lemma))
     assert.equal(entry.examples.length, 3)
@@ -43,9 +44,9 @@ test('the first lesson-six batch follows printed page order without replacing a 
   assert.deepEqual(state.savedSessions['lesson-05'], fifth)
   state = transition(state, { type: 'start-session', sessionId: 'sixth-first', seed: 1 }, courseBundle, now)
   const cards = state.session!.queue.filter(task => task.kind === 'flashcard')
-  assert.deepEqual(cards.map(card => card.entryId), lesson.lesson.introducedEntryIds.slice(0, 5))
+  assert.deepEqual(cards.map(card => card.entryId), lessonStudyEntries(courseBundle, lessonId).slice(0, 5).map(entry => entry.entryId))
   assert.deepEqual(cards.map(card => lesson.entries.find(entry => entry.entryId === card.entryId)?.lemma),
-    ['freundlich', 'schicken', 'Tee', 'Wald', 'waschen'])
+    ['Waschsalon', 'Copyshop', 'Inhaberin', 'Wegbeschreibung', 'waschen'])
   state = transition(state, { type: 'select-lesson', lessonId: 'lesson-05' }, courseBundle, now)
   assert.deepEqual(state.session, fifth)
   assert.equal(state.savedSessions[lessonId].sessionId, 'sixth-first')
@@ -53,13 +54,13 @@ test('the first lesson-six batch follows printed page order without replacing a 
 
 test('publisher vocabulary audit is completely represented without duplicate learning identities', async () => {
   const { lessonVocabularyEntries } = await import('./lesson-vocabulary.ts')
-  const audit = JSON.parse(readFileSync(new URL('../../reference/audits/lesson-06.json', import.meta.url), 'utf8'))
+  const audit = JSON.parse(readFileSync(new URL('../../reference/audits/lesson-06-coursebook.json', import.meta.url), 'utf8'))
   const entries = lessonVocabularyEntries(courseBundle, lessonId)
   const words = new Set(entries.map(entry => entry.nounData ? `${entry.nounData.article} ${entry.lemma}` : entry.lemma))
-  assert.equal(entries.length, 236)
+  assert.equal(entries.length, 172)
   assert.equal(new Set(entries.map(entry => entry.entryId)).size, entries.length)
-  for (const word of audit.requiredHeadwords) assert.ok(words.has(word), `Missing publisher vocabulary: ${word}`)
-  for (const row of audit.sharedEntries) {
+  for (const row of audit.rows) assert.ok(words.has(row.headword), `Missing publisher vocabulary: ${row.headword}`)
+  for (const row of audit.rows.filter((row: { entryId: string }) => !row.entryId.startsWith('a1-l06-'))) {
     const entry = entries.find(entry => entry.entryId === row.entryId)!
     assert.notEqual(entry.introducedInLessonId, lessonId)
     assert.ok(entry.occurrences.some(occurrence => occurrence.lessonId === lessonId))

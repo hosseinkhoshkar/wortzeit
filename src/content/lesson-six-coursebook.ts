@@ -1,0 +1,1379 @@
+// Reviewed against the publisher's word bank on printed p.58. Do not derive this from text substrings.
+export const lessonSixCoursebookRows = [
+  {
+    "entryId": "a1-l06-120",
+    "headword": "der Waschsalon",
+    "page": 52,
+    "section": "A1–2",
+    "order": 1,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-139",
+    "headword": "der Copyshop",
+    "page": 52,
+    "section": "A1–2",
+    "order": 2,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-143",
+    "headword": "die Inhaberin",
+    "page": 52,
+    "section": "A1–2",
+    "order": 3,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-159",
+    "headword": "die Wegbeschreibung",
+    "page": 52,
+    "section": "A1–2",
+    "order": 4,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-077",
+    "headword": "waschen",
+    "page": 52,
+    "section": "A1–2",
+    "order": 5,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-122",
+    "headword": "trocknen",
+    "page": 52,
+    "section": "A1–2",
+    "order": 6,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-169",
+    "headword": "kopieren",
+    "page": 52,
+    "section": "A1–2",
+    "order": 7,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-177",
+    "headword": "surfen",
+    "page": 52,
+    "section": "A1–2",
+    "order": 8,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-171",
+    "headword": "mailen",
+    "page": 52,
+    "section": "A1–2",
+    "order": 9,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-075",
+    "headword": "warm",
+    "page": 52,
+    "section": "A1–2",
+    "order": 10,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-153",
+    "headword": "der Snack",
+    "page": 52,
+    "section": "A1–2",
+    "order": 11,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-140",
+    "headword": "der Espresso",
+    "page": 52,
+    "section": "A1–2",
+    "order": 12,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-065",
+    "headword": "der Tee",
+    "page": 52,
+    "section": "A1–2",
+    "order": 13,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-155",
+    "headword": "die Veranstaltung",
+    "page": 52,
+    "section": "A1–2",
+    "order": 14,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-113",
+    "headword": "die Wäsche",
+    "page": 52,
+    "section": "A1–2",
+    "order": 15,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-121",
+    "headword": "der Trockner",
+    "page": 52,
+    "section": "A1–2",
+    "order": 16,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l04-020",
+    "headword": "fernsehen",
+    "page": 52,
+    "section": "A1–2",
+    "order": 17,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-146",
+    "headword": "die Kopie",
+    "page": 52,
+    "section": "A1–2",
+    "order": 18,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-183",
+    "headword": "kulturell",
+    "page": 52,
+    "section": "A1–2",
+    "order": 19,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l04-036",
+    "headword": "die Lösung",
+    "page": 52,
+    "section": "A1–2",
+    "order": 20,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-149",
+    "headword": "die Notiz",
+    "page": 52,
+    "section": "A1–2",
+    "order": 21,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-191",
+    "headword": "nun",
+    "page": 52,
+    "section": "A1–2",
+    "order": 22,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-144",
+    "headword": "der Job",
+    "page": 52,
+    "section": "A1–2",
+    "order": 23,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l04-046",
+    "headword": "der Platz",
+    "page": 52,
+    "section": "A1–2",
+    "order": 24,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-078",
+    "headword": "die Waschmaschine",
+    "page": 52,
+    "section": "A1–2",
+    "order": 25,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-114",
+    "headword": "die Wäscherei",
+    "page": 52,
+    "section": "A1–2",
+    "order": 26,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l05-015",
+    "headword": "bringen",
+    "page": 52,
+    "section": "A1–2",
+    "order": 27,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-188",
+    "headword": "professionell",
+    "page": 52,
+    "section": "A1–2",
+    "order": 28,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-025",
+    "headword": "freundlich",
+    "page": 52,
+    "section": "A1–2",
+    "order": 29,
+    "sourceLocator": "کتاب درسی: چاپی 52، A1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-123",
+    "headword": "die Anleitung",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 30,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-184",
+    "headword": "kurz",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 31,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-158",
+    "headword": "der Vorschlag",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 32,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-197",
+    "headword": "doch",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 33,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-165",
+    "headword": "eingeben",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 34,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-196",
+    "headword": "mal",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 35,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-071",
+    "headword": "versuchen",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 36,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-152",
+    "headword": "die Situation",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 37,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-130",
+    "headword": "drücken",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 38,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-056",
+    "headword": "schließen",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 39,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-118",
+    "headword": "das Waschprogramm",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 40,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-073",
+    "headword": "wählen",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 41,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-125",
+    "headword": "der Kassenautomat",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 42,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-129",
+    "headword": "füllen",
+    "page": 53,
+    "section": "A2c–4",
+    "order": 43,
+    "sourceLocator": "کتاب درسی: چاپی 53، A2c–4؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-162",
+    "headword": "aufpassen",
+    "page": 54,
+    "section": "B1–2",
+    "order": 44,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-132",
+    "headword": "einlaufen",
+    "page": 54,
+    "section": "B1–2",
+    "order": 45,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-168",
+    "headword": "helfen",
+    "page": 54,
+    "section": "B1–2",
+    "order": 46,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-179",
+    "headword": "vermuten",
+    "page": 54,
+    "section": "B1–2",
+    "order": 47,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-175",
+    "headword": "sagen",
+    "page": 54,
+    "section": "B1–2",
+    "order": 48,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-198",
+    "headword": "alles",
+    "page": 54,
+    "section": "B1–2",
+    "order": 49,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-127",
+    "headword": "sortieren",
+    "page": 54,
+    "section": "B1–2",
+    "order": 50,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-107",
+    "headword": "die Baumwolle",
+    "page": 54,
+    "section": "B1–2",
+    "order": 51,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-112",
+    "headword": "die Wolle",
+    "page": 54,
+    "section": "B1–2",
+    "order": 52,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-193",
+    "headword": "wirklich",
+    "page": 54,
+    "section": "B1–2",
+    "order": 53,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-047",
+    "headword": "nie",
+    "page": 54,
+    "section": "B1–2",
+    "order": 54,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-156",
+    "headword": "die Vermutung",
+    "page": 54,
+    "section": "B1–2",
+    "order": 55,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-031",
+    "headword": "höflich",
+    "page": 54,
+    "section": "B1–2",
+    "order": 56,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-138",
+    "headword": "die Bitte",
+    "page": 54,
+    "section": "B1–2",
+    "order": 57,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-021",
+    "headword": "entschuldigen",
+    "page": 54,
+    "section": "B1–2",
+    "order": 58,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-166",
+    "headword": "erklären",
+    "page": 54,
+    "section": "B1–2",
+    "order": 59,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-141",
+    "headword": "die Entschuldigung",
+    "page": 54,
+    "section": "B1–2",
+    "order": 60,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-172",
+    "headword": "nachfragen",
+    "page": 54,
+    "section": "B1–2",
+    "order": 61,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-081",
+    "headword": "das Kleidungsstück",
+    "page": 54,
+    "section": "B1–2",
+    "order": 62,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-004",
+    "headword": "der Anzug",
+    "page": 54,
+    "section": "B1–2",
+    "order": 63,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-010",
+    "headword": "die Bluse",
+    "page": 54,
+    "section": "B1–2",
+    "order": 64,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-030",
+    "headword": "das Hemd",
+    "page": 54,
+    "section": "B1–2",
+    "order": 65,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-039",
+    "headword": "das Kleid",
+    "page": 54,
+    "section": "B1–2",
+    "order": 66,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-051",
+    "headword": "der Pullover",
+    "page": 54,
+    "section": "B1–2",
+    "order": 67,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-032",
+    "headword": "die Hose",
+    "page": 54,
+    "section": "B1–2",
+    "order": 68,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-060",
+    "headword": "die Socke",
+    "page": 54,
+    "section": "B1–2",
+    "order": 69,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-063",
+    "headword": "das T-Shirt",
+    "page": 54,
+    "section": "B1–2",
+    "order": 70,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-093",
+    "headword": "die Krawatte",
+    "page": 54,
+    "section": "B1–2",
+    "order": 71,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-036",
+    "headword": "die Jeans",
+    "page": 54,
+    "section": "B1–2",
+    "order": 72,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l04-053",
+    "headword": "der Rock",
+    "page": 54,
+    "section": "B1–2",
+    "order": 73,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-089",
+    "headword": "das Unterhemd",
+    "page": 54,
+    "section": "B1–2",
+    "order": 74,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-090",
+    "headword": "die Unterhose",
+    "page": 54,
+    "section": "B1–2",
+    "order": 75,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-097",
+    "headword": "blau",
+    "page": 54,
+    "section": "B1–2",
+    "order": 76,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-101",
+    "headword": "rot",
+    "page": 54,
+    "section": "B1–2",
+    "order": 77,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l05-062",
+    "headword": "schwarz",
+    "page": 54,
+    "section": "B1–2",
+    "order": 78,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l04-054",
+    "headword": "rosa",
+    "page": 54,
+    "section": "B1–2",
+    "order": 79,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-105",
+    "headword": "dunkelblau",
+    "page": 54,
+    "section": "B1–2",
+    "order": 80,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-043",
+    "headword": "lila",
+    "page": 54,
+    "section": "B1–2",
+    "order": 81,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-099",
+    "headword": "grün",
+    "page": 54,
+    "section": "B1–2",
+    "order": 82,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-011",
+    "headword": "braun",
+    "page": 54,
+    "section": "B1–2",
+    "order": 83,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-096",
+    "headword": "beige",
+    "page": 54,
+    "section": "B1–2",
+    "order": 84,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-098",
+    "headword": "gelb",
+    "page": 54,
+    "section": "B1–2",
+    "order": 85,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-103",
+    "headword": "hellblau",
+    "page": 54,
+    "section": "B1–2",
+    "order": 86,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-027",
+    "headword": "grau",
+    "page": 54,
+    "section": "B1–2",
+    "order": 87,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-102",
+    "headword": "türkis",
+    "page": 54,
+    "section": "B1–2",
+    "order": 88,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l04-076",
+    "headword": "weiß",
+    "page": 54,
+    "section": "B1–2",
+    "order": 89,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-100",
+    "headword": "orange",
+    "page": 54,
+    "section": "B1–2",
+    "order": 90,
+    "sourceLocator": "کتاب درسی: چاپی 54، B1–2؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-189",
+    "headword": "vorsichtig",
+    "page": 55,
+    "section": "B3–6",
+    "order": 91,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-076",
+    "headword": "warten",
+    "page": 55,
+    "section": "B3–6",
+    "order": 92,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-128",
+    "headword": "umdrehen",
+    "page": 55,
+    "section": "B3–6",
+    "order": 93,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-126",
+    "headword": "anmachen",
+    "page": 55,
+    "section": "B3–6",
+    "order": 94,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-116",
+    "headword": "die Maschine",
+    "page": 55,
+    "section": "B3–6",
+    "order": 95,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-048",
+    "headword": "öffnen",
+    "page": 55,
+    "section": "B3–6",
+    "order": 96,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-019",
+    "headword": "einladen",
+    "page": 55,
+    "section": "B3–6",
+    "order": 97,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-190",
+    "headword": "gleich",
+    "page": 55,
+    "section": "B3–6",
+    "order": 98,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-148",
+    "headword": "die Neuigkeit",
+    "page": 55,
+    "section": "B3–6",
+    "order": 99,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-135",
+    "headword": "der Bekannte",
+    "page": 55,
+    "section": "B3–6",
+    "order": 100,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-185",
+    "headword": "lang",
+    "page": 55,
+    "section": "B3–6",
+    "order": 101,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-181",
+    "headword": "herzlich",
+    "page": 55,
+    "section": "B3–6",
+    "order": 102,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-133",
+    "headword": "die Anweisung",
+    "page": 55,
+    "section": "B3–6",
+    "order": 103,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l04-079",
+    "headword": "der Wunsch",
+    "page": 55,
+    "section": "B3–6",
+    "order": 104,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-163",
+    "headword": "ausführen",
+    "page": 55,
+    "section": "B3–6",
+    "order": 105,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-067",
+    "headword": "die Tür",
+    "page": 55,
+    "section": "B3–6",
+    "order": 106,
+    "sourceLocator": "کتاب درسی: چاپی 55، B3–6؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-154",
+    "headword": "der Traum",
+    "page": 56,
+    "section": "C1–3",
+    "order": 107,
+    "sourceLocator": "کتاب درسی: چاپی 56، C1–3؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-178",
+    "headword": "träumen",
+    "page": 56,
+    "section": "C1–3",
+    "order": 108,
+    "sourceLocator": "کتاب درسی: چاپی 56، C1–3؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-161",
+    "headword": "anstoßen",
+    "page": 56,
+    "section": "C1–3",
+    "order": 109,
+    "sourceLocator": "کتاب درسی: چاپی 56، C1–3؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-173",
+    "headword": "nehmen",
+    "page": 56,
+    "section": "C1–3",
+    "order": 110,
+    "sourceLocator": "کتاب درسی: چاپی 56، C1–3؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-119",
+    "headword": "das Waschpulver",
+    "page": 56,
+    "section": "C1–3",
+    "order": 111,
+    "sourceLocator": "کتاب درسی: چاپی 56، C1–3؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-002",
+    "headword": "die Angst",
+    "page": 56,
+    "section": "C1–3",
+    "order": 112,
+    "sourceLocator": "کتاب درسی: چاپی 56، C1–3؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-170",
+    "headword": "lächeln",
+    "page": 56,
+    "section": "C1–3",
+    "order": 113,
+    "sourceLocator": "کتاب درسی: چاپی 56، C1–3؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-167",
+    "headword": "festhalten",
+    "page": 56,
+    "section": "C1–3",
+    "order": 114,
+    "sourceLocator": "کتاب درسی: چاپی 56، C1–3؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-115",
+    "headword": "der Waschkorb",
+    "page": 56,
+    "section": "C1–3",
+    "order": 115,
+    "sourceLocator": "کتاب درسی: چاپی 56، C1–3؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-151",
+    "headword": "der Schwächling",
+    "page": 56,
+    "section": "C1–3",
+    "order": 116,
+    "sourceLocator": "کتاب درسی: چاپی 56، C1–3؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-038",
+    "headword": "die Kasse",
+    "page": 56,
+    "section": "C1–3",
+    "order": 117,
+    "sourceLocator": "کتاب درسی: چاپی 56، C1–3؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-003",
+    "headword": "anprobieren",
+    "page": 57,
+    "section": "C4–5",
+    "order": 118,
+    "sourceLocator": "کتاب درسی: چاپی 57، C4–5؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-194",
+    "headword": "zuerst",
+    "page": 57,
+    "section": "C4–5",
+    "order": 119,
+    "sourceLocator": "کتاب درسی: چاپی 57، C4–5؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-001",
+    "headword": "anfangen",
+    "page": 57,
+    "section": "C4–5",
+    "order": 120,
+    "sourceLocator": "کتاب درسی: چاپی 57، C4–5؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-192",
+    "headword": "später",
+    "page": 57,
+    "section": "C4–5",
+    "order": 121,
+    "sourceLocator": "کتاب درسی: چاپی 57، C4–5؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-180",
+    "headword": "fertig",
+    "page": 57,
+    "section": "C4–5",
+    "order": 122,
+    "sourceLocator": "کتاب درسی: چاپی 57، C4–5؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-053",
+    "headword": "sauber",
+    "page": 57,
+    "section": "C4–5",
+    "order": 123,
+    "sourceLocator": "کتاب درسی: چاپی 57، C4–5؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-182",
+    "headword": "klasse",
+    "page": 57,
+    "section": "C4–5",
+    "order": 124,
+    "sourceLocator": "کتاب درسی: چاپی 57، C4–5؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-035",
+    "headword": "die Jacke",
+    "page": 57,
+    "section": "C4–5",
+    "order": 125,
+    "sourceLocator": "کتاب درسی: چاپی 57، C4–5؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-026",
+    "headword": "das Gedicht",
+    "page": 57,
+    "section": "C4–5",
+    "order": 126,
+    "sourceLocator": "کتاب درسی: چاپی 57، C4–5؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-160",
+    "headword": "die Zeile",
+    "page": 57,
+    "section": "C4–5",
+    "order": 127,
+    "sourceLocator": "کتاب درسی: چاپی 57، C4–5؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-176",
+    "headword": "stoppen",
+    "page": 57,
+    "section": "C4–5",
+    "order": 128,
+    "sourceLocator": "کتاب درسی: چاپی 57، C4–5؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-082",
+    "headword": "das Sweatshirt",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 129,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-044",
+    "headword": "der Mantel",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 130,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-083",
+    "headword": "die Weste",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 131,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-084",
+    "headword": "der Jogginganzug",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 132,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-085",
+    "headword": "der Badeanzug",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 133,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-086",
+    "headword": "die Badehose",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 134,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-087",
+    "headword": "das Nachthemd",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 135,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-088",
+    "headword": "der Schlafanzug",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 136,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-091",
+    "headword": "der Strumpf",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 137,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-092",
+    "headword": "die Strumpfhose",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 138,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-028",
+    "headword": "der Gürtel",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 139,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-029",
+    "headword": "der Handschuh",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 140,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-054",
+    "headword": "der Schal",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 141,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-034",
+    "headword": "der Hut",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 142,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-045",
+    "headword": "die Mütze",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 143,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-064",
+    "headword": "die Tasche",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 144,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-094",
+    "headword": "ein Paar",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 145,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-095",
+    "headword": "ein paar",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 146,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-104",
+    "headword": "hellrot",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 147,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-106",
+    "headword": "dunkelrot",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 148,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-108",
+    "headword": "das Leder",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 149,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-109",
+    "headword": "das Polyester",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 150,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-110",
+    "headword": "die Seide",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 151,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-111",
+    "headword": "die Viskose",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 152,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-117",
+    "headword": "das Programm",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 153,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-124",
+    "headword": "der Automat",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 154,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-080",
+    "headword": "zumachen",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 155,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-131",
+    "headword": "beenden",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 156,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-134",
+    "headword": "die Aufforderung",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 157,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-136",
+    "headword": "die Bekannte",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 158,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-137",
+    "headword": "die Beschreibung",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 159,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-142",
+    "headword": "der Inhaber",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 160,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-145",
+    "headword": "die Kantine",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 161,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-147",
+    "headword": "die Liste",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 162,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-150",
+    "headword": "das Paar",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 163,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-006",
+    "headword": "bedeuten",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 164,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-164",
+    "headword": "klicken",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 165,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l05-035",
+    "headword": "holen",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 166,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-174",
+    "headword": "nennen",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 167,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-186",
+    "headword": "langsam",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 168,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-046",
+    "headword": "nass",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 169,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-066",
+    "headword": "trocken",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 170,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-187",
+    "headword": "passend",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 171,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  },
+  {
+    "entryId": "a1-l06-195",
+    "headword": "ja",
+    "page": 58,
+    "section": "Lektionswortschatz",
+    "order": 172,
+    "sourceLocator": "کتاب درسی: چاپی 58، Lektionswortschatz؛ واژه‌نامهٔ اصلی: چاپی 58"
+  }
+] as const

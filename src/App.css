@@ -200,3 +200,5 @@
 .grammar-lesson-grid{grid-auto-rows:max-content}
 .grammar-lesson-card{min-height:154px}
 .grammar-card-top,.grammar-card-title,.grammar-card-topic,.grammar-card-progress,.grammar-card-bottom{flex-shrink:0}
+
+.word-page-heading{margin:10px 2px 2px;font-size:12px;color:var(--muted);font-weight:600}
