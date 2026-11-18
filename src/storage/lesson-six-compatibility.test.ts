@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import type { AppState } from '../contracts/index.ts'
 import { courseBundle } from '../content/catalog.ts'
-import { lessonVocabularyEntries } from '../content/lesson-vocabulary.ts'
+import { lessonVocabularyEntries, lessonStudyEntries } from '../content/lesson-vocabulary.ts'
 import { getHomeStats, transition } from '../learning/engine.ts'
 import { loadState, migrateState, validateState } from './index.ts'
 import { indexedDBModel } from './test-idb.ts'
@@ -27,9 +27,9 @@ test('the pre-expansion lesson-six session reloads unchanged and lists added wor
   assert.deepEqual(model.read(), before)
   const snapshot = structuredClone(loaded)
   const vocabulary = lessonVocabularyEntries(courseBundle, 'lesson-06')
-  assert.equal(vocabulary.length, 236)
+  assert.equal(vocabulary.length, 172)
   assert.deepEqual(loaded, snapshot)
-  assert.equal(getHomeStats(loaded, courseBundle, now).newCount, 224 - Object.keys(before.progress).length)
+  assert.equal(getHomeStats(loaded, courseBundle, now).newCount, lessonStudyEntries(courseBundle, 'lesson-06').filter(entry => !before.progress[entry.entryId]).length)
   const pendingIds = new Set(before.session!.queue.filter(task => task.kind === 'flashcard').map(task => task.entryId))
   assert.ok([...pendingIds].every(id => Number(id.slice(-3)) <= 80))
   const resumed = transition(loaded, { type: 'start-session', sessionId: 'resume', seed: 7 }, courseBundle, now)

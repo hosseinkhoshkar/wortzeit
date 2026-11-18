@@ -1,15 +1,16 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { lessonStudyEntries } from '../content/lesson-vocabulary.ts'
 import { courseBundle } from '../content/catalog.ts'
 import { currentTask, createInitialState, transition } from '../learning/engine.ts'
 import { validateState } from '../storage/index.ts'
 
-for (const [lessonId, count] of [['lesson-04', 84], ['lesson-05', 76], ['lesson-06', 224], ['lesson-07', 55], ['lesson-08', 52], ['lesson-09', 43], ['lesson-10', 51], ['lesson-11', 38], ['lesson-12', 40], ['lesson-30', 5]] as const) {
+for (const [lessonId, count] of [['lesson-04', 84], ['lesson-05', 76], ['lesson-06', 162], ['lesson-07', 55], ['lesson-08', 52], ['lesson-09', 43], ['lesson-10', 51], ['lesson-11', 38], ['lesson-12', 40], ['lesson-30', 5]] as const) {
 test(`all ${count} real ${lessonId} entries complete through valid sessions without introducing another lesson's word`, () => {
   const now = '2026-10-28T12:00:00.000Z'
   let state = createInitialState(courseBundle, 'Europe/Berlin')
   state = transition(state, { type: 'select-lesson', lessonId }, courseBundle, now)
-  const lessonEntries = courseBundle.entries.filter(entry => entry.introducedInLessonId === lessonId)
+  const lessonEntries = lessonStudyEntries(courseBundle, lessonId)
   const byId = new Map(lessonEntries.map(entry => [entry.entryId, entry]))
   let attempts = 0
   for (let session = 0; session < Math.ceil(count / 5); session++) {

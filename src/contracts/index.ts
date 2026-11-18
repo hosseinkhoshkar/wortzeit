@@ -48,6 +48,10 @@ export interface LessonDefinition {
   level: 'A1' | 'A2' | 'B1'
   coverage: 'partial'
   introducedEntryIds: string[]
+  /** Optional current curriculum; omitted entries remain resolvable for historical saves. */
+  studyEntryIds?: string[]
+  /** Ordered vocabulary including shared occurrences, independently of the introduction lesson. */
+  vocabularyEntryIds?: string[]
 }
 export interface ContentBundle {
   contentVersion: string

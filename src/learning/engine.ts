@@ -1,4 +1,5 @@
 import { applyGrammar, isGrammarCommand } from './grammar.ts'
+import { lessonStudyEntries } from '../content/lesson-vocabulary.ts'
 import { NORMALIZATION_VERSION, POLICY_VERSION, SCHEMA_VERSION, TARGET_ACTIVE_MS } from '../contracts/index.ts'
 import type {
   AppState, ContentBundle, Entry, EntryProgress, EntryStatus, HomeStats,
@@ -16,7 +17,7 @@ export function getActiveLesson(state: AppState, bundle: ContentBundle): LessonD
 }
 
 function activeEntries(state: AppState, bundle: ContentBundle): Entry[] {
-  return bundle.entries.filter(entry => entry.introducedInLessonId === state.activeLessonId)
+  return lessonStudyEntries(bundle, state.activeLessonId)
 }
 
 export function createInitialState(bundle: ContentBundle, studyTimeZone: string): AppState {
@@ -104,7 +105,7 @@ function orderedRecall(state: AppState, now: string, bundle: ContentBundle): Ent
     })
 }
 
-function queueNewEntryPractice(session: Session, entry: Entry, seed: number): void {
+function queueNewEntryPractice(session: Session, entry: Entry, seed: number, bundle: ContentBundle): void {
   const prefix = `${session.sessionId}:new:${entry.entryId}`
   const writtenTasks: SessionTask[] = [
     { taskId: `${prefix}:cloze`, kind: 'cloze', entryId: entry.entryId, cycleKind: 'initial' },
@@ -113,11 +114,28 @@ function queueNewEntryPractice(session: Session, entry: Entry, seed: number): vo
   if (((seed + entry.introductionOrder) & 1) !== 0) writtenTasks.reverse()
   session.queue.push(
     { taskId: `${prefix}:meaning`, kind: 'choose-meaning', entryId: entry.entryId,
-      optionIds: shuffled(entry.meaningOptionEntryIds, seed + entry.introductionOrder) },
+      optionIds: shuffled(currentMeaningOptions(entry, bundle), seed + entry.introductionOrder) },
     ...writtenTasks,
   )
   if (entry.partOfSpeech === 'noun' && entry.nounData) session.queue.push({ taskId: `${prefix}:article`,
     kind: 'choose-article', entryId: entry.entryId, options: shuffled(['der', 'die', 'das'] as const, seed + entry.introductionOrder + 1) })
+}
+
+/** New distractors use the current curriculum; persisted optionIds are never rewritten. */
+function currentMeaningOptions(entry: Entry, bundle: ContentBundle): string[] {
+  const lesson = getLessons(bundle).find(lesson => lesson.lessonId === entry.introducedInLessonId)
+  if (!lesson?.studyEntryIds) return entry.meaningOptionEntryIds
+  const pool = lessonStudyEntries(bundle, lesson.lessonId)
+  const eligible = new Map(pool.map(candidate => [candidate.entryId, candidate]))
+  const ids = [entry.entryId], meanings = new Set([entry.meaningFa])
+  const candidates = [...entry.meaningOptionEntryIds.flatMap(id => eligible.get(id) ? [eligible.get(id)!] : []),
+    ...pool.filter(candidate => candidate.partOfSpeech === entry.partOfSpeech), ...pool]
+  for (const candidate of candidates) {
+    if (ids.length === 4) break
+    if (ids.includes(candidate.entryId) || meanings.has(candidate.meaningFa)) continue
+    ids.push(candidate.entryId); meanings.add(candidate.meaningFa)
+  }
+  return ids
 }
 
 /** Extra practice is bounded and based on actual skill evidence, never on a time quota. */
@@ -210,7 +228,7 @@ function start(state: AppState, command: Extract<LearningCommand, { type: 'start
   session.queue.push(...orderedRecall(state, now, bundle).map((progress, index) => makeRecall(progress, session, `start-${index}`)))
   queueAdaptive(state, bundle, command.seed)
   const newEntries = activeEntries(state, bundle).filter(entry => !state.progress[entry.entryId])
-    .sort((a, b) => a.introductionOrder - b.introductionOrder).slice(0, state.settings.maxNewPerSession)
+    .slice(0, state.settings.maxNewPerSession)
   // Learn the complete small batch before any of its exercises. Cards only
   // become introductions when reached; their IDs and persisted shape stay stable.
   const newCards: SessionTask[] = newEntries.map(entry => ({
@@ -218,7 +236,7 @@ function start(state: AppState, command: Extract<LearningCommand, { type: 'start
   }))
   const reverseIds = selectReverseEntries(state, bundle, newEntries.map(entry => entry.entryId), now, command.seed)
   session.queue.push(...mixReverseCards(newCards, reverseIds, session.sessionId, command.seed))
-  for (const entry of newEntries) queueNewEntryPractice(session, entry, command.seed)
+  for (const entry of newEntries) queueNewEntryPractice(session, entry, command.seed, bundle)
   // This task appears only after their cards, never introduces an unseen word by itself.
   const matchPool = [...newEntries, ...activeEntries(state, bundle).filter(entry => state.progress[entry.entryId])]
   const seenMeanings = new Set<string>()

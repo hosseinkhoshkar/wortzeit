@@ -2,6 +2,7 @@ import { DEFAULT_STUDY_TIME_ZONE } from './learning/streak.ts'
 import { useEffect, useRef, useState } from 'react'
 import type { AppState, LearningCommand, OfflineStatus } from './contracts/index.ts'
 import { courseBundle, lessonBundles } from './content/catalog.ts'
+import { lessonStudyEntries } from './content/lesson-vocabulary.ts'
 import { validateContent } from './content/validate.ts'
 import { createInitialState, getEntryStatus, getHomeStats, summarizeSession } from './learning/engine.ts'
 import { CommandWriter } from './controller/writer.ts'
@@ -176,7 +177,7 @@ export default function App() {
     activeLesson={(bundle.lessons ?? [bundle.lesson]).find(lesson => lesson.lessonId === state.activeLessonId) ?? bundle.lesson}
     activeProvenance={lessonBundles.find(item => item.lesson.lessonId === state.activeLessonId)?.provenance ?? bundle.provenance}
     lessonSummaries={(bundle.lessons ?? [bundle.lesson]).map(lesson => {
-      const entries = bundle.entries.filter(entry => entry.introducedInLessonId === lesson.lessonId)
+      const entries = lessonStudyEntries(bundle, lesson.lessonId)
       return { lesson, total: entries.length,
         introduced: entries.filter(entry => state.progress[entry.entryId]).length,
         due: entries.filter(entry => getEntryStatus(state, entry.entryId, now) === 'due').length,

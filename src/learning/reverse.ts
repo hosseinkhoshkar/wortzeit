@@ -1,4 +1,5 @@
 import type { AppState, ContentBundle, ReverseProgress, SessionTask } from '../contracts/index.ts'
+import { lessonStudyEntries } from '../content/lesson-vocabulary.ts'
 
 export const REVERSE_ACTIVATION_COUNT = 15
 export const REVERSE_MAX_PER_SESSION = 2
@@ -113,9 +114,10 @@ export function selectReverseEntries(state: AppState, bundle: ContentBundle, new
   }
   const entries = new Map(bundle.entries.map(entry => [entry.entryId, entry]))
   const lessons = bundle.lessons ?? [bundle.lesson]
+  const currentIds = new Set(lessons.flatMap(lesson => lessonStudyEntries(bundle, lesson.lessonId).map(entry => entry.entryId)))
   const activeIndex = lessons.findIndex(lesson => lesson.lessonId === state.activeLessonId)
   const timestamp = Date.parse(now)
-  const eligible = Object.values(state.reverseProgress).filter(progress => entries.has(progress.entryId)
+  const eligible = Object.values(state.reverseProgress).filter(progress => entries.has(progress.entryId) && currentIds.has(progress.entryId)
     && !excluded.has(progress.entryId) && Date.parse(progress.nextDueAt) <= timestamp)
     .sort((a, b) => a.entryId.localeCompare(b.entryId))
   const random = randomGenerator(seed ^ 0x63c4d17a)
