@@ -462,7 +462,7 @@ function GrammarPanel({ props, onBack, onQuestionVisibilityChange }: {
           disabled={disabled || !!feedback} aria-pressed={feedback?.option === option}
           onClick={() => void answer(option)}><span className="grammar-option-number">{number(index + 1)}</span><span lang="de" dir="ltr">{option}</span>{correct ? <span aria-label="پاسخ درست">✓</span> : wrong ? <span aria-label="پاسخ نادرست">✕</span> : null}</button>
       })}</div>
-      <div className="grammar-feedback" role="status" aria-live="polite">{feedback && <><strong>{feedback.correct ? 'درست بود! ✓' : 'این گزینه درست نبود. ✕'}</strong><p>پاسخ درست: <bdi lang="de" dir="ltr">{question.answer}</bdi></p><p>{question.explanationFa}</p></>}</div>
+      <div className="grammar-feedback" role="status" aria-live="polite">{feedback && <><strong>{feedback.correct ? 'درست بود! ✓' : 'این گزینه درست نبود. ✕'}</strong><p>پاسخ درست: <bdi lang="de" dir="ltr">{question.answer}</bdi></p><p>{question.explanationFa}</p>{question.review && <div className="grammar-review" aria-label="مرور گرامر"><h2>مرور قاعده</h2><p>{question.review.ruleFa}</p><h3>نکتهٔ این سؤال</h3><p>{question.review.pitfallFa}</p><h3>مثال بیشتر · تألیفی</h3><p className="grammar-review-example" lang="de" dir="ltr">{question.review.exampleDe}</p><p>{question.review.exampleFa}</p></div>}</>}</div>
       <button type="button" className="primary-button grammar-next" disabled={disabled || !feedback} onClick={() => void next()}>{session.cursor === session.items.length - 1 ? 'دیدن نتیجهٔ این نوبت' : 'سؤال بعدی'}</button>
       <span className="grammar-source-note">تمرین تألیفی · {question.locator}</span>
     </> : <div className="grammar-intro">

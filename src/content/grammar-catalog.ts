@@ -28,7 +28,7 @@ export const grammarLessons = [
     source: grammarFiveSource },
   { lessonId: 'a1-lesson-06', summaryFa: 'امر و پیشنهاد', labelFa: 'گرامر درس۶', titleDe: 'Kleider machen Freunde', titleFa: 'گرامر درس ششم',
     descriptionFa: 'امر رسمی Sie، پیشنهاد با wir، امر du/ihr، امرهای بی‌قاعده، پیشوندهای جداشدنی و پیشنهاد با sollen/wollen؛ ۵۰ سؤال چهارگزینه‌ای، هر نوبت۵ سؤال.',
-    rulesFa: 'پس از انتخاب پاسخ، توضیح فارسی قاعده و صورت درست نمایش داده می‌شود.',
+    rulesFa: 'بعد از هر پاسخ، دلیل پاسخ درست، مرور قاعده، نکتهٔ خطای رایج و یک مثال تازه با ترجمهٔ فارسی نمایش داده می‌شود.',
     source: grammarSixSource },
 
 ]

@@ -1,4 +1,5 @@
 import type { GrammarQuestion } from './grammar-one.ts'
+import { grammarSixReviews } from './grammar-six-reviews.ts'
 
 // Authored exercises. IDs are append-only; do not reorder existing rows.
 export const grammarSixSource = {
@@ -709,6 +710,6 @@ const rows: Omit<GrammarQuestion, 'questionId' | 'lessonId' | 'origin'>[] = [
   }
 ]
 export const grammarSixQuestions: GrammarQuestion[] = rows.map((row, index) => ({
- ...row, questionId: `a1-g06-${String(index + 1).padStart(3, '0')}`,
+ ...row, review: grammarSixReviews[`a1-g06-${String(index + 1).padStart(3, '0')}`], questionId: `a1-g06-${String(index + 1).padStart(3, '0')}`,
  lessonId: 'a1-lesson-06', origin: 'authored',
 }))
