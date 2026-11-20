@@ -80,3 +80,7 @@ schema۴، contentVersion و grammar.version=1 حفظ می‌شوند. GrammarSt
 LessonDefinition.studyEntryIds و vocabularyEntryIds فیلدهای اختیاریِ بستهٔ محتوا هستند؛ AppState/schema۴ و contentVersion تغییر نمی‌کنند. introducedEntryIds بانک تاریخی را نگه می‌دارد. نبود scope در درس‌های دیگر همان رفتار قبلی است. صف تازه، مرورها، گزینه‌های معنی و مرور معکوس از scope فعلی می‌آیند؛ صف ذخیره‌شده با همان ID/گزینه ادامه می‌یابد. آمار و فهرست واژگان نیز همان scope را مصرف می‌کنند. منابع قبلی برای سازگاری حفظ‌اند؛ ارجاع تازهٔ coursebook-lesson-06 مرجع نمایش فهرست جاری است.
 
 فایل reference/vocabulary/Lesson-06-A1.txt و sidecar مثال‌ها بانک تاریخی‌اند و بازنویسی نمی‌شوند. مرجع جاری reference/audits/lesson-06-coursebook.json و گزارش docs/lesson-six-correction.md است. نام خانوادگی Frau Wald شاهد واژهٔ Wald به معنی جنگل نیست. خارج‌بودن از فهرست اصلی لزوماً به معنی نبودن واژه در متن عمومی تمرین نیست.
+
+## یادداشت آموزشی گرامر
+
+GrammarQuestion.review دادهٔ اختیاریِ محتوا با ruleFa، pitfallFa، exampleDe و exampleFa است؛ برای تمام سؤال‌های درس‌های تازه طبق قواعد محتوا ارائه می‌شود. explanationFa دلیل همان پاسخ است. این متن‌ها هنگام نمایش از کاتالوگ خوانده می‌شوند و داخل GrammarState کپی نمی‌شوند؛ AppState/schema۴، grammar.version=1 و شناسه‌های سؤال تغییر ندارند.

@@ -434,3 +434,31 @@ test('grammar library displays saved progress and an unfinished lesson as contin
   assert.ok(!html.includes('پاسخ درست:') && !html.includes('grammar-options'))
   assert.deepEqual(props.state, before)
 })
+
+test('lesson-six teaching notes stay hidden until a committed answer, then survive reload for correct and wrong answers', async () => {
+  const { applyGrammar } = await import('../learning/grammar.ts')
+  const { grammarSixQuestions } = await import('../content/grammar-six.ts')
+  for (const correct of [true, false]) {
+    const props = propsFor({ taskId: 'grammar-review-ui', kind: 'flashcard', entryId: bundle.entries[0].entryId, revealed: false })
+    props.state.grammar = applyGrammar(undefined, { type: 'grammar-start', lessonId: 'a1-lesson-06', sessionId: 'review-ui', seed: 42 }, now)!
+    const question = grammarSixQuestions.find(q => q.questionId === props.state.grammar!.session!.items[0].questionId)!
+    const render = () => renderToStaticMarkup(createElement(view.GrammarPanel, { props, onBack: async () => {} }))
+    assert.ok(!render().includes('class="grammar-review"'))
+    const session = props.state.grammar.session!
+    props.state.grammar = applyGrammar(props.state.grammar, {
+      type: 'grammar-answer', sessionId: session.sessionId, questionId: question.questionId,
+      attemptId: `review-${correct}`, option: correct ? question.answer : question.options.find(option => option !== question.answer)!,
+    }, now)!
+    props.state.grammar = JSON.parse(JSON.stringify(props.state.grammar))
+    const html = render()
+    assert.ok(html.includes('مرور قاعده') && html.includes('نکتهٔ این سؤال'))
+    assert.ok(html.includes('مثال بیشتر · تألیفی'))
+    assert.ok(html.includes(question.review!.ruleFa))
+    assert.ok(html.includes(question.review!.pitfallFa))
+    assert.ok(html.includes(`lang="de" dir="ltr">${question.review!.exampleDe}</p>`))
+    assert.ok(html.includes(question.review!.exampleFa))
+    assert.ok(html.includes(correct ? 'درست بود!' : 'این گزینه درست نبود.'))
+    props.state.grammar = applyGrammar(props.state.grammar, { type: 'grammar-next', sessionId: session.sessionId, questionId: question.questionId }, now)!
+    assert.ok(!render().includes('class="grammar-review"'))
+  }
+})

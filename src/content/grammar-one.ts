@@ -7,6 +7,7 @@ export interface GrammarQuestion {
   options: [string, string, string, string]
   answer: string
   explanationFa: string
+  review?: { ruleFa: string; pitfallFa: string; exampleDe: string; exampleFa: string }
   locator: string
   origin: 'authored'
 }
