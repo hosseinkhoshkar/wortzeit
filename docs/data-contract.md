@@ -84,3 +84,7 @@ LessonDefinition.studyEntryIds و vocabularyEntryIds فیلدهای اختیار
 ## یادداشت آموزشی گرامر
 
 GrammarQuestion.review دادهٔ اختیاریِ محتوا با ruleFa، pitfallFa، exampleDe و exampleFa است؛ برای تمام سؤال‌های درس‌های تازه طبق قواعد محتوا ارائه می‌شود. explanationFa دلیل همان پاسخ است. این متن‌ها هنگام نمایش از کاتالوگ خوانده می‌شوند و داخل GrammarState کپی نمی‌شوند؛ AppState/schema۴، grammar.version=1 و شناسه‌های سؤال تغییر ندارند.
+
+## محتوای درس۷
+
+ترتیب۵۵ واژهٔ درس۷ از studyEntryIds/vocabularyEntryIds اختیاری در بسته می‌آید؛ بانک تاریخی و صف ذخیره‌شده همان شناسه/ترتیب پیشین را نگه می‌دارند. schema۴ و contentVersion تغییر ندارند. GrammarQuestion.review برای تمام۵۰ سؤال تازهٔ a1-g07-001 تا a1-g07-050 کامل است؛ grammar.version=1 و سؤال‌های۱ تا۶ ثابت‌اند. [دامنه و شواهد](grammar-seven.md).

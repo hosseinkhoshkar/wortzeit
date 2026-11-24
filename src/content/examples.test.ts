@@ -22,7 +22,7 @@ test('all active entry identities, original examples and game data stay intact; 
     const extended = courseBundle.entries.find(entry => entry.entryId === original.entryId)!
     assert.equal(extended.examples.length, 3)
     assert.deepEqual(extended.examples[0], original.examples[0])
-    assert.deepEqual({ ...extended, examples: extended.examples.slice(0, 1), sourceRefIds: extended.sourceRefIds.slice(0, original.sourceRefIds.length), occurrences: extended.occurrences.slice(0, original.occurrences.length).map(occurrence => ({ ...occurrence, sourceRefIds: occurrence.sourceRefIds.filter(id => !id.endsWith('-coursebook-lesson-06')) })) }, original)
+    assert.deepEqual({ ...extended, examples: extended.examples.slice(0, 1), sourceRefIds: extended.sourceRefIds.slice(0, original.sourceRefIds.length), occurrences: extended.occurrences.slice(0, original.occurrences.length).map(occurrence => ({ ...occurrence, sourceRefIds: occurrence.sourceRefIds.filter(id => !id.endsWith('-coursebook-lesson-06') && !id.endsWith('-coursebook-lesson-07')) })) }, original)
     assert.equal(new Set(extended.examples.map(example => example.de)).size, 3)
     assert.deepEqual(extendEntryExamples(extended), extended)
     assert.equal(original.examples.length, 1)

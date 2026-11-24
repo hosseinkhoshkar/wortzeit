@@ -158,14 +158,14 @@ function DailyStreakNotice({ streak }: { streak: DailyStreak }) {
   return notice?.date === streak.date ? <StreakToast days={notice.days} /> : null
 }
 function Sources({ entry, bundle, lessonId }: { entry: Entry; bundle: ContentBundle; lessonId?: string }) {
-  const checked = lessonId === 'lesson-06' ? entry.sourceRefIds.filter(id => id.endsWith('-coursebook-lesson-06')) : []
+  const checked = lessonId ? entry.sourceRefIds.filter(id => id.endsWith(`-coursebook-${lessonId}`)) : []
   const ids = checked.length ? checked : entry.sourceRefIds
   return <DetailSheet title="ارجاع این واژه"><div className="entry-sources"><ul>{ids.map(id => {
     const ref = bundle.sourceRefs.find(item => item.sourceRefId === id)
     if (!ref) return null
     const source = bundle.sources.find(item => item.sourceId === ref.sourceId)
     return <li key={id}>{source?.title} · {ref.locator}</li>
-  })}</ul><p>تطبیق با گزیدهٔ موجود؛ اصل کتاب به‌طور جامع بررسی نشده است.</p></div></DetailSheet>
+  })}</ul><p>{lessonId === 'lesson-07' ? '۵۵ مدخلِ بانک موجود؛ ترتیب بر اساس صفحهٔ کتاب درسی. موارد بدون صفحهٔ تأییدشدهٔ کتاب درسی در بخش تکمیلی‌اند. منبع نگاشت: واژه‌نامهٔ رسمی ناشر؛ موارد مبتنی بر ارجاع قبلی مشخص‌اند.' : 'تطبیق با گزیدهٔ موجود؛ اصل کتاب به‌طور جامع بررسی نشده است.'}</p></div></DetailSheet>
 }
 function ExampleBlock({ entry, example = entry.examples[0], card = false, icon = card }: { entry: Entry; example?: Example; card?: boolean; icon?: boolean }) {
   return <div className={`example-block${card ? ' card-example' : ''}`} data-example-id={example?.exampleId}><span className="tiny-label">مثال تألیفی</span><div className="example-sentence" dir="ltr"><p className={`example-de${card ? ' card-example-de' : ''}`} lang="de" dir="ltr">{example && !icon ? <SpeakerButton text={example.de} sentence>{example.de}</SpeakerButton> : example?.de}</p>{example?.de && icon && <SpeakerButton text={example.de} sentence />}</div><p className={card ? 'card-example-fa' : undefined}>{example?.fa}</p></div>
@@ -359,10 +359,11 @@ function TaskPanel({ task, props }: { task: SessionTask; props: WortzeitUIProps 
 function LessonWordList({ entries, props }: { entries: Entry[]; props: WortzeitUIProps }) {
   const { bundle, state, statuses, now } = props
   const playback = usePronunciation()
-  const pages = new Map(bundle.sourceRefs.filter(ref => ref.lessonId === state.activeLessonId && ref.sourceRefId.endsWith('-coursebook-lesson-06'))
-    .map(ref => [ref.sourceRefId.replace('-coursebook-lesson-06', ''), Number(/چاپی (\d+)/u.exec(ref.locator)?.[1])]))
+  const pages = new Map(bundle.sourceRefs.filter(ref => ref.lessonId === state.activeLessonId && ref.sourceId !== 'source-lesson-seven-supplement' && ref.sourceRefId.endsWith(`-coursebook-${state.activeLessonId}`))
+    .map(ref => [ref.sourceRefId.replace(`-coursebook-${state.activeLessonId}`, ''), Number(/چاپی (\d+)/u.exec(ref.locator)?.[1])]))
   return <div className="word-list">{entries.map((entry, index) => <Fragment key={entry.entryId}>
-    {pages.has(entry.entryId) && (index === 0 || pages.get(entries[index - 1].entryId) !== pages.get(entry.entryId)) && <h2 className="word-page-heading">صفحهٔ {number(pages.get(entry.entryId)!)}</h2>}
+    {Number.isFinite(pages.get(entry.entryId)) && (index === 0 || pages.get(entries[index - 1].entryId) !== pages.get(entry.entryId)) && <h2 className="word-page-heading">صفحهٔ {number(pages.get(entry.entryId)!)}</h2>}
+    {state.activeLessonId === 'lesson-07' && !Number.isFinite(pages.get(entry.entryId)) && (index === 0 || Number.isFinite(pages.get(entries[index - 1].entryId))) && <h2 className="word-page-heading">تکمیلی · کتاب تمرین و صوت</h2>}
     <details className="word-item" key={entry.entryId} onToggle={event => { if (!event.currentTarget.open) playback.stopScope(entry.entryId) }}>
           <summary><span className="word-item-main"><SpeechScope value={entry.entryId}><SpokenWord entry={entry} /></SpeechScope><span>{entry.meaningFa}</span></span><span className={`word-status status-${statuses[entry.entryId]}`}><i />{statusLabels[statuses[entry.entryId]]}</span><span className="details-chevron" aria-hidden="true">⌄</span></summary>
           <div className="word-item-details"><SpeechScope value={entry.entryId}><ExampleBlock entry={entry} /><MoreExamples entry={entry} currentExampleId={entry.examples[0]?.exampleId} />{entry.introducedInLessonId !== state.activeLessonId && <p className="tiny-label">واژهٔ مشترک با درس دیگر؛ پیشرفت قبلی حفظ شده است.</p>}<SkillDetails entry={entry} progress={state.progress[entry.entryId]} /><ReverseSkillDetails progress={state.reverseProgress?.[entry.entryId]} now={now} /><Sources entry={entry} bundle={bundle} lessonId={state.activeLessonId} />{state.progress[entry.entryId]?.nextDueAt && <p className="word-due">مرور بعدی: {dateLabel(state.progress[entry.entryId].nextDueAt, now)}</p>}</SpeechScope></div>

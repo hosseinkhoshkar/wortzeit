@@ -809,21 +809,21 @@ try {
       assert.equal(JSON.stringify({ progress: state.progress, attempts: state.attempts, activeLessonId: state.activeLessonId, savedSessions: state.savedSessions }), vocabulary)
     } finally { await context.close() }
   })
-  await checkpoint('grammar lesson cards: ordered lessons 1–6, lesson-five persistence and selector time excluded', async () => {
+  await checkpoint('grammar lesson cards: ordered lessons 1–7, lesson-five persistence and selector time excluded', async () => {
     const context = await browser.newContext({ viewport: { width: 320, height: 568 }, isMobile: true, hasTouch: true, locale: 'fa-IR', timezoneId: 'Europe/Berlin' })
     observeContext(context)
     const page = await context.newPage()
     try {
       await page.goto(origin)
       await page.getByRole('button', { name: 'گرامر', exact: true }).click()
-      assert.equal(await page.locator('.grammar-lesson-card').count(), 6)
+      assert.equal(await page.locator('.grammar-lesson-card').count(), 7)
       assert.equal(await page.locator('.grammar-page select').count(), 0)
       assert.ok(await page.locator('.grammar-lesson-card').evaluateAll(cards => cards.every(card => {
         const bottom = card.querySelector('.grammar-card-bottom')
         return bottom && bottom.getBoundingClientRect().bottom <= card.getBoundingClientRect().bottom
       })), 'progress and action must fit inside each card on short screens')
       const labels = await page.locator('.grammar-lesson-card').evaluateAll(cards => cards.map(card => card.getAttribute('aria-label')))
-      assert.deepEqual(labels, ['اول','دوم','سوم','چهارم','پنجم','ششم'].map(name => 'شروع گرامر درس ' + name))
+      assert.deepEqual(labels, ['اول','دوم','سوم','چهارم','پنجم','ششم','هفتم'].map(name => 'شروع گرامر درس ' + name))
       await page.getByRole('button', { name: 'شروع گرامر درس پنجم', exact: true }).click()
       let state = await waitState(page, state => state.grammar?.session?.lessonId === 'a1-lesson-05' && state.grammar.session.state === 'active')
       assert.ok(state.grammar.session.items.every(item => item.questionId.startsWith('a1-g05-')))
