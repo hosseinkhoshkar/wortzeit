@@ -406,12 +406,12 @@ test('lesson-two grammar renders independently of the vocabulary lesson with its
   assert.deepEqual(props.state, before)
 })
 
-test('grammar library lists six lessons in order, puts lesson five between four and six and removes the select', () => {
+test('grammar library lists seven lessons in order, puts lesson five between four and six and removes the select', () => {
   const props = propsFor({ taskId: 'grammar-library', kind: 'flashcard', entryId: bundle.entries[0].entryId, revealed: false })
   const before = structuredClone(props.state)
   const html = renderToStaticMarkup(createElement(view.GrammarPanel, { props, onBack: async () => {} }))
-  assert.equal((html.match(/class="grammar-lesson-card"/gu) ?? []).length, 6)
-  const labels = ['اول', 'دوم', 'سوم', 'چهارم', 'پنجم', 'ششم'].map(name => 'aria-label="شروع گرامر درس ' + name + '"')
+  assert.equal((html.match(/class="grammar-lesson-card"/gu) ?? []).length, 7)
+  const labels = ['اول', 'دوم', 'سوم', 'چهارم', 'پنجم', 'ششم', 'هفتم'].map(name => 'aria-label="شروع گرامر درس ' + name + '"')
   const positions = labels.map(label => html.indexOf(label))
   assert.ok(positions.every((position, index) => position >= 0 && (index === 0 || position > positions[index - 1])))
   assert.ok(html.includes('Endlich ein Zimmer!'))
@@ -461,4 +461,43 @@ test('lesson-six teaching notes stay hidden until a committed answer, then survi
     props.state.grammar = applyGrammar(props.state.grammar, { type: 'grammar-next', sessionId: session.sessionId, questionId: question.questionId }, now)!
     assert.ok(!render().includes('class="grammar-review"'))
   }
+})
+
+test('lesson-seven teaching notes stay hidden until a committed answer, then survive reload for correct and wrong answers', async () => {
+  const { applyGrammar } = await import('../learning/grammar.ts')
+  const { grammarSevenQuestions } = await import('../content/grammar-seven.ts')
+  for (const correct of [true, false]) {
+    const props = propsFor({ taskId: 'grammar-review-ui', kind: 'flashcard', entryId: bundle.entries[0].entryId, revealed: false })
+    props.state.grammar = applyGrammar(undefined, { type: 'grammar-start', lessonId: 'a1-lesson-07', sessionId: 'review-ui', seed: 42 }, now)!
+    const question = grammarSevenQuestions.find(q => q.questionId === props.state.grammar!.session!.items[0].questionId)!
+    const render = () => renderToStaticMarkup(createElement(view.GrammarPanel, { props, onBack: async () => {} }))
+    assert.ok(!render().includes('class="grammar-review"'))
+    const session = props.state.grammar.session!
+    props.state.grammar = applyGrammar(props.state.grammar, {
+      type: 'grammar-answer', sessionId: session.sessionId, questionId: question.questionId,
+      attemptId: `review-${correct}`, option: correct ? question.answer : question.options.find(option => option !== question.answer)!,
+    }, now)!
+    props.state.grammar = JSON.parse(JSON.stringify(props.state.grammar))
+    const html = render()
+    assert.ok(html.includes('مرور قاعده') && html.includes('نکتهٔ این سؤال'))
+    assert.ok(html.includes('مثال بیشتر · تألیفی'))
+    assert.ok(html.includes(question.review!.ruleFa))
+    assert.ok(html.includes(question.review!.pitfallFa))
+    assert.ok(html.includes(`lang="de" dir="ltr">${question.review!.exampleDe}</p>`))
+    assert.ok(html.includes(question.review!.exampleFa))
+    assert.ok(html.includes(correct ? 'درست بود!' : 'این گزینه درست نبود.'))
+    props.state.grammar = applyGrammar(props.state.grammar, { type: 'grammar-next', sessionId: session.sessionId, questionId: question.questionId }, now)!
+    assert.ok(!render().includes('class="grammar-review"'))
+  }
+})
+
+test('lesson-seven word list labels coursebook pages and never labels workbook page numbers as textbook pages', async () => {
+  const { lessonVocabularyEntries } = await import('../content/lesson-vocabulary.ts')
+  const props = propsFor({ taskId: 'seven-pages-ui', kind: 'flashcard', entryId: 'a1-l07-002', revealed: false })
+  props.bundle = courseBundle
+  props.state.activeLessonId = 'lesson-07'
+  const html = renderToStaticMarkup(createElement(view.LessonWordList, { entries: lessonVocabularyEntries(courseBundle, 'lesson-07'), props }))
+  const headings = [...html.matchAll(/<h2 class="word-page-heading">(.*?)<\/h2>/gu)].map(match => match[1])
+  assert.deepEqual(headings, ['صفحهٔ ۶۰','صفحهٔ ۶۱','صفحهٔ ۶۲','صفحهٔ ۶۳','صفحهٔ ۶۴','صفحهٔ ۶۵','صفحهٔ ۶۶','تکمیلی · کتاب تمرین و صوت'])
+  assert.equal((html.match(/class="word-item"/gu) ?? []).length, 55)
 })

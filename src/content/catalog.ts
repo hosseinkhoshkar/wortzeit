@@ -2,12 +2,13 @@ import type { ContentBundle } from '../contracts/index.ts'
 import { lessonBundles } from './lessons.ts'
 import { extendEntryExamples } from './extend-examples.ts'
 import { attachLessonSixOccurrences } from './lesson-six-occurrences.ts'
+import { withLessonSevenOrder } from './lesson-seven-order.ts'
 import { withLessonSixCurriculum } from './lesson-six-curriculum.ts'
 
 export { lessonBundles }
 
 /** The original lesson IDs and all twenty existing entry identities stay unchanged. */
-export const courseBundle: ContentBundle = withLessonSixCurriculum(attachLessonSixOccurrences({
+export const courseBundle: ContentBundle = withLessonSevenOrder(withLessonSixCurriculum(attachLessonSixOccurrences({
   // Save compatibility identifier: the schema-4 reader compares this exactly.
   // Additive lessons keep it; the PWA build hash independently refreshes assets.
   contentVersion: 'course-a1-lessons-01-04-v1',
@@ -21,4 +22,4 @@ export const courseBundle: ContentBundle = withLessonSixCurriculum(attachLessonS
     reviewStatus: 'excerpt-checked',
     noteFa: 'درس‌های فعال با محتوای فایل‌های گزیدهٔ خود تطبیق دارند؛ ۶۲۶ مدخل در برنامهٔ مطالعه و ۶۲ مدخل تاریخیِ کنارگذاشته‌شده برای حفظ ذخیره. سطح درس‌ها از فایل منبع می‌آید. این تطبیق تأیید جامع اصل کتاب نیست؛ مثال‌ها و جمله‌های تمرین تألیفی‌اند.',
   },
-}))
+})))

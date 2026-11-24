@@ -1,3 +1,4 @@
+import { grammarSevenQuestions, grammarSevenSource } from './grammar-seven.ts'
 import { grammarFiveQuestions, grammarFiveSource } from './grammar-five.ts'
 import { grammarSixQuestions, grammarSixSource } from './grammar-six.ts'
 import { grammarFourQuestions, grammarFourSource } from './grammar-four.ts'
@@ -31,5 +32,9 @@ export const grammarLessons = [
     rulesFa: 'بعد از هر پاسخ، دلیل پاسخ درست، مرور قاعده، نکتهٔ خطای رایج و یک مثال تازه با ترجمهٔ فارسی نمایش داده می‌شود.',
     source: grammarSixSource },
 
+  { lessonId: 'a1-lesson-07', summaryFa: 'مسیر، ضمیر نامعین و Präsens', labelFa: 'گرامر درس۷', titleDe: 'Grüezi in der Schweiz', titleFa: 'گرامر درس هفتم',
+    descriptionFa: 'حروف اضافهٔ مسیر و داتیو/آکوزاتیو، man/alle/etwas/nichts و Präsens برای آینده و زندگی‌نامه؛ ۵۰ سؤال چهارگزینه‌ای، هر نوبت۵ سؤال.',
+    rulesFa: 'بعد از هر پاسخ، دلیل پاسخ درست، مرور قاعده، نکتهٔ خطای رایج و یک مثال تازه با ترجمهٔ فارسی نمایش داده می‌شود.',
+    source: grammarSevenSource },
 ]
-export const grammarQuestions = [...lessonOneQuestions, ...grammarTwoQuestions, ...grammarThreeQuestions, ...grammarFourQuestions, ...grammarFiveQuestions, ...grammarSixQuestions]
+export const grammarQuestions = [...lessonOneQuestions, ...grammarTwoQuestions, ...grammarThreeQuestions, ...grammarFourQuestions, ...grammarFiveQuestions, ...grammarSixQuestions, ...grammarSevenQuestions]
